@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 public class FunctionGraphEditor : EditorWindow
 {
@@ -64,13 +65,25 @@ public class FunctionGraphEditor : EditorWindow
         return null;
     }
 
+    public void RemoveConnection(ConnectionToDraw conToDraw)
+    {
+        connectionsToDraw.Remove(conToDraw);
+    }
+
     public void AddConnectionToDraw(ConnectionToDraw toDraw)
     {
+        if (toDraw == null)
+            return;
         connectionsToDraw.Add(toDraw);
+    }
+
+    public void RemoveNode(FunctionGraphEditorNode functionGraphEditorNode)
+    {
+        nodes.Remove(functionGraphEditorNode.Node);
     }
 }
 
-public struct ConnectionToDraw
+public class ConnectionToDraw
 {
     public Vector2 from;
     public Vector2 to;

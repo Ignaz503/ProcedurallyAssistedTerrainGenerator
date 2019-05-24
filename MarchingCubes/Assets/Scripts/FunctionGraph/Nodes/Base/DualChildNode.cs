@@ -1,4 +1,6 @@
-﻿public abstract class DualChildNode : ParentableNode
+﻿using System.Collections.Generic;
+
+public abstract class DualChildNode : ParentableNode
 {
     public BaseFuncGraphNode RightChild { get; protected set; }
     public BaseFuncGraphNode LeftChild { get; protected set; }
@@ -125,4 +127,27 @@
         else
             return new ChildInfo(false, -1);
     }
+
+    public override void RemoveAllChildren()
+    {
+        RemoveLeftChild();
+        RemoveRightChild();
+    }
+
+    public override IEnumerator<BaseFuncGraphNode> GetEnumerator()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            switch (i)
+            {
+                case 0:
+                    yield return LeftChild;
+                    break;
+                case 1:
+                    yield return RightChild;
+                    break;
+            }
+        }
+    }
+
 }

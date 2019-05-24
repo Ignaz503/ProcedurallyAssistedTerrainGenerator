@@ -1,4 +1,6 @@
-﻿public abstract class SingularChildNode : ParentableNode
+﻿using System.Collections.Generic;
+
+public abstract class SingularChildNode : ParentableNode
 {
     public BaseFuncGraphNode Child { get; protected set; }
     public override int PossibleChildrenCount { get { return 1; } }
@@ -35,6 +37,11 @@
         }
     }
 
+    public override void RemoveAllChildren()
+    {
+        RemoveChildAt(0);
+    }
+
     public override int Validate()
     {
         if (Child == null)
@@ -57,4 +64,10 @@
         else
             return new ChildInfo(false, -1 );
     }
+
+    public override IEnumerator<BaseFuncGraphNode> GetEnumerator()
+    {
+        yield return Child;
+    }
+
 }

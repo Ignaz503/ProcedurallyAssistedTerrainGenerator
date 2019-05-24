@@ -40,7 +40,14 @@ public abstract class FixedSizeMultiChildNode : ParentableNode
         }
     }
 
-   
+    public override void RemoveAllChildren()
+    {
+        for (int i = 0; i < Size; i++)
+        {
+            RemoveChildAt(i);
+        }
+    }
+
     public override void RemoveChildAt(int idx)
     {
         if (idx < childNodes.Length && childNodes[idx] != null)
@@ -73,5 +80,13 @@ public abstract class FixedSizeMultiChildNode : ParentableNode
             }
         }
         return new ChildInfo( false, -1 );
+    }
+
+    public override IEnumerator<BaseFuncGraphNode> GetEnumerator()
+    {
+        for (int i = 0; i < Size; i++)
+        {
+            yield return childNodes[i];
+        }
     }
 }

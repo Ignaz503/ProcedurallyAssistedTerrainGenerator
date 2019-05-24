@@ -33,6 +33,14 @@ public abstract class VariableMultiChildNode : ParentableNode
         }
     }
 
+    public override void RemoveAllChildren()
+    {
+        for (int i = children.Count; i >= 0; i--)
+        {
+            RemoveChildAt(i);
+        }
+    }
+
     public override void AddChild(int idx, BaseFuncGraphNode n)
     { 
         if (idx < children.Count)
@@ -101,6 +109,14 @@ public abstract class VariableMultiChildNode : ParentableNode
                 }
             }
             return new ChildInfo( false,  -1 );
+        }
+    }
+
+    public override IEnumerator<BaseFuncGraphNode> GetEnumerator()
+    {
+        for (int i = 0; i < children.Count; i++)
+        {
+            yield return children[i];
         }
     }
 }

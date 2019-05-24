@@ -15,32 +15,29 @@ public class FunctionGraph
         ZLocal
     }
 
-    Dictionary<VariableNames, Func<float>> variables;
+    Dictionary<VariableNames, float> variables;
 
     public BaseFuncGraphNode RootNode { get;  set; }
 
     public FunctionGraph()
     {
-        variables = new Dictionary<VariableNames, System.Func<float>>()
+        variables = new Dictionary<VariableNames, float>()
         {
-            {VariableNames.X, null },
-            {VariableNames.Y, null },
-            {VariableNames.Z, null },
-            {VariableNames.XLocal, null },
-            {VariableNames.YLocal, null },
-            {VariableNames.ZLocal, null }
+            {VariableNames.X, 0 },
+            {VariableNames.Y, 0 },
+            {VariableNames.Z, 0 },
+            {VariableNames.XLocal, 0 },
+            {VariableNames.YLocal, 0 },
+            {VariableNames.ZLocal, 0 }
         };
     }
 
     public float GetVariableValue(VariableNames name)
     {
-        if (variables.ContainsKey(name)) {
-            return variables[name]();
-        }
-        return 0;//problem
+        return variables[name];
     }
 
-    public void SetVariables(SamplePointCoordValueFunctionPair x, SamplePointCoordValueFunctionPair y, SamplePointCoordValueFunctionPair z)
+    protected void SetVariables(SamplePointVariables x, SamplePointVariables y, SamplePointVariables z)
     {
         variables[VariableNames.X] = x.ValueWorld;
         variables[VariableNames.Y] = y.ValueWorld;
@@ -50,15 +47,16 @@ public class FunctionGraph
         variables[VariableNames.ZLocal] = z.ValueLocal;
     }
 
-    public float Evaluate()
+    public float Evaluate(SamplePointVariables x, SamplePointVariables y, SamplePointVariables z)
     {
+        SetVariables(x, y, z);
         return RootNode.Evaluate();
     }
 
-    public struct SamplePointCoordValueFunctionPair
+    public struct SamplePointVariables
     {
-        public Func<float> ValueWorld;
-        public Func<float> ValueLocal;
+        public float ValueWorld;
+        public float ValueLocal;
     }
 
     public int ValidateGraph(ILogger l)
