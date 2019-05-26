@@ -18,8 +18,10 @@ public class FunctionGraphEditor : EditorWindow
     FunctionGraph graph;
 
     public Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode> nodes;
+    List<FunctionGraphEditorNode> nodesList;
     List<ConnectionToDraw> connectionsToDraw;
 
+    [SerializeField]FuncGraphEditorSettings editorSettings;
     [SerializeField]FuncGraphEditorNodeSettings defaultNodeSetting;
     Dictionary<Type, FuncGraphEditorNodeSettings> nodeSettings;
     
@@ -29,6 +31,7 @@ public class FunctionGraphEditor : EditorWindow
         connectionsToDraw = new List<ConnectionToDraw>();
 
         nodeSettings = new Dictionary<Type, FuncGraphEditorNodeSettings>();
+        nodesList = new List<FunctionGraphEditorNode>();
 
         nodes = new Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode>();
         LoadSettings();
@@ -36,7 +39,10 @@ public class FunctionGraphEditor : EditorWindow
 
     private void LoadSettings()
     {
-        //TODO
+        if (editorSettings != null)
+        {
+            //TODO
+        }
     }
 
     public void OnGUI()
@@ -46,6 +52,29 @@ public class FunctionGraphEditor : EditorWindow
         //DO STUFF
 
         DrawNodes();
+        DrawConnections();
+
+        ProcessNodeEvents(Event.current);
+        ProcessEvent(Event.current);
+        if (GUI.changed) Repaint();
+    }
+
+    private void ProcessEvent(Event e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ProcessNodeEvents(Event e)
+    {
+        if (nodes != null)
+        {
+            for (int i = nodesList.Count-1 ; i  >= 0; i--)
+            {
+                bool guiChanged = nodesList[i].ProcessEvents(e);
+                if (guiChanged)//don't set directly to guiChanged cause we don't wanna set it flase
+                    GUI.changed = true;
+            }
+        }
     }
 
     void DrawNodes()
@@ -67,6 +96,7 @@ public class FunctionGraphEditor : EditorWindow
     public void AddNode(FunctionGraphEditorNode node)
     {
         nodes.Add(node.Node, node);
+        nodesList.Add(node);
     }
 
     public FunctionGraphEditorNode GetNode(BaseFuncGraphNode n)
@@ -91,6 +121,7 @@ public class FunctionGraphEditor : EditorWindow
     public void RemoveNode(FunctionGraphEditorNode functionGraphEditorNode)
     {
         nodes.Remove(functionGraphEditorNode.Node);
+        nodesList.Remove(functionGraphEditorNode);
     }
 
     public FuncGraphEditorConnectionPointSettings GetSettingsForConnectionPoint(ConnectionPoint.ConnectionPointType pointType, BaseFuncGraphNode node)
@@ -127,18 +158,4 @@ public class FunctionGraphEditor : EditorWindow
         }
         return defaultNodeSetting;
     }
-}
-
-public class ConnectionToDraw
-{
-    public Vector2 from;
-    public Vector2 to;
-
-    public FunctionGraphEditorNode fromNode;
-    public FunctionGraphEditorNode toNode;
-
-    public void Draw()
-    {
-        //TODO Implement
-    } 
 }

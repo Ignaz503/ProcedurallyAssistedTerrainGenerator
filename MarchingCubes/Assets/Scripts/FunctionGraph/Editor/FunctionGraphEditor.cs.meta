@@ -3,7 +3,11 @@ guid: 260185bbaa3dac946b34dca165306c03
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - m_PersistentViewDataDictionary: {instanceID: 0}
+  - editorSettings: {instanceID: 0}
+  - defaultNodeSetting: {fileID: 11400000, guid: 0427d6d55fe3e674cbe9098cc2a14869,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
