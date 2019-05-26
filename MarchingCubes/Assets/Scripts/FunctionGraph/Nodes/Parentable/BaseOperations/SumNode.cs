@@ -4,6 +4,8 @@
     {
     }
 
+    public override string ShortDescription { get { return "Sum"; } }
+
     public override float Evaluate()
     {
         float val = 0;

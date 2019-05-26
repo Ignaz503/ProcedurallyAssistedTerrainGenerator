@@ -6,6 +6,8 @@ public class PerlinNoiseNode : DualChildNode
     {
     }
 
+    public override string ShortDescription { get { return "PerlinNoise"; } }
+
     /// <summary>
     /// calculates Perlin Noise using left child as x and right child as y
     /// </summary>

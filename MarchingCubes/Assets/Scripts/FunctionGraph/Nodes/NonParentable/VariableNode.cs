@@ -2,6 +2,7 @@
 
 public class VariableNode : BaseFuncGraphNode
 {
+    public override string ShortDescription { get { return var.ToString(); } }
     [SerializeField] FunctionGraph.VariableNames var;
 
     public VariableNode(FunctionGraph g): base(g)

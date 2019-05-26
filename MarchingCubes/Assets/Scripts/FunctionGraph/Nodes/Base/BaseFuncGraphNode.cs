@@ -12,6 +12,7 @@ public abstract class BaseFuncGraphNode : IFuncGraphNode
     public FunctionGraph Graph { get; protected set; }
     protected ParentableNode parent;
     public virtual int PossibleChildrenCount{ get { return 0; } }
+    public abstract string ShortDescription { get; }
 
     protected BaseFuncGraphNode(FunctionGraph graph)
     {
@@ -57,7 +58,6 @@ public abstract class BaseFuncGraphNode : IFuncGraphNode
     {
         if (parent != null)
         {
-            Debug.Log("Uncoupling");
             parent.RemoveChild(this);
             OnUncoupleFromParent?.Invoke(this);
         }

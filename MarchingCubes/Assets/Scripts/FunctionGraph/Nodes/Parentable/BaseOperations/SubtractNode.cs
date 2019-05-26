@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class SubtractNode : DualChildNode
 {
+    public override string ShortDescription { get { return "-"; } }
+
     public SubtractNode(FunctionGraph graph) : base(graph)
     {}
 

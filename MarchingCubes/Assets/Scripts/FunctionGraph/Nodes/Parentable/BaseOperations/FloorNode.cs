@@ -6,6 +6,8 @@ public class FloorNode : SingularChildNode
     {
     }
 
+    public override string ShortDescription { get { return "Floor"; } }
+
     public override float Evaluate()
     {
         return Mathf.Floor(Child.Evaluate());

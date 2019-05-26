@@ -9,6 +9,8 @@
 /// </summary>
 public class AddNode : DualChildNode
 {
+    public override string ShortDescription { get { return "+"; } }
+
     public AddNode(FunctionGraph graph) : base(graph)
     {}
 

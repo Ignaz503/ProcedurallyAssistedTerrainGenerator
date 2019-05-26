@@ -20,12 +20,23 @@ public class FunctionGraphEditor : EditorWindow
     public Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode> nodes;
     List<ConnectionToDraw> connectionsToDraw;
 
-
+    [SerializeField]FuncGraphEditorNodeSettings defaultNodeSetting;
+    Dictionary<Type, FuncGraphEditorNodeSettings> nodeSettings;
+    
     public void Initialize()
     {
         graph = new FunctionGraph();
         connectionsToDraw = new List<ConnectionToDraw>();
+
+        nodeSettings = new Dictionary<Type, FuncGraphEditorNodeSettings>();
+
         nodes = new Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode>();
+        LoadSettings();
+    }
+
+    private void LoadSettings()
+    {
+        //TODO
     }
 
     public void OnGUI()
@@ -80,6 +91,41 @@ public class FunctionGraphEditor : EditorWindow
     public void RemoveNode(FunctionGraphEditorNode functionGraphEditorNode)
     {
         nodes.Remove(functionGraphEditorNode.Node);
+    }
+
+    public FuncGraphEditorConnectionPointSettings GetSettingsForConnectionPoint(ConnectionPoint.ConnectionPointType pointType, BaseFuncGraphNode node)
+    {
+        switch (pointType)
+        {
+            case ConnectionPoint.ConnectionPointType.InMultiple:
+                if (nodeSettings.ContainsKey(node.GetType()))
+                {
+                    return nodeSettings[node.GetType()].InSetting;
+                }
+                return defaultNodeSetting.InSetting;
+            case ConnectionPoint.ConnectionPointType.InSingle:
+                if (nodeSettings.ContainsKey(node.GetType()))
+                {
+                    return nodeSettings[node.GetType()].InSetting;
+                }
+                return defaultNodeSetting.InSetting;
+            case ConnectionPoint.ConnectionPointType.Out:
+                if (nodeSettings.ContainsKey(node.GetType()))
+                {
+                    return nodeSettings[node.GetType()].OutSetting;
+                }
+                return defaultNodeSetting.OutSetting;
+        }
+        return null;
+    }
+
+    internal FuncGraphEditorNodeSettings GetSettingsForNode(BaseFuncGraphNode node)
+    {
+        if (nodeSettings.ContainsKey(node.GetType()))
+        {
+            return nodeSettings[node.GetType()];
+        }
+        return defaultNodeSetting;
     }
 }
 

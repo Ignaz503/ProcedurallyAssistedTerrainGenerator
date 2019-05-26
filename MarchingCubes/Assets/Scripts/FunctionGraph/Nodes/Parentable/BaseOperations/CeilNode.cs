@@ -2,6 +2,8 @@
 
 public class CeilNode : SingularChildNode
 {
+    public override string ShortDescription { get { return "Ceil"; } }
+
     public CeilNode(FunctionGraph graph) : base(graph)
     {
 }

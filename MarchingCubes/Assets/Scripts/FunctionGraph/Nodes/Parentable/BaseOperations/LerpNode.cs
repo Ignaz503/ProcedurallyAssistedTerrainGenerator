@@ -2,6 +2,8 @@
 
 public class LerpNode : FixedSizeMultiChildNode
 {
+    public override string ShortDescription { get { return "Lerp"; } }
+
     public LerpNode(FunctionGraph graph) : base(3, graph)
     {
     }

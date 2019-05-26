@@ -1,5 +1,7 @@
 ﻿public class NegativeNode : SingularChildNode
 {
+    public override string ShortDescription { get { return "-"; } }
+
     public NegativeNode(FunctionGraph graph) : base(graph)
     {    }
 
