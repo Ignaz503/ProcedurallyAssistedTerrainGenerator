@@ -20,17 +20,12 @@ public class FunctionGraphEditor : EditorWindow
     public Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode> nodes;
     List<FunctionGraphEditorNode> nodesList;
     List<ConnectionToDraw> connectionsToDraw;
-
-    [SerializeField]FuncGraphEditorSettings editorSettings;
-    [SerializeField]FuncGraphEditorNodeSettings defaultNodeSetting;
-    Dictionary<Type, FuncGraphEditorNodeSettings> nodeSettings;
     
     public void Initialize()
     {
         graph = new FunctionGraph();
         connectionsToDraw = new List<ConnectionToDraw>();
-
-        nodeSettings = new Dictionary<Type, FuncGraphEditorNodeSettings>();
+        
         nodesList = new List<FunctionGraphEditorNode>();
 
         nodes = new Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode>();
@@ -39,10 +34,6 @@ public class FunctionGraphEditor : EditorWindow
 
     private void LoadSettings()
     {
-        if (editorSettings != null)
-        {
-            //TODO
-        }
     }
 
     public void OnGUI()
@@ -70,7 +61,7 @@ public class FunctionGraphEditor : EditorWindow
         {
             for (int i = nodesList.Count-1 ; i  >= 0; i--)
             {
-                bool guiChanged = nodesList[i].ProcessEvents(e);
+                bool guiChanged = nodesList[i].ProcessEvent(e);
                 if (guiChanged)//don't set directly to guiChanged cause we don't wanna set it flase
                     GUI.changed = true;
             }
@@ -122,40 +113,5 @@ public class FunctionGraphEditor : EditorWindow
     {
         nodes.Remove(functionGraphEditorNode.Node);
         nodesList.Remove(functionGraphEditorNode);
-    }
-
-    public FuncGraphEditorConnectionPointSettings GetSettingsForConnectionPoint(ConnectionPoint.ConnectionPointType pointType, BaseFuncGraphNode node)
-    {
-        switch (pointType)
-        {
-            case ConnectionPoint.ConnectionPointType.InMultiple:
-                if (nodeSettings.ContainsKey(node.GetType()))
-                {
-                    return nodeSettings[node.GetType()].InSetting;
-                }
-                return defaultNodeSetting.InSetting;
-            case ConnectionPoint.ConnectionPointType.InSingle:
-                if (nodeSettings.ContainsKey(node.GetType()))
-                {
-                    return nodeSettings[node.GetType()].InSetting;
-                }
-                return defaultNodeSetting.InSetting;
-            case ConnectionPoint.ConnectionPointType.Out:
-                if (nodeSettings.ContainsKey(node.GetType()))
-                {
-                    return nodeSettings[node.GetType()].OutSetting;
-                }
-                return defaultNodeSetting.OutSetting;
-        }
-        return null;
-    }
-
-    internal FuncGraphEditorNodeSettings GetSettingsForNode(BaseFuncGraphNode node)
-    {
-        if (nodeSettings.ContainsKey(node.GetType()))
-        {
-            return nodeSettings[node.GetType()];
-        }
-        return defaultNodeSetting;
     }
 }

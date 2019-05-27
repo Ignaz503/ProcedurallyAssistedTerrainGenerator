@@ -14,12 +14,12 @@ public class FunctionGraphEditorNode
 
     List<ConnectionPoint> connectionPoints;
 
-    public FunctionGraphEditorNode(Vector2 creationPosition, BaseFuncGraphNode node, FunctionGraphEditor editor)
+    public FunctionGraphEditorNode(Vector2 creationPosition, BaseFuncGraphNode node, FunctionGraphEditor editor,FunctionGraphEditorNodeLayout layout)
     {
         editorBelongingTo = editor;
         Node = node;
         connectionPoints = new List<ConnectionPoint>();
-        CreateNodeDrawable(creationPosition);
+        CreateNodeDrawable(creationPosition,layout);
     }
     
     public virtual void Draw()
@@ -105,9 +105,21 @@ public class FunctionGraphEditorNode
         Node = null;
     }
 
-    public virtual bool ProcessEvents(Event e)
+    public  bool ProcessEvent(Event e)
     {
-        throw new NotImplementedException();
+        bool change = false;
+        for (int i = 0; i < connectionPoints.Count; i++)
+        {
+            bool ret = connectionPoints[i].ProcessEvent(e);
+            if (ret)//don't want to set to false
+                change = ret;
+        }
+        return change || ProvessEventForNode(e);
+    }
+
+    protected virtual bool ProvessEventForNode(Event e)
+    {
+        return false;
     }
 
     public void DeleteConnection()
@@ -119,47 +131,70 @@ public class FunctionGraphEditorNode
         }
     }
 
-    public virtual void CreateNodeDrawable(Vector2 creationPosition)
+    public virtual void CreateNodeDrawable(Vector2 creationPosition,FunctionGraphEditorNodeLayout layout)
     {
         //one out conn point
-        FuncGraphEditorNodeSettings settings = editorBelongingTo.GetSettingsForNode(Node);
-        style = settings.Style;
-        Rect = new Rect(creationPosition, new Vector2(settings.Width,settings.Height));
+        Rect = new Rect(creationPosition, new Vector2(layout.Width, layout.Height));
+        style = layout.Style;
 
-        //create out conneciton
-        CreateOutPoint();
-
-
-        //TODO Place in points
-        CreatInPoints();
+        //create connection points
+        CreateConnectionPoints(layout);
     }
 
-    private void CreatInPoints()
+    private void CreateConnectionPoints(FunctionGraphEditorNodeLayout layout)
     {
-        //TODO
+        //loop over all set create type and set offset rect correctly
+
+        for (int i = 0; i < layout.ConnectionPointCount; i++)
+        {
+            FunctionGraphEditorNodeLayout.ConnectionPointInfo info = layout[i];
+
+            //figure out width and height
+            Vector2 size = new Vector2(layout.Width * info.Width, layout.Height * info.Height);
+
+            //figure out offset
+            Vector2 offset = new Vector2(layout.Width,layout.Height);
+            offset.Scale(new Vector2(info.UVx, info.UVy));
+            offset -= size * .5f;
+
+            //add point
+            if (info.Type == ConnectionPoint.ConnectionPointType.Out)
+            {
+                connectionPoints.Add(
+                    new ConnectionPoint(
+                        info.Type,
+                        this,
+                        new Rect(offset, size),
+                        info.Style,
+                        OnOutConnectionPointClick
+                        ));
+            }
+            else
+            {
+                connectionPoints.Add(
+                    new ConnectionPoint(
+                        info.Type,
+                        this,
+                        new Rect(offset, size),
+                        info.Style,
+                        OnInConnectionPointClick
+                        ));
+            }
+        }
+
     }
-
-    void CreateOutPoint()
-    {
-        //middle top
-        FuncGraphEditorConnectionPointSettings outPointSettings = editorBelongingTo.GetSettingsForConnectionPoint(ConnectionPoint.ConnectionPointType.Out, Node);
-
-        Rect outPointOffsetRect = new Rect(0, 0, outPointSettings.Width, outPointSettings.Height);
-
-        outPointOffsetRect.y = (Rect.height * .5f) - outPointSettings.Height * .5f;
-        outPointOffsetRect.x = (Rect.width * .5f) - outPointSettings.Width * .5f;
-
-        connectionPoints.Add(new ConnectionPoint(ConnectionPoint.ConnectionPointType.Out, this, outPointOffsetRect, outPointSettings.Style, OnOutConnectionPointClick));
-    }
+    
 
     void OnOutConnectionPointClick(FunctionGraphEditorNode n)
     {
         //TODO 
+        Debug.Log("Out ConPoint Clicked");
     }
 
     void OnInConnectionPointClick(FunctionGraphEditorNode n)
     {
         //TODO
+        Debug.Log("In Con Point Clicked");
     }
 
 

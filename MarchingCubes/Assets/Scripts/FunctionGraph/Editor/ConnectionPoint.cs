@@ -50,4 +50,10 @@ public class ConnectionPoint
     {
         nodeBelongingTo = null;
     }
+
+    public bool ProcessEvent(Event e)
+    {
+        //throw new NotImplementedException();
+        return false;
+    }
 }
