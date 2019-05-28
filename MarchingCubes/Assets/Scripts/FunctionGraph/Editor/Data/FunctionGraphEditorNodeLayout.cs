@@ -6,16 +6,35 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Function Graph Editor/ Node Layout")]
 public class FunctionGraphEditorNodeLayout : ScriptableObject
 {
+    public enum ListType
+    {
+        In,
+        Out
+    }
+
     public GUIStyle Style;
     public float Width;
     public float Height;
-    public List<ConnectionPointInfo> connectionPointsInfo;
-    public int ConnectionPointCount { get { return connectionPointsInfo.Count; } }
-    
-    [Serializable]
-    public struct ConnectionPointInfo
+    public List<InConnectionPointInfo> InConnectionPointsInfo;
+    public int InConnectionPointCount { get { return InConnectionPointsInfo.Count; } }
+    public List<OutConnectionPointInfo> OutConnectionPointsInfo;
+    public int OutConnectionPointCount { get { return OutConnectionPointsInfo.Count; } }
+
+    public ConnectionPointInfo this[ListType list, int idx]
     {
-        public ConnectionPoint.ConnectionPointType Type;
+        get
+        {
+            if (list == ListType.In)
+                return InConnectionPointsInfo[idx];
+            else
+                return OutConnectionPointsInfo[idx];
+        }
+    }
+
+    [Serializable]
+    public abstract class ConnectionPointInfo
+    {
+        public virtual ConnectionPoint.ConnectionPointType Type { get; }
 
         [Range(0f, 1f)] public float UVx;
         [Range(0f, 1f)] public float UVy;
@@ -26,11 +45,23 @@ public class FunctionGraphEditorNodeLayout : ScriptableObject
         public GUIStyle Style;
     }
 
-    public ConnectionPointInfo this[int i]
+    [Serializable]
+    public class InConnectionPointInfo : ConnectionPointInfo
     {
-        get
+        public enum ConnectionType
         {
-            return connectionPointsInfo[i];
+            Single,
+            Multiple
         }
+        [SerializeField] ConnectionType type;
+
+        public override ConnectionPoint.ConnectionPointType Type { get { return (ConnectionPoint.ConnectionPointType)((int)type + 1); } }
     }
+
+    [Serializable]
+    public class OutConnectionPointInfo : ConnectionPointInfo
+    {
+        public override ConnectionPoint.ConnectionPointType Type { get { return ConnectionPoint.ConnectionPointType.Out; } }
+    }
+
 }

@@ -81,18 +81,17 @@ MonoBehaviour:
     m_StretchHeight: 0
   Width: 100
   Height: 100
-  connectionPointsInfo:
-  - Type: 0
-    UVx: 0.5
-    UVy: 0
-    Width: 0.25
+  InConnectionPointsInfo:
+  - UVx: 0.5
+    UVy: 1
+    Width: 0.75
     Height: 0.25
     Style:
       m_Name: 
       m_Normal:
         m_Background: {fileID: 2800000, guid: 4d89626b06b2d8f4abefbbb9d4aa108a, type: 3}
         m_ScaledBackgrounds: []
-        m_TextColor: {r: 0, g: 0, b: 0, a: 0}
+        m_TextColor: {r: 1, g: 1, b: 1, a: 1}
       m_Hover:
         m_Background: {fileID: 0}
         m_ScaledBackgrounds: []
@@ -141,10 +140,10 @@ MonoBehaviour:
         m_Right: 0
         m_Top: 0
         m_Bottom: 0
-      m_Font: {fileID: 0}
+      m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
       m_FontSize: 0
       m_FontStyle: 0
-      m_Alignment: 0
+      m_Alignment: 4
       m_WordWrap: 0
       m_RichText: 0
       m_TextClipping: 0
@@ -154,17 +153,18 @@ MonoBehaviour:
       m_FixedHeight: 0
       m_StretchWidth: 0
       m_StretchHeight: 0
-  - Type: 2
-    UVx: 0.5
-    UVy: 1
-    Width: 0.75
+    type: 1
+  OutConnectionPointsInfo:
+  - UVx: 0.5
+    UVy: 0
+    Width: 0.25
     Height: 0.25
     Style:
       m_Name: 
       m_Normal:
         m_Background: {fileID: 2800000, guid: 4d89626b06b2d8f4abefbbb9d4aa108a, type: 3}
         m_ScaledBackgrounds: []
-        m_TextColor: {r: 0, g: 0, b: 0, a: 0}
+        m_TextColor: {r: 1, g: 1, b: 1, a: 1}
       m_Hover:
         m_Background: {fileID: 0}
         m_ScaledBackgrounds: []
@@ -213,10 +213,10 @@ MonoBehaviour:
         m_Right: 0
         m_Top: 0
         m_Bottom: 0
-      m_Font: {fileID: 0}
+      m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
       m_FontSize: 0
       m_FontStyle: 0
-      m_Alignment: 0
+      m_Alignment: 4
       m_WordWrap: 0
       m_RichText: 0
       m_TextClipping: 0
