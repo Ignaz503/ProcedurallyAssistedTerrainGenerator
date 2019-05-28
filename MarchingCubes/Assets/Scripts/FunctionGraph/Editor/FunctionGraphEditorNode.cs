@@ -190,6 +190,4 @@ public class FunctionGraphEditorNode
         Debug.Log($"In Con Point {idx} Clicked");
     }
 
-
-
 }

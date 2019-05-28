@@ -15,6 +15,12 @@ public class FunctionGraphEditorNodeLayout : ScriptableObject
     public GUIStyle Style;
     public float Width;
     public float Height;
+
+    public Vector2 Size
+    {
+        get{ return new Vector2(Width, Height); }
+    }
+
     public List<InConnectionPointInfo> InConnectionPointsInfo;
     public int InConnectionPointCount { get { return InConnectionPointsInfo.Count; } }
     public List<OutConnectionPointInfo> OutConnectionPointsInfo;

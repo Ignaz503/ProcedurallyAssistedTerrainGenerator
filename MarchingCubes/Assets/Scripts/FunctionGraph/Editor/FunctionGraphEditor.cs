@@ -17,6 +17,7 @@ public class FunctionGraphEditor : EditorWindow
 
     FunctionGraph graph;
 
+    [SerializeField] FunctionGraphEditorSettings settings;
     public Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode> nodes;
     List<FunctionGraphEditorNode> nodesList;
     List<ConnectionToDraw> connectionsToDraw;
@@ -29,15 +30,17 @@ public class FunctionGraphEditor : EditorWindow
         nodesList = new List<FunctionGraphEditorNode>();
 
         nodes = new Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode>();
-        LoadSettings();
+        //LoadSettings();
     }
 
-    private void LoadSettings()
-    {
-    }
+    //private void LoadSettings()
+    //{
+    //}
 
     public void OnGUI()
     {
+        if (nodesList != null)
+            Debug.Log(nodesList.Count);
         //clear old connections
         connectionsToDraw.Clear();
         //DO STUFF
@@ -46,13 +49,33 @@ public class FunctionGraphEditor : EditorWindow
         DrawConnections();
 
         ProcessNodeEvents(Event.current);
-        ProcessEvent(Event.current);
-        if (GUI.changed) Repaint();
+        bool changed = ProcessEvent(Event.current);
+        if (GUI.changed || changed) Repaint();
     }
 
-    private void ProcessEvent(Event e)
+    private bool ProcessEvent(Event e)
     {
-        throw new NotImplementedException();
+        switch (e.type)
+        {
+            case EventType.MouseDown:
+                if (e.button == 0)
+                {
+                    CreateNode(e.mousePosition);
+                    return true;
+                }
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
+
+    private void CreateNode(Vector2 mousePosition)
+    {
+        var n = new ConstantNode(graph);
+        var layout = settings.GetLayout(n);
+        Vector2 pos = mousePosition - layout.Size*.5f;
+        AddNode(new FunctionGraphEditorNode(pos, n, this, layout));
     }
 
     private void ProcessNodeEvents(Event e)

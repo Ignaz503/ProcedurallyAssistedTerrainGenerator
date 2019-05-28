@@ -27,6 +27,7 @@ public class ConnectionPoint
 
         this.nodeBelongingTo = nodeBelongingTo ?? throw new ArgumentNullException(nameof(nodeBelongingTo));
         OnConnectionPointClick = onConnectionPointClick ?? throw new ArgumentNullException(nameof(onConnectionPointClick));
+        this.style = style;
     }
 
     public void Draw()
