@@ -6,7 +6,7 @@ public class ConstantNode : BaseFuncGraphNode
 {
     public override string ShortDescription { get { return "Const"; } }
 
-    [SerializeField] float constant;
+    [SerializeField] protected float constant;
 
     public ConstantNode(FunctionGraph g):base(g)
     {}
