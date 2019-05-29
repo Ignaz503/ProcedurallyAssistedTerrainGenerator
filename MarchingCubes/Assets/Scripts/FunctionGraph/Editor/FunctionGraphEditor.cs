@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 
-public class FunctionGraphEditor : EditorWindow
+public partial class FunctionGraphEditor : EditorWindow
 {
     [MenuItem("Window/Function Graph Editor")]
     private static void OpenWindow()
@@ -21,6 +21,7 @@ public class FunctionGraphEditor : EditorWindow
     public Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode> nodes;
     List<FunctionGraphEditorNode> nodesList;
     List<ConnectionToDraw> connectionsToDraw;
+    ClickedNodesTracker clickedNodeTracer;
     
     public void Initialize()
     {
@@ -28,6 +29,7 @@ public class FunctionGraphEditor : EditorWindow
         connectionsToDraw = new List<ConnectionToDraw>();
         
         nodesList = new List<FunctionGraphEditorNode>();
+        clickedNodeTracer = new ClickedNodesTracker();
 
         nodes = new Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode>();
         //LoadSettings();
@@ -108,6 +110,8 @@ public class FunctionGraphEditor : EditorWindow
     {
         nodes.Add(node.Node, node);
         nodesList.Add(node);
+        node.OnInConnectionPointClicked += OnInConnectionPointClicked;
+        node.OnOutConnectionPointClicked += OnOutConnectionPointClicked;
     }
 
     public FunctionGraphEditorNode GetNode(BaseFuncGraphNode n)
@@ -147,5 +151,18 @@ public class FunctionGraphEditor : EditorWindow
 
         genericMenu.ShowAsContext();
     }
+
+    public void OnOutConnectionPointClicked(FunctionGraphEditorNode node, ConnectionPoint point, int nodeChildIdx)
+    {
+        clickedNodeTracer.SetOutNode(node, point, nodeChildIdx);
+
+    }
+
+    public void OnInConnectionPointClicked(FunctionGraphEditorNode node, ConnectionPoint point, int nodeChildIdx)
+    {
+        clickedNodeTracer.SetInNode(node, point, nodeChildIdx);
+    }
+
+
 
 }

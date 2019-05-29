@@ -15,11 +15,11 @@ public class ConnectionPoint
     GUIStyle style;
 
     FunctionGraphEditorNode nodeBelongingTo;
-    Action<int> OnConnectionPointClick;
+    Action<ConnectionPoint,int> OnConnectionPointClick;
     Rect offsetRect;
     int idx;
 
-    public ConnectionPoint(ConnectionPointType pointType,int idx, FunctionGraphEditorNode nodeBelongingTo,Rect offsetRect, GUIStyle style, Action<int> onConnectionPointClick)
+    public ConnectionPoint(ConnectionPointType pointType,int idx, FunctionGraphEditorNode nodeBelongingTo,Rect offsetRect, GUIStyle style, Action<ConnectionPoint, int> onConnectionPointClick)
     {
         PointType = pointType;
         this.idx = idx;
@@ -36,7 +36,7 @@ public class ConnectionPoint
 
         if (GUI.Button(r, "", style))
         {
-            OnConnectionPointClick?.Invoke(idx);
+            OnConnectionPointClick?.Invoke(this,idx);
             if (PointType == ConnectionPointType.InMultiple)
                 idx++;
         }

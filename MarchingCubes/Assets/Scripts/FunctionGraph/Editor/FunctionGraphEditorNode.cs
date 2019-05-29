@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class FunctionGraphEditorNode
 {
-    public event Action<FunctionGraphEditorNode, int> OnInConnectionPointClicked;
-    public event Action<FunctionGraphEditorNode, int> OnOutConnectionPointClicked;
+    public event Action<FunctionGraphEditorNode,ConnectionPoint, int> OnInConnectionPointClicked;
+    public event Action<FunctionGraphEditorNode,ConnectionPoint, int> OnOutConnectionPointClicked;
     
     public BaseFuncGraphNode Node { get; protected set; }
     FunctionGraphEditor editorBelongingTo;
@@ -146,12 +146,12 @@ public class FunctionGraphEditorNode
 
     private void CreateConnectionPoints(FunctionGraphEditorNodeLayout layout)
     {
-        CreateConnectionPoints(layout.Width, layout.Height, layout, FunctionGraphEditorNodeLayout.ListType.In, OnInConnectionPointClick);
-
         CreateConnectionPoints(layout.Width, layout.Height, layout , FunctionGraphEditorNodeLayout.ListType.Out, OnOutConnectionPointClick);
+
+        CreateConnectionPoints(layout.Width, layout.Height, layout, FunctionGraphEditorNodeLayout.ListType.In, OnInConnectionPointClick);
     }
 
-    private void CreateConnectionPoints(float width, float height, FunctionGraphEditorNodeLayout layout,FunctionGraphEditorNodeLayout.ListType list, Action<int> onClick)
+    private void CreateConnectionPoints(float width, float height, FunctionGraphEditorNodeLayout layout,FunctionGraphEditorNodeLayout.ListType list, Action<ConnectionPoint,int> onClick)
     {
         int count = (list == 0) ? layout.InConnectionPointCount : layout.OutConnectionPointCount;
         //loop over all set create type and set offset rect correctly
@@ -181,20 +181,20 @@ public class FunctionGraphEditorNode
 
     }
 
-    void OnOutConnectionPointClick(int idx)
+    void OnOutConnectionPointClick(ConnectionPoint conP,int nodeChildIdx)
     {
         //TODO 
-        Debug.Log($"Out Con Point {idx} Clicked");
+        Debug.Log($"Out Con Point {nodeChildIdx} Clicked");
         //TODO: realay event
-        OnOutConnectionPointClicked?.Invoke(this, idx);
+        OnOutConnectionPointClicked?.Invoke(this, conP, nodeChildIdx);
     }
 
-    void OnInConnectionPointClick(int idx)
+    void OnInConnectionPointClick(ConnectionPoint conP, int nodeChildIndex)
     {
         //TODO
-        Debug.Log($"In Con Point {idx} Clicked");
+        Debug.Log($"In Con Point {nodeChildIndex} Clicked");
         //TODO realay event
-        OnInConnectionPointClicked?.Invoke(this, idx);
+        OnInConnectionPointClicked?.Invoke(this, conP,nodeChildIndex);
     }
 
 }

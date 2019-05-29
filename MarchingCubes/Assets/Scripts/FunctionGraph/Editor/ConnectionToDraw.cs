@@ -2,11 +2,11 @@
 
 public class ConnectionToDraw
 {
-    public Vector2 from;
-    public Vector2 to;
-
     public FunctionGraphEditorNode fromNode;
     public FunctionGraphEditorNode toNode;
+
+    public ConnectionPoint fromPoint;
+    public ConnectionPoint toPoint;
 
     public void Draw()
     {
