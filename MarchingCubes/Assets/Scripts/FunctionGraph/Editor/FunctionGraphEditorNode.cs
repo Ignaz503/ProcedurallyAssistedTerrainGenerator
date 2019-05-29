@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class FunctionGraphEditorNode
 {
+    public event Action<FunctionGraphEditorNode, int> OnInConnectionPointClicked;
+    public event Action<FunctionGraphEditorNode, int> OnOutConnectionPointClicked;
+    
     public BaseFuncGraphNode Node { get; protected set; }
     FunctionGraphEditor editorBelongingTo;
     public FunctionGraphEditor Editor { get { return editorBelongingTo; } }
@@ -183,6 +186,7 @@ public class FunctionGraphEditorNode
         //TODO 
         Debug.Log($"Out Con Point {idx} Clicked");
         //TODO: realay event
+        OnOutConnectionPointClicked?.Invoke(this, idx);
     }
 
     void OnInConnectionPointClick(int idx)
@@ -190,6 +194,7 @@ public class FunctionGraphEditorNode
         //TODO
         Debug.Log($"In Con Point {idx} Clicked");
         //TODO realay event
+        OnInConnectionPointClicked?.Invoke(this, idx);
     }
 
 }

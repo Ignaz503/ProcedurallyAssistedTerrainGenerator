@@ -20,7 +20,7 @@ public class FunctionGraphEditorSettingsEditor : Editor
 
         if (GUILayout.Button("Reset"))
         {
-            tar.Remap();
+            tar.Reset();
         }
 
     }

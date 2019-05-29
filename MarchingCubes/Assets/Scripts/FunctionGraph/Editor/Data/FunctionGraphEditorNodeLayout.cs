@@ -37,6 +37,22 @@ public class FunctionGraphEditorNodeLayout : ScriptableObject
         }
     }
 
+    public void Draw(Rect r, ConnectionPointInfo info, int i = -1)
+    {
+        //figure out width and height
+        Vector2 size = new Vector2(r.width * info.Width, r.height * info.Height);
+
+        //figure out offset
+        Vector2 offset = new Vector2(r.width, r.height);
+        offset.Scale(new Vector2(info.UVx, info.UVy));
+        offset -= size * .5f;
+        Rect rP = new Rect(offset, size);
+        rP.position += r.position;
+
+        string s = i != -1 ? $"{i}":"";
+        GUI.Box(rP, s, info.Style);
+    }
+
     [Serializable]
     public abstract class ConnectionPointInfo
     {
@@ -59,7 +75,7 @@ public class FunctionGraphEditorNodeLayout : ScriptableObject
             Single,
             Multiple
         }
-        [SerializeField] ConnectionType type;
+        [SerializeField] ConnectionType type = ConnectionType.Single;
 
         public override ConnectionPoint.ConnectionPointType Type { get { return (ConnectionPoint.ConnectionPointType)((int)type + 1); } }
     }

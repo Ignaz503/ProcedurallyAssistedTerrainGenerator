@@ -28,31 +28,18 @@ public class NodeLayoutEditor : Editor
             
             for (int i = 0; i < tar.InConnectionPointCount; i++)
             {
-                Draw(r, tar.InConnectionPointsInfo[i], i);
+                tar.Draw(r, tar.InConnectionPointsInfo[i], i);
             }
         }
         if (tar.OutConnectionPointsInfo != null)
         {
             for (int i = 0; i < tar.OutConnectionPointCount; i++)
             {
-                Draw(r, tar.OutConnectionPointsInfo[i], i);
+                tar.Draw(r, tar.OutConnectionPointsInfo[i], i);
             }
         }
 
     }
 
-    void Draw(Rect r, FunctionGraphEditorNodeLayout.ConnectionPointInfo info, int i)
-    {
-        //figure out width and height
-        Vector2 size = new Vector2(r.width * info.Width, r.height * info.Height);
 
-        //figure out offset
-        Vector2 offset = new Vector2(r.width, r.height);
-        offset.Scale(new Vector2(info.UVx, info.UVy));
-        offset -= size * .5f;
-        Rect rP = new Rect(offset, size);
-        rP.position += r.position;
-
-        GUI.Box(rP, $"{i}", info.Style);
-    }
 }

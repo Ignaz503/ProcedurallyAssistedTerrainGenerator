@@ -1,10 +1,23 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Linq;
 using UnityEngine;
 
 public abstract class BaseFuncGraphNode : IFuncGraphNode
 {
+    static IEnumerable<Type> _instantiableTypes;
+    public static IEnumerable<Type> InstantiableNodeTypes
+    {
+        get
+        {
+            if(_instantiableTypes == null)
+                _instantiableTypes =  Assembly.GetAssembly(typeof(BaseFuncGraphNode)).GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(BaseFuncGraphNode)));
+            return _instantiableTypes;
+        }
+    }
+
     //TODO added function for drawing in editor and so on
     //same as eventHandling 
 

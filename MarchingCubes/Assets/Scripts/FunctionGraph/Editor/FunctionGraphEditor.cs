@@ -17,7 +17,7 @@ public class FunctionGraphEditor : EditorWindow
 
     FunctionGraph graph;
 
-    [SerializeField] FunctionGraphEditorSettings settings;
+    [SerializeField] FunctionGraphEditorSettings settings = null;
     public Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode> nodes;
     List<FunctionGraphEditorNode> nodesList;
     List<ConnectionToDraw> connectionsToDraw;
@@ -39,8 +39,6 @@ public class FunctionGraphEditor : EditorWindow
 
     public void OnGUI()
     {
-        if (nodesList != null)
-            Debug.Log(nodesList.Count);
         //clear old connections
         connectionsToDraw.Clear();
         //DO STUFF
@@ -60,7 +58,7 @@ public class FunctionGraphEditor : EditorWindow
             case EventType.MouseDown:
                 if (e.button == 0)
                 {
-                    CreateNode(e.mousePosition);
+                    ProcessRightClickContextMenu(e);
                     return true;
                 }
                 break;
@@ -70,9 +68,8 @@ public class FunctionGraphEditor : EditorWindow
         return false;
     }
 
-    private void CreateNode(Vector2 mousePosition)
+    private void CreateNode(Vector2 mousePosition, BaseFuncGraphNode n)
     {
-        var n = new ConstantNode(graph);
         var layout = settings.GetLayout(n);
         Vector2 pos = mousePosition - layout.Size*.5f;
         AddNode(new FunctionGraphEditorNode(pos, n, this, layout));
@@ -137,4 +134,18 @@ public class FunctionGraphEditor : EditorWindow
         nodes.Remove(functionGraphEditorNode.Node);
         nodesList.Remove(functionGraphEditorNode);
     }
+
+    public void ProcessRightClickContextMenu(Event e)
+    {
+        GenericMenu genericMenu = new GenericMenu();
+        //genericMenu.AddItem(new GUIContent("Add Node"), false, () => OnClickAddNode(e.mousePosition));
+        foreach (var type in BaseFuncGraphNode.InstantiableNodeTypes)
+        {
+            var node = FuncGraphNodeFactory.CreateNode(type, graph);
+            genericMenu.AddItem(new GUIContent($"{node.ShortDescription}"), false, () => CreateNode(e.mousePosition, node));
+        }
+
+        genericMenu.ShowAsContext();
+    }
+
 }
