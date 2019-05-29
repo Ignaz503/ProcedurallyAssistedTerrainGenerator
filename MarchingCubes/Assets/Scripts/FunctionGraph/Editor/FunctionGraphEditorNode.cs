@@ -148,7 +148,7 @@ public class FunctionGraphEditorNode
         CreateConnectionPoints(layout.Width, layout.Height, layout , FunctionGraphEditorNodeLayout.ListType.Out, OnOutConnectionPointClick);
     }
 
-    private void CreateConnectionPoints(float width, float height, FunctionGraphEditorNodeLayout layout,FunctionGraphEditorNodeLayout.ListType list, Action<FunctionGraphEditorNode,int> onClick)
+    private void CreateConnectionPoints(float width, float height, FunctionGraphEditorNodeLayout layout,FunctionGraphEditorNodeLayout.ListType list, Action<int> onClick)
     {
         int count = (list == 0) ? layout.InConnectionPointCount : layout.OutConnectionPointCount;
         //loop over all set create type and set offset rect correctly
@@ -178,16 +178,18 @@ public class FunctionGraphEditorNode
 
     }
 
-    void OnOutConnectionPointClick(FunctionGraphEditorNode n, int idx)
+    void OnOutConnectionPointClick(int idx)
     {
         //TODO 
         Debug.Log($"Out Con Point {idx} Clicked");
+        //TODO: realay event
     }
 
-    void OnInConnectionPointClick(FunctionGraphEditorNode n, int idx)
+    void OnInConnectionPointClick(int idx)
     {
         //TODO
         Debug.Log($"In Con Point {idx} Clicked");
+        //TODO realay event
     }
 
 }
