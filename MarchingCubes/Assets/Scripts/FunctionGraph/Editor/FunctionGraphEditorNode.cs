@@ -41,10 +41,11 @@ public class FunctionGraphEditorNode
         CreateNodeDrawable(creationPosition,layout);
     }
     
-    public virtual void Draw()
+    public void Draw()
     {
         //todo: draw rect
-        GUI.Box(Rect, GraphNode.ShortDescription,style);
+        DrawNode();
+
 
         //draw connection points
         for (int i = 0; i < connectionPoints.Count; i++)
@@ -60,6 +61,10 @@ public class FunctionGraphEditorNode
         }
     }
 
+    protected virtual void DrawNode()
+    {
+        GUI.Box(Rect, GraphNode.ShortDescription, style);
+    }
 
     public void CreateConnection(FunctionGraphEditorNode to, int idx, ConnectionPoint fromPoint, ConnectionPoint toPoint)
     {
@@ -174,9 +179,14 @@ public class FunctionGraphEditorNode
         GenericMenu menu = new GenericMenu();
 
         menu.AddItem(new GUIContent("Remove"), false, () => DeleteNode());
-       
+        menu.AddItem(new GUIContent("Set As Evaluation Start Point"), false,() => MakeNodeEvaluationStartPoint());
 
         menu.ShowAsContext();
+    }
+
+    void MakeNodeEvaluationStartPoint()
+    {
+        GraphNode.Graph.RootNode = GraphNode;
     }
 
     public void DeleteConnection()

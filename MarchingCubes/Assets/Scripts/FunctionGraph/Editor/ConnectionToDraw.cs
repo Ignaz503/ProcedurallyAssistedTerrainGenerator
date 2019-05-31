@@ -35,6 +35,8 @@ public class ConnectionToDraw
              null,
              2f
          );
+        DrawHandle(startPos,endPos);
+       
     }
 
     Rect CalculateRectFromOffsetRectAndParent(Rect parent, Rect offsetRect)
@@ -42,6 +44,14 @@ public class ConnectionToDraw
         Rect r = offsetRect;
         r.position += parent.position;
         return r;
+    }
+
+    void DrawHandle(Vector2 startPos, Vector2 endPos)
+    {
+        if (Handles.Button(Vector3.Lerp(startPos, endPos, .5f), Quaternion.identity, 4f, 8f, Handles.RectangleHandleCap))     
+        {
+            fromNode.DeleteConnection();
+        }
     }
 
 }
