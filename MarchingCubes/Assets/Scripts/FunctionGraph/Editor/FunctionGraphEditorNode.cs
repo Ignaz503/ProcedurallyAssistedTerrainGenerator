@@ -2,25 +2,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class FunctionGraphEditorNode
 {
     public event Action<FunctionGraphEditorNode,ConnectionPoint, int> OnInConnectionPointClicked;
     public event Action<FunctionGraphEditorNode,ConnectionPoint, int> OnOutConnectionPointClicked;
     
-    public BaseFuncGraphNode Node { get; protected set; }
+    public BaseFuncGraphNode GraphNode { get; protected set; }
     FunctionGraphEditor editorBelongingTo;
     public FunctionGraphEditor Editor { get { return editorBelongingTo; } }
-    public Rect Rect { get; protected set; }
+
+    Rect rect;
+    public Rect Rect
+    {
+        get
+        {
+            return rect;
+        }
+        set
+        {
+            rect = value;
+        }
+    }
+
     ConnectionToDraw conToDraw;
     GUIStyle style;
+
+    public bool isDragged;
 
     List<ConnectionPoint> connectionPoints;
 
     public FunctionGraphEditorNode(Vector2 creationPosition, BaseFuncGraphNode node, FunctionGraphEditor editor,FunctionGraphEditorNodeLayout layout)
     {
         editorBelongingTo = editor;
-        Node = node;
+        GraphNode = node;
         connectionPoints = new List<ConnectionPoint>();
         CreateNodeDrawable(creationPosition,layout);
     }
@@ -28,7 +44,7 @@ public class FunctionGraphEditorNode
     public virtual void Draw()
     {
         //todo: draw rect
-        GUI.Box(Rect, Node.ShortDescription,style);
+        GUI.Box(Rect, GraphNode.ShortDescription,style);
 
         //draw connection points
         for (int i = 0; i < connectionPoints.Count; i++)
@@ -36,33 +52,27 @@ public class FunctionGraphEditorNode
             connectionPoints[i].Draw();
         }
 
-        if (Node.HasParent)
-        { 
+        if (GraphNode.HasParent)
+        {
             //wehn we set the parent we need to update the conn to draw object
             //todo: Draw connection and so on
             editorBelongingTo.AddConnectionToDraw(conToDraw);     
         }
     }
 
-    public virtual void HandleEvent(Event e)
-    {
-        //TODO event handling
-        //create connection
-        //connections point handling
-    }
 
-    public void CreateConnection(FunctionGraphEditorNode to, int idx)
+    public void CreateConnection(FunctionGraphEditorNode to, int idx, ConnectionPoint fromPoint, ConnectionPoint toPoint)
     {
         // set parent
-        Node.ParentTo(to.Node, idx);
+        GraphNode.ParentTo(to.GraphNode, idx);
 
         //create con ToDraw
-        CreateConnectionDrawable();
+        CreateConnectionDrawable(to,fromPoint,toPoint);
     }
 
-    private void CreateConnectionDrawable()
+    private void CreateConnectionDrawable(FunctionGraphEditorNode to,ConnectionPoint fromPoint, ConnectionPoint toPoint)
     {
-        
+        conToDraw = new ConnectionToDraw(this, to, fromPoint, toPoint);   
     }
 
     private void RemoveConnectionToDrawDrawable()
@@ -76,27 +86,31 @@ public class FunctionGraphEditorNode
 
     public void DeleteNode()
     {
-        //
-        if (Node.HasParent)
+        if (GraphNode.HasParent)
         {
-            Node.UncoupleFromParent();
+            GraphNode.UncoupleFromParent();
             editorBelongingTo.RemoveConnection(conToDraw);
             conToDraw = null;
         }
-        if(Node is ParentableNode)
+
+        if(GraphNode is ParentableNode)
         {
-            var n = Node as ParentableNode;
+            var n = GraphNode as ParentableNode;
 
             //unset con to draw for all child nodes
             foreach (BaseFuncGraphNode node  in n)
             {
-                var editorNode = editorBelongingTo.GetNode(node);
-                editorNode.RemoveConnectionToDrawDrawable();
+                if (node != null)
+                {
+                    var editorNode = editorBelongingTo.GetNode(node);
+                    editorNode.RemoveConnectionToDrawDrawable();
+                }
             }
 
             //make sure to unset all children
             n.RemoveAllChildren();
         }
+
         //probably not necessary
         // but maybe avoid circular reference and no garbage collection
         for (int i = 0; i < connectionPoints.Count; i++)
@@ -105,31 +119,71 @@ public class FunctionGraphEditorNode
         }
         //inform graph
         editorBelongingTo.RemoveNode(this);
-        Node = null;
+        GraphNode = null;
     }
 
     public  bool ProcessEvent(Event e)
     {
-        bool change = false;
-        for (int i = 0; i < connectionPoints.Count; i++)
+        if (Rect.Contains(e.mousePosition))
         {
-            bool ret = connectionPoints[i].ProcessEvent(e);
-            if (ret)//don't want to set to false
-                change = ret;
+            return ProvessEventForNode(e);
         }
-        return change || ProvessEventForNode(e);
+        return false;
     }
 
     protected virtual bool ProvessEventForNode(Event e)
     {
+        //we know there is a button click
+        switch (e.type)
+        {
+            case EventType.MouseDown:
+                if (e.button == 1)
+                {
+                    e.Use();
+                    ShowNodeGenericMenu();
+                }
+                if (e.button == 0)
+                {
+                    //start drag
+                    isDragged = true;
+                    GUI.changed = true;
+                }
+                break;
+            case EventType.MouseUp:
+                isDragged = false;
+                break;
+            case EventType.MouseDrag:
+                if (e.button == 0 && isDragged)
+                {
+                    Drag(e.delta);
+                    e.Use();
+                    return true;
+                }
+                break;
+        }
         return false;
+    }
+
+    private void Drag(Vector2 delta)
+    {
+        rect.position += delta;
+    }
+
+    private void ShowNodeGenericMenu()
+    {
+        GenericMenu menu = new GenericMenu();
+
+        menu.AddItem(new GUIContent("Remove"), false, () => DeleteNode());
+       
+
+        menu.ShowAsContext();
     }
 
     public void DeleteConnection()
     {
-        if (Node.HasParent)
+        if (GraphNode.HasParent)
         {
-            Node.UnsetParent();
+            GraphNode.UnsetParent();
             RemoveConnectionToDrawDrawable();
         }
     }
@@ -183,16 +237,12 @@ public class FunctionGraphEditorNode
 
     void OnOutConnectionPointClick(ConnectionPoint conP,int nodeChildIdx)
     {
-        //TODO 
-        Debug.Log($"Out Con Point {nodeChildIdx} Clicked");
         //TODO: realay event
         OnOutConnectionPointClicked?.Invoke(this, conP, nodeChildIdx);
     }
 
     void OnInConnectionPointClick(ConnectionPoint conP, int nodeChildIndex)
     {
-        //TODO
-        Debug.Log($"In Con Point {nodeChildIndex} Clicked");
         //TODO realay event
         OnInConnectionPointClicked?.Invoke(this, conP,nodeChildIndex);
     }

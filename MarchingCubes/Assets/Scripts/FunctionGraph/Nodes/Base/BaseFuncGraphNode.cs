@@ -81,17 +81,17 @@ public abstract class BaseFuncGraphNode : IFuncGraphNode
         return n == this;
     }
 
-    public bool LoopCheck(BaseFuncGraphNode potentialCild)
+    public bool HasLoopCheck(BaseFuncGraphNode potentialCild)
     {
-        return LoopCheckVisitParent(potentialCild);
+        return HasLoopCheckVisitParent(potentialCild);
     }
 
-    protected virtual bool LoopCheckVisitParent(BaseFuncGraphNode potentialCild)
+    protected virtual bool HasLoopCheckVisitParent(BaseFuncGraphNode potentialCild)
     {
         if (potentialCild == parent)
             return true;
         else if (parent != null)
-            return parent.LoopCheck(potentialCild);
+            return parent.HasLoopCheck(potentialCild);
         else
             return false;
     }

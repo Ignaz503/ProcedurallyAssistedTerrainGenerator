@@ -171,6 +171,8 @@ public class FunctionGraphEditorSettings : ScriptableObject, ISerializationCallb
                 //only add new ones?
                 foreach (var entry in serializableMapping)
                 {
+                    if (entry.Type == null)
+                        continue;
                     if (!layoutMapping.ContainsKey(entry.Type))
                     {
                         layoutMapping.Add(entry.Type, entry.Layout);

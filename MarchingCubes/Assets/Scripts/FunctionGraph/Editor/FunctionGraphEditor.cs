@@ -21,7 +21,8 @@ public partial class FunctionGraphEditor : EditorWindow
     public Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode> nodes;
     List<FunctionGraphEditorNode> nodesList;
     List<ConnectionToDraw> connectionsToDraw;
-    ClickedNodesTracker clickedNodeTracer;
+    ClickedNodesTracker clickedNodeTraker;
+    ILogger editorLoger;
     
     public void Initialize()
     {
@@ -29,9 +30,11 @@ public partial class FunctionGraphEditor : EditorWindow
         connectionsToDraw = new List<ConnectionToDraw>();
         
         nodesList = new List<FunctionGraphEditorNode>();
-        clickedNodeTracer = new ClickedNodesTracker();
+        clickedNodeTraker = new ClickedNodesTracker();
+        clickedNodeTraker.Editor = this; 
 
         nodes = new Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode>();
+        editorLoger = Debug.unityLogger;
         //LoadSettings();
     }
 
@@ -47,6 +50,7 @@ public partial class FunctionGraphEditor : EditorWindow
 
         DrawNodes();
         DrawConnections();
+        clickedNodeTraker.DrawDummyConnection(Event.current.mousePosition);
 
         ProcessNodeEvents(Event.current);
         bool changed = ProcessEvent(Event.current);
@@ -58,9 +62,12 @@ public partial class FunctionGraphEditor : EditorWindow
         switch (e.type)
         {
             case EventType.MouseDown:
-                if (e.button == 0)
+                if (e.button == 1)
                 {
-                    ProcessRightClickContextMenu(e);
+                    if (clickedNodeTraker.IsTracking && e.modifiers == EventModifiers.Control)
+                        clickedNodeTraker.Reset();
+                    else
+                        ProcessRightClickContextMenu(e);
                     return true;
                 }
                 break;
@@ -108,7 +115,7 @@ public partial class FunctionGraphEditor : EditorWindow
 
     public void AddNode(FunctionGraphEditorNode node)
     {
-        nodes.Add(node.Node, node);
+        nodes.Add(node.GraphNode, node);
         nodesList.Add(node);
         node.OnInConnectionPointClicked += OnInConnectionPointClicked;
         node.OnOutConnectionPointClicked += OnOutConnectionPointClicked;
@@ -135,7 +142,7 @@ public partial class FunctionGraphEditor : EditorWindow
 
     public void RemoveNode(FunctionGraphEditorNode functionGraphEditorNode)
     {
-        nodes.Remove(functionGraphEditorNode.Node);
+        nodes.Remove(functionGraphEditorNode.GraphNode);
         nodesList.Remove(functionGraphEditorNode);
     }
 
@@ -154,15 +161,31 @@ public partial class FunctionGraphEditor : EditorWindow
 
     public void OnOutConnectionPointClicked(FunctionGraphEditorNode node, ConnectionPoint point, int nodeChildIdx)
     {
-        clickedNodeTracer.SetOutNode(node, point, nodeChildIdx);
+
+        clickedNodeTraker.SetOutNode(node, point, nodeChildIdx);
 
     }
 
     public void OnInConnectionPointClicked(FunctionGraphEditorNode node, ConnectionPoint point, int nodeChildIdx)
     {
-        clickedNodeTracer.SetInNode(node, point, nodeChildIdx);
+        //TODO
+
+        clickedNodeTraker.SetInNode(node, point, nodeChildIdx);
     }
 
+    public void LogError(string tag, string msg)
+    {
+        editorLoger.LogError(tag, msg);
+    }
 
+    public void LogWarning(string tag, string msg)
+    {
+        editorLoger.LogWarning(tag, msg);
+    }
+
+    public void Log(string msg)
+    {
+        editorLoger.Log(msg);
+    }
 
 }

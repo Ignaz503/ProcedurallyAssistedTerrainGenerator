@@ -23,5 +23,10 @@ public class FunctionGraphEditorSettingsEditor : Editor
             tar.Reset();
         }
 
+        if (GUILayout.Button("Save"))
+        {
+            tar.CreateSerializableDataAndSave();
+        }
+
     }
 }

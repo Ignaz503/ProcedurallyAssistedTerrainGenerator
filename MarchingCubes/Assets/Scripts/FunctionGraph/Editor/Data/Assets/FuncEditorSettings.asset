@@ -35,7 +35,7 @@ MonoBehaviour:
   - type: FloorNode
     Layout: {fileID: 11400000, guid: 5a2f6e40a8a925a4cb0168f38ef41660, type: 2}
   - type: LerpNode
-    Layout: {fileID: 0}
+    Layout: {fileID: 11400000, guid: 9717a209da5a1414aa758c8edc97f64d, type: 2}
   - type: NegativeNode
     Layout: {fileID: 11400000, guid: 5a2f6e40a8a925a4cb0168f38ef41660, type: 2}
   - type: PerlinNoiseNode

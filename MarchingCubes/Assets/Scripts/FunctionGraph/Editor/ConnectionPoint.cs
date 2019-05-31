@@ -16,14 +16,14 @@ public class ConnectionPoint
 
     FunctionGraphEditorNode nodeBelongingTo;
     Action<ConnectionPoint,int> OnConnectionPointClick;
-    Rect offsetRect;
+    public Rect OffsetRect { get; protected set; }
     int idx;
 
     public ConnectionPoint(ConnectionPointType pointType,int idx, FunctionGraphEditorNode nodeBelongingTo,Rect offsetRect, GUIStyle style, Action<ConnectionPoint, int> onConnectionPointClick)
     {
         PointType = pointType;
         this.idx = idx;
-        this.offsetRect = offsetRect;
+        this.OffsetRect = offsetRect;
 
         this.nodeBelongingTo = nodeBelongingTo ?? throw new ArgumentNullException(nameof(nodeBelongingTo));
         OnConnectionPointClick = onConnectionPointClick ?? throw new ArgumentNullException(nameof(onConnectionPointClick));
@@ -44,7 +44,7 @@ public class ConnectionPoint
 
     private Rect CalculateDrawRect()
     {
-        Rect r = offsetRect;
+        Rect r = OffsetRect;
         r.y += nodeBelongingTo.Rect.y;
         r.x += nodeBelongingTo.Rect.x;
         return r;
@@ -54,10 +54,5 @@ public class ConnectionPoint
     {
         nodeBelongingTo = null;
     }
-
-    public bool ProcessEvent(Event e)
-    {
-        //throw new NotImplementedException();
-        return false;
-    }
+    
 }
