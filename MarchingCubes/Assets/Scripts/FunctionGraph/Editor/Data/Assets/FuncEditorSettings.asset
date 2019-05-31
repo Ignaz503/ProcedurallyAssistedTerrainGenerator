@@ -48,5 +48,5 @@ MonoBehaviour:
     Layout: {fileID: 11400000, guid: 7884e02e15b1dec4ca356aafcb341410, type: 2}
   - type: SumNode
     Layout: {fileID: 11400000, guid: 78fc50106976bf64a85bbe57fa13c552, type: 2}
-  - type: TimeNode
-    Layout: {fileID: 11400000, guid: 5302a3e3efb99cd4a9fdc16a047290b2, type: 2}
+  - type: SimplexNoiseNode
+    Layout: {fileID: 11400000, guid: 9717a209da5a1414aa758c8edc97f64d, type: 2}

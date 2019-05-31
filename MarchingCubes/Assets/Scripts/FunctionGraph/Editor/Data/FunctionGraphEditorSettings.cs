@@ -151,9 +151,12 @@ public class FunctionGraphEditorSettings : ScriptableObject, ISerializationCallb
             serialMapping.SetTypeAndLayout(key, layoutMapping[key]);
             serializableMapping.Add(serialMapping);
         }
+        EditorUtility.SetDirty(this);
+        
         AssetDatabase.SaveAssets();
     }
 
+    
     public void OnBeforeSerialize()
     {    }
 
