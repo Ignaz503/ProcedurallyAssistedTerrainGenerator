@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
+[EditorNodeType(EditorNodeTypeAttribute.NodeType.FloatField)]
 public class ConstantNode : BaseFuncGraphNode
 {
     public override string ShortDescription { get { return "Const"; } }

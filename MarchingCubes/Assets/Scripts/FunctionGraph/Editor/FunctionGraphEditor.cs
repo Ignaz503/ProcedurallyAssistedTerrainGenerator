@@ -23,7 +23,10 @@ public partial class FunctionGraphEditor : EditorWindow
     List<ConnectionToDraw> connectionsToDraw;
     ClickedNodesTracker clickedNodeTraker;
     ILogger editorLogger;
-    
+
+    private Vector2 offset;
+    private Vector2 drag;
+
     public void Initialize()
     {
         graph = new FunctionGraph();
@@ -35,6 +38,7 @@ public partial class FunctionGraphEditor : EditorWindow
 
         nodes = new Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode>();
         editorLogger = Debug.unityLogger;
+        FunctionGraphValidationMessageLogger.Mode = FunctionGraphValidationMessageLogger.LoggerMode.NotificationNoCollect;
         //LoadSettings();
     }
 
@@ -44,6 +48,9 @@ public partial class FunctionGraphEditor : EditorWindow
 
     public void OnGUI()
     {
+        DrawGrid(20, 0.2f, Color.gray);
+        DrawGrid(100, 0.4f, Color.gray);
+
         //clear old connections
         connectionsToDraw.Clear();
         //DO STUFF
@@ -63,6 +70,8 @@ public partial class FunctionGraphEditor : EditorWindow
 
     private void DrawEditorButtons()
     {
+
+
         //figure out width and height
         Vector2 size = new Vector2(1f * position.size.x, .15f * position.size.y);
 
@@ -75,6 +84,7 @@ public partial class FunctionGraphEditor : EditorWindow
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Validate"))
         {
+            
             if (graph.ValidateGraph(editorLogger) == 0)
             {
                 Log("Valid Graph");
@@ -96,6 +106,8 @@ public partial class FunctionGraphEditor : EditorWindow
 
     private bool ProcessEvent(Event e)
     {
+        drag = Vector2.zero;
+
         switch (e.type)
         {
             case EventType.MouseDown:
@@ -108,23 +120,68 @@ public partial class FunctionGraphEditor : EditorWindow
                     return true;
                 }
                 break;
+            case EventType.MouseDrag:
+                if (e.button == 0)
+                {
+                    OnDrag(e.delta);
+                    
+                }
+                break;
             default:
                 break;
         }
         return false;
     }
 
+    private void OnDrag(Vector2 delta)
+    {
+        drag = delta;
+
+        for (int i = 0; i < nodesList.Count; i++)
+        {
+            nodesList[i].Drag(delta);
+        }
+
+        GUI.changed = true;
+    }
+
     private void CreateNode(Vector2 mousePosition, BaseFuncGraphNode n)
     {
         var layout = settings.GetLayout(n);
         Vector2 pos = mousePosition - layout.Size*.5f;
-        if(!(n is ConstantNode) && !(n is VariableNode))
-            AddNode(new FunctionGraphEditorNode(pos, n, this, layout));
-        else if(n is ConstantNode)
-            AddNode(new FunctionGraphEditorNodeConstant(pos, n, this, layout));
-        else
-            AddNode(new FunctionGraphEditorNodeVariable(pos, n, this, layout));
+
+        AddNode(FunctionGraphEditorNodeFactory.CreateEditorNode(mousePosition, n, this, layout));
+
     }
+
+    /// <summary>
+    /// http://gram.gs/gramlog/creating-node-based-editor-unity/
+    /// </summary>
+    private void DrawGrid(float gridSpacing, float gridOpacity, Color gridColor)
+    {
+        int widthDivs = Mathf.CeilToInt(position.width / gridSpacing);
+        int heightDivs = Mathf.CeilToInt(position.height / gridSpacing);
+
+        Handles.BeginGUI();
+        Handles.color = new Color(gridColor.r, gridColor.g, gridColor.b, gridOpacity);
+
+        offset += drag * 0.5f;
+        Vector3 newOffset = new Vector3(offset.x % gridSpacing, offset.y % gridSpacing, 0);
+
+        for (int i = 0; i < widthDivs; i++)
+        {
+            Handles.DrawLine(new Vector3(gridSpacing * i, -gridSpacing, 0) + newOffset, new Vector3(gridSpacing * i, position.height, 0f) + newOffset);
+        }
+
+        for (int j = 0; j < heightDivs; j++)
+        {
+            Handles.DrawLine(new Vector3(-gridSpacing, gridSpacing * j, 0) + newOffset, new Vector3(position.width, gridSpacing * j, 0f) + newOffset);
+        }
+
+        Handles.color = Color.white;
+        Handles.EndGUI();
+    }
+
 
     private void ProcessNodeEvents(Event e)
     {

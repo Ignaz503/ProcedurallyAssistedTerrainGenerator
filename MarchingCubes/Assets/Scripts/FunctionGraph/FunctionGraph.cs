@@ -67,8 +67,8 @@ public class FunctionGraph
 
     public int ValidateGraph(ILogger l)
     {
-        FunctionGraphValidationMessageLogger.RegisterForMessageNotifications((m) => m.Log(l));
         FunctionGraphValidationMessageLogger.Mode = FunctionGraphValidationMessageLogger.LoggerMode.NotificationNoCollect;
+        FunctionGraphValidationMessageLogger.RegisterForMessageNotifications((m) => m.Log(l));
         if (RootNode == null)
         {
             FunctionGraphValidationMessageLogger.LogError("No Root Node defined!");

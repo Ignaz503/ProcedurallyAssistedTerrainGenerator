@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[EditorNodeType(EditorNodeTypeAttribute.NodeType.Variable)]
 public class VariableNode : BaseFuncGraphNode
 {
     public override string ShortDescription { get { return "Variable"; } }

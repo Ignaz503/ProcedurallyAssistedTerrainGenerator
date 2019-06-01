@@ -169,7 +169,7 @@ public class FunctionGraphEditorNode
         return false;
     }
 
-    private void Drag(Vector2 delta)
+    public void Drag(Vector2 delta)
     {
         rect.position += delta;
     }
