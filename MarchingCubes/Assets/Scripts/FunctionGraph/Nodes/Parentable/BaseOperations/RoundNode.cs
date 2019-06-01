@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 
 public class RoundNode : SingularChildNode
 {
@@ -12,5 +13,13 @@ public class RoundNode : SingularChildNode
     {
         return Mathf.Round(Child.Evaluate());
     }
+
+    public override void Write(StreamWriter writer)
+    {
+        writer.Write("Mathf.Round( ");
+        Child.Write(writer);
+        writer.Write(") ");
+    }
+
 }
 

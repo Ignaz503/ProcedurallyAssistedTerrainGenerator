@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using UnityEngine;
+using System.IO;
 
 public abstract class BaseFuncGraphNode : IFuncGraphNode
 {
@@ -101,4 +102,5 @@ public abstract class BaseFuncGraphNode : IFuncGraphNode
         get { return parent != null; }
     }
 
+    public abstract void Write(StreamWriter writer);
 }

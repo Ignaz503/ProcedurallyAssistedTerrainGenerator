@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
+using System.IO;
 
 public partial class FunctionGraphEditor : EditorWindow
 {
@@ -26,11 +27,14 @@ public partial class FunctionGraphEditor : EditorWindow
 
     private Vector2 offset;
     private Vector2 drag;
+    bool isValidGraph = false;
 
     public void Initialize()
     {
+
         graph = new FunctionGraph();
         connectionsToDraw = new List<ConnectionToDraw>();
+        isValidGraph = false;
         
         nodesList = new List<FunctionGraphEditorNode>();
         clickedNodeTraker = new ClickedNodesTracker();
@@ -68,40 +72,79 @@ public partial class FunctionGraphEditor : EditorWindow
         if (GUI.changed || changed) Repaint();
     }
 
+    public void MarkeAsRoot(BaseFuncGraphNode node)
+    {
+        graph.RootNode = node;
+    }
+
     private void DrawEditorButtons()
     {
-
 
         //figure out width and height
         Vector2 size = new Vector2(1f * position.size.x, .15f * position.size.y);
 
         //figure out offset
         Vector2 offset = position.size;
-        offset.Scale(new Vector2(0f, .975f));
+        offset.Scale(new Vector2(0f, .95f));
        // offset -= size * .5f;
 
         GUILayout.BeginArea(new Rect(offset,size));
         GUILayout.BeginHorizontal();
+
+        graph.GraphName = GUILayout.TextField(graph.GraphName);
+
         if(GUILayout.Button("Validate"))
         {
-            
-            if (graph.ValidateGraph(editorLogger) == 0)
-            {
-                Log("Valid Graph");
-            }
-            else
-            {
-                LogWarning("Warning","Graph is not valid");
-            }
+            ValidateGraph();
+
         }
 
         if (GUILayout.Button("Dummy Evaluate (x:0,y:0,z:0)"))
         {
-            Log(graph.Evaluate(new FunctionGraph.SamplePointVariables(0,0), new FunctionGraph.SamplePointVariables(0, 0), new FunctionGraph.SamplePointVariables(0, 0)).ToString());
+            Log(graph.Evaluate(new SamplePointVariables(0,0), new SamplePointVariables(0, 0), new SamplePointVariables(0, 0)).ToString());
         }
 
         GUILayout.EndHorizontal();
+        DrawSaveButton();
         GUILayout.EndArea();
+    }
+
+    void ValidateGraph()
+    {
+        if (graph.ValidateGraph(editorLogger) == 0)
+        {
+            Log("Valid Graph");
+            isValidGraph = true;
+        }
+        else
+        {
+            LogWarning("Warning", "Graph is not valid");
+            isValidGraph = false;
+        }
+    }
+
+    private void DrawSaveButton()
+    {
+        if (graph.GraphName == null || graph.GraphName == "")
+            return;
+
+        if (GUILayout.Button("Save"))
+        {
+            ValidateGraph();
+            if(!isValidGraph)
+                return;
+
+            string path = EditorUtility.SaveFilePanelInProject("Save Graph", graph.GraphName, "cs",
+                "Please enter a file name to save the graph to");
+
+            if (path.Length != 0)
+            {
+                using (var writer = new StreamWriter(path))
+                {
+                    graph.Write(writer);
+                }
+            }
+        }
     }
 
     private bool ProcessEvent(Event e)
@@ -182,6 +225,10 @@ public partial class FunctionGraphEditor : EditorWindow
         Handles.EndGUI();
     }
 
+    public void NotifyOfGraphValidityChange()
+    {
+        isValidGraph = false;
+    }
 
     private void ProcessNodeEvents(Event e)
     {
@@ -243,6 +290,7 @@ public partial class FunctionGraphEditor : EditorWindow
     {
         nodes.Remove(functionGraphEditorNode.GraphNode);
         nodesList.Remove(functionGraphEditorNode);
+        isValidGraph = false;
     }
 
     public void ProcessRightClickContextMenu(Event e)

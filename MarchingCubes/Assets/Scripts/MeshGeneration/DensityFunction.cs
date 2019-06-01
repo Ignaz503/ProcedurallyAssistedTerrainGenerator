@@ -1,24 +1,32 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 
 public interface IDensityFunc
 {
-    float Evaluate(float x, float y, float z);
-    float Evaluate(Vector3 point);
+    float Evaluate(SamplePointVariables x, SamplePointVariables y, SamplePointVariables z);
 }
 
 public class SimpleSurface : IDensityFunc
 {
-    public float Evaluate(float x, float y, float z)
+    public float Evaluate(SamplePointVariables x, SamplePointVariables y, SamplePointVariables z)
     {
-        return Evaluate(new Vector3(x, y, z));
+        return Evaluate(new Vector3(x.ValueWorld, y.ValueWorld, z.ValueWorld));
     }
 
-    public float Evaluate(Vector3 point)
+    protected float Evaluate(Vector3 point)
     {
         return -point.y + Mathf.PerlinNoise(point.x, point.z) * 2f;
     }
 }
+
+
+//public class DensityFunction : IDensityFunc
+//{
+//    public float Evaluate(SamplePointVariables x, SamplePointVariables y, SamplePointVariables z)
+//    {
+        //Write Graph
+//    }
+//}

@@ -197,61 +197,100 @@ public class Chunk
     {
         Vertex[] voxel = new Vertex[8];
 
-        Vector3 p = LocalToWorld(GetLocalPoint(x, y, z + 1, gridResolution));
+        Vector3 localP = GetLocalPoint(x, y, z + 1, gridResolution);
+        Vector3 p = LocalToWorld(localP);
 
         voxel[0] = new Vertex
         {
             Point = p,
-            IsoVal = densFunc.Evaluate(p)
+            IsoVal = densFunc.Evaluate(
+                new SamplePointVariables(p.x,localP.x),
+                new SamplePointVariables(p.y,localP.y),
+                new SamplePointVariables(p.z,localP.z)
+                )
         };
-
-        p = LocalToWorld(GetLocalPoint(x + 1, y, z + 1, gridResolution));
+        localP = GetLocalPoint(x + 1, y, z + 1, gridResolution);
+        p = LocalToWorld(p);
         voxel[1] = new Vertex
         {
             Point = p,
-            IsoVal = densFunc.Evaluate(p)
+            IsoVal = densFunc.Evaluate(
+                new SamplePointVariables(p.x, localP.x),
+                new SamplePointVariables(p.y, localP.y),
+                new SamplePointVariables(p.z, localP.z)
+                )
         };
 
-        p = LocalToWorld(GetLocalPoint(x + 1, y, z, gridResolution));
+        localP = GetLocalPoint(x + 1, y, z, gridResolution);
+        p = LocalToWorld(p);
         voxel[2] = new Vertex
         {
             Point = p,
-            IsoVal = densFunc.Evaluate(p)
+            IsoVal = densFunc.Evaluate(
+                new SamplePointVariables(p.x, localP.x),
+                new SamplePointVariables(p.y, localP.y),
+                new SamplePointVariables(p.z, localP.z)
+                )
         };
 
-        p = LocalToWorld(GetLocalPoint(x, y, z, gridResolution));
+        localP = GetLocalPoint(x, y, z, gridResolution);
+        p = LocalToWorld(p);
         voxel[3] = new Vertex
         {
             Point = p,
-            IsoVal = densFunc.Evaluate(p)
+            IsoVal = densFunc.Evaluate(
+                new SamplePointVariables(p.x, localP.x),
+                new SamplePointVariables(p.y, localP.y),
+                new SamplePointVariables(p.z, localP.z)
+                )
         };
 
-        p = LocalToWorld(GetLocalPoint(x, y + 1, z + 1, gridResolution));
+        localP = GetLocalPoint(x, y + 1, z + 1, gridResolution);
+        p = LocalToWorld(localP);
         voxel[4] = new Vertex
         {
             Point = p,
-            IsoVal = densFunc.Evaluate(p)
+            IsoVal = densFunc.Evaluate(
+                new SamplePointVariables(p.x, localP.x),
+                new SamplePointVariables(p.y, localP.y),
+                new SamplePointVariables(p.z, localP.z)
+                )
         };
 
-        p = LocalToWorld(GetLocalPoint(x + 1, y + 1, z + 1, gridResolution));
+        localP = GetLocalPoint(x + 1, y + 1, z + 1, gridResolution);
+        p = LocalToWorld(localP);
         voxel[5] = new Vertex
         {
             Point = p,
-            IsoVal = densFunc.Evaluate(p)
+            IsoVal = densFunc.Evaluate(
+                new SamplePointVariables(p.x, localP.x),
+                new SamplePointVariables(p.y, localP.y),
+                new SamplePointVariables(p.z, localP.z)
+                )
         };
 
-        p = LocalToWorld(GetLocalPoint(x + 1, y + 1, z, gridResolution));
+        localP = GetLocalPoint(x + 1, y + 1, z, gridResolution);
+        p = LocalToWorld(localP);
         voxel[6] = new Vertex
         {
             Point = p,
-            IsoVal = densFunc.Evaluate(p)
+            IsoVal = densFunc.Evaluate(
+                new SamplePointVariables(p.x, localP.x),
+                new SamplePointVariables(p.y, localP.y),
+                new SamplePointVariables(p.z, localP.z)
+                )
         };
 
-        p = LocalToWorld(GetLocalPoint(x, y + 1, z, gridResolution));
+        localP = GetLocalPoint(x, y + 1, z, gridResolution);
+        p = LocalToWorld(localP);
         voxel[7] = new Vertex
         {
             Point = p,
-            IsoVal = densFunc.Evaluate(p)
+            IsoVal = densFunc.Evaluate(
+                new SamplePointVariables(p.x, localP.x),
+                new SamplePointVariables(p.y, localP.y),
+                new SamplePointVariables(p.z, localP.z)
+                )
         };
 
         return voxel;

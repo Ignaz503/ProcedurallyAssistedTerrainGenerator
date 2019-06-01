@@ -1,4 +1,5 @@
-﻿/// <summary>
+﻿using System.IO;
+/// <summary>
 /// Root Node of graph, maybe superfluouse
 /// instead of dedicated root node
 /// make it a Parentable node and make it markeable as the root
@@ -21,5 +22,14 @@ public class AddNode : DualChildNode
     public override float Evaluate()
     {
         return LeftChild.Evaluate() + RightChild.Evaluate();
+    }
+
+    public override void Write(StreamWriter writer)
+    {
+        writer.Write("( ");
+        LeftChild.Write(writer);
+        writer.Write("+ ");
+        RightChild.Write(writer);
+        writer.Write(") ");
     }
 }

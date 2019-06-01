@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 
 public class PINode : FixedConstantNode
 {
@@ -14,5 +15,9 @@ public class PINode : FixedConstantNode
         return Mathf.PI;
     }
 
+    public override void Write(StreamWriter writer)
+    {
+        writer.Write("Mathf.PI ");
+    }
 }
 

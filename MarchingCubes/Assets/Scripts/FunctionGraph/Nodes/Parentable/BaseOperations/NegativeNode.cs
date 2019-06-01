@@ -1,6 +1,8 @@
-﻿public class NegativeNode : SingularChildNode
+﻿using System.IO;
+
+public class NegativeNode : SingularChildNode
 {
-    public override string ShortDescription { get { return "-"; } }
+    public override string ShortDescription { get { return "Negate"; } }
 
     public NegativeNode(FunctionGraph graph) : base(graph)
     {    }
@@ -10,5 +12,12 @@
         return -Child.Evaluate();
     }
 
+    public override void Write(StreamWriter writer)
+    {
+        writer.Write("( -");
+        Child.Write(writer);
+        writer.Write(") ");
+
+    }
 }
 

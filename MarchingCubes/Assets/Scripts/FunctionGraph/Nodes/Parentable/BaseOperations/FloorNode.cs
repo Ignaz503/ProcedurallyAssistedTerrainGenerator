@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 
 public class FloorNode : SingularChildNode
 {
@@ -11,6 +12,13 @@ public class FloorNode : SingularChildNode
     public override float Evaluate()
     {
         return Mathf.Floor(Child.Evaluate());
+    }
+
+    public override void Write(StreamWriter writer)
+    {
+        writer.Write("Mathf.Floor( ");
+        Child.Write(writer);
+        writer.Write(") ");
     }
 }
 

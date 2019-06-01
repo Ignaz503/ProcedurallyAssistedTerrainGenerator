@@ -56,38 +56,14 @@ public class SphereDensityFunc : IDensityFunc
         this.center = center;
     }
 
-    public float Evaluate(float x, float y, float z)
+    public float Evaluate(SamplePointVariables x, SamplePointVariables y, SamplePointVariables z)
     {
-        return Evaluate(new Vector3( x, y, z));
+        return Evaluate(new Vector3(x.ValueWorld, y.ValueWorld, z.ValueWorld));
     }
 
-    public float Evaluate(Vector3 point)
+    protected float Evaluate(Vector3 point)
     {
         return -(((point - center).magnitude - rad));//+ (Mathf.PerlinNoise(point.x,point.y));
     }
 }
 
-
-public class EllipseDensityFunc : IDensityFunc
-{
-    float radA;
-    float radB;
-    Vector3 center;
-
-    public EllipseDensityFunc(float radA, float radB, Vector3 center)
-    {
-        this.radA = radA;
-        this.radB = radB;
-        this.center = center;
-    }
-
-    public float Evaluate(float x, float y, float z)
-    {
-        return Evaluate(new Vector3(x, y, z));
-    }
-
-    public float Evaluate(Vector3 point)
-    {
-        return 0;
-    }
-}

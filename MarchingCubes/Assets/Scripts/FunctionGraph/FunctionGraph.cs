@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,8 @@ public class FunctionGraph
     Dictionary<VariableNames, float> variables;
 
     public BaseFuncGraphNode RootNode { get;  set; }
+
+    public string GraphName;
 
     public FunctionGraph()
     {
@@ -53,17 +56,6 @@ public class FunctionGraph
         return RootNode.Evaluate();
     }
 
-    public struct SamplePointVariables
-    {
-        public SamplePointVariables(float val, float valLocal)
-        {
-            ValueWorld = val;
-            ValueLocal = valLocal;
-        }
-
-        public float ValueWorld;
-        public float ValueLocal;
-    }
 
     public int ValidateGraph(ILogger l)
     {
@@ -82,4 +74,26 @@ public class FunctionGraph
         ValidateGraph(Debug.unityLogger);
     }
 #endif
+
+    public void Write(StreamWriter writer)
+    {
+        writer.Write("using System;\n" +
+        "using System.Collections;\n" +
+        "using System.Collections.Generic;\n" +
+        "using UnityEngine;\n\n");
+        writer.WriteLine($"public class {GraphName} : IDensityFunc");
+        writer.WriteLine("{");
+
+
+        writer.WriteLine("\tpublic float Evaluate(SamplePointVariables x, SamplePointVariables y, SamplePointVariables z)");
+        writer.WriteLine("\t{");
+        writer.Write("\t\treturn ");
+        RootNode.Write(writer);
+        writer.Write(";\n");
+
+        writer.WriteLine("\t}");
+
+        writer.WriteLine("}");
+        
+    }
 }

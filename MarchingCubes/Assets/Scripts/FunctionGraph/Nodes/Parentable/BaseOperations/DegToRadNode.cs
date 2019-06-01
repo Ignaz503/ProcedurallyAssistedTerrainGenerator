@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 
 public class DegToRadNode : SingularChildNode
 {
@@ -12,5 +13,14 @@ public class DegToRadNode : SingularChildNode
     {
         return Child.Evaluate() * Mathf.Deg2Rad;
     }
+
+    public override void Write(StreamWriter writer)
+    {
+        writer.Write("( ");
+        Child.Write(writer);
+        writer.Write("*  Mathf.Deg2Rad ");
+        writer.Write(") ");
+    }
+
 }
 

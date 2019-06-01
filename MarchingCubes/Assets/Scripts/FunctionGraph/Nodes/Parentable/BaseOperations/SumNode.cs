@@ -1,4 +1,6 @@
-﻿public class SumNode : VariableMultiChildNode
+﻿using System.IO;
+
+public class SumNode : VariableMultiChildNode
 {
     public SumNode(FunctionGraph graph) : base(graph)
     {
@@ -14,6 +16,19 @@
             val += children[i].Evaluate();
         }
         return val;
+    }
+
+    public override void Write(StreamWriter writer)
+    {
+        writer.Write("( ");
+        children[0].Write(writer);
+
+        for (int i = 1; i < children.Count; i++)
+        {
+            writer.Write(" + ");
+            children[i].Write(writer);
+        }
+        writer.Write(") ");
     }
 }
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 
 public class CeilNode : SingularChildNode
 {
@@ -11,6 +12,13 @@ public class CeilNode : SingularChildNode
     public override float Evaluate()
     {
         return Mathf.Ceil(Child.Evaluate());
+    }
+
+    public override void Write(StreamWriter writer)
+    {
+        writer.Write("Mathf.Ceil( ");
+        Child.Write(writer);
+        writer.Write(") ");
     }
 }
 

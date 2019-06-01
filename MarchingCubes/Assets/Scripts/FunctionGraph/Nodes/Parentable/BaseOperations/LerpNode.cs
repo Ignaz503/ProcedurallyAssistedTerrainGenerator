@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 
 public class LerpNode : FixedSizeMultiChildNode
 {
@@ -21,5 +22,16 @@ public class LerpNode : FixedSizeMultiChildNode
     public override int ValidateSelf()
     {
         return 0;
+    }
+
+    public override void Write(StreamWriter writer)
+    {
+        writer.Write("Mathf.Lerp( ");
+        childNodes[0].Write(writer);
+        writer.Write(", ");
+        childNodes[1].Write(writer);
+        writer.Write(", ");
+        childNodes[2].Write(writer);
+        writer.Write(") ");
     }
 }

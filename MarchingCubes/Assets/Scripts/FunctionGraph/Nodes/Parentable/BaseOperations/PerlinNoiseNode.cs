@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 
 public class PerlinNoiseNode : DualChildNode
 {
@@ -15,6 +16,15 @@ public class PerlinNoiseNode : DualChildNode
     public override float Evaluate()
     {
         return Mathf.PerlinNoise(LeftChild.Evaluate(), RightChild.Evaluate());
+    }
+
+    public override void Write(StreamWriter writer)
+    {
+        writer.Write("Mathf.PerlinNoise( ");
+        LeftChild.Write(writer);
+        writer.Write(", ");
+        RightChild.Write(writer);
+        writer.Write(") ");
     }
 }
 

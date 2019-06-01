@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public class SubtractNode : DualChildNode
 {
@@ -15,6 +16,15 @@ public class SubtractNode : DualChildNode
     public override float Evaluate()
     {
         return LeftChild.Evaluate() - RightChild.Evaluate();
+    }
+
+    public override void Write(StreamWriter writer)
+    {
+        writer.Write("( ");
+        LeftChild.Write(writer);
+        writer.Write("- ");
+        RightChild.Write(writer);
+        writer.Write(") ");
     }
 
 }
