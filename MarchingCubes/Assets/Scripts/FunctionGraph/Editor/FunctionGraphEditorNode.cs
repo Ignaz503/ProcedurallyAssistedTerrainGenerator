@@ -186,6 +186,7 @@ public class FunctionGraphEditorNode
 
     void MakeNodeEvaluationStartPoint()
     {
+        Debug.Log("Marking Node as root");
         GraphNode.Graph.RootNode = GraphNode;
     }
 

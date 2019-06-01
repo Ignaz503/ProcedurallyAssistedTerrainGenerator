@@ -22,7 +22,7 @@ public partial class FunctionGraphEditor : EditorWindow
     List<FunctionGraphEditorNode> nodesList;
     List<ConnectionToDraw> connectionsToDraw;
     ClickedNodesTracker clickedNodeTraker;
-    ILogger editorLoger;
+    ILogger editorLogger;
     
     public void Initialize()
     {
@@ -34,7 +34,7 @@ public partial class FunctionGraphEditor : EditorWindow
         clickedNodeTraker.Editor = this; 
 
         nodes = new Dictionary<BaseFuncGraphNode, FunctionGraphEditorNode>();
-        editorLoger = Debug.unityLogger;
+        editorLogger = Debug.unityLogger;
         //LoadSettings();
     }
 
@@ -54,7 +54,44 @@ public partial class FunctionGraphEditor : EditorWindow
 
         ProcessNodeEvents(Event.current);
         bool changed = ProcessEvent(Event.current);
+
+        //Just draw the editor buttons
+        DrawEditorButtons();
+
         if (GUI.changed || changed) Repaint();
+    }
+
+    private void DrawEditorButtons()
+    {
+        //figure out width and height
+        Vector2 size = new Vector2(1f * position.size.x, .15f * position.size.y);
+
+        //figure out offset
+        Vector2 offset = position.size;
+        offset.Scale(new Vector2(0f, .975f));
+       // offset -= size * .5f;
+
+        GUILayout.BeginArea(new Rect(offset,size));
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Validate"))
+        {
+            if (graph.ValidateGraph(editorLogger) == 0)
+            {
+                Log("Valid Graph");
+            }
+            else
+            {
+                LogWarning("Warning","Graph is not valid");
+            }
+        }
+
+        if (GUILayout.Button("Dummy Evaluate (x:0,y:0,z:0)"))
+        {
+            Log(graph.Evaluate(new FunctionGraph.SamplePointVariables(0,0), new FunctionGraph.SamplePointVariables(0, 0), new FunctionGraph.SamplePointVariables(0, 0)).ToString());
+        }
+
+        GUILayout.EndHorizontal();
+        GUILayout.EndArea();
     }
 
     private bool ProcessEvent(Event e)
@@ -180,17 +217,17 @@ public partial class FunctionGraphEditor : EditorWindow
 
     public void LogError(string tag, string msg)
     {
-        editorLoger.LogError(tag, msg);
+        editorLogger.LogError(tag, msg);
     }
 
     public void LogWarning(string tag, string msg)
     {
-        editorLoger.LogWarning(tag, msg);
+        editorLogger.LogWarning(tag, msg);
     }
 
     public void Log(string msg)
     {
-        editorLoger.Log(msg);
+        editorLogger.Log(msg);
     }
 
 }
