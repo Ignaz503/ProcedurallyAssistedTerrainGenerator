@@ -81,7 +81,12 @@ public partial class FunctionGraphEditor : EditorWindow
     {
         var layout = settings.GetLayout(n);
         Vector2 pos = mousePosition - layout.Size*.5f;
-        AddNode(new FunctionGraphEditorNode(pos, n, this, layout));
+        if(!(n is ConstantNode) && !(n is VariableNode))
+            AddNode(new FunctionGraphEditorNode(pos, n, this, layout));
+        else if(n is ConstantNode)
+            AddNode(new FunctionGraphEditorNodeConstant(pos, n, this, layout));
+        else
+            AddNode(new FunctionGraphEditorNodeVariable(pos, n, this, layout));
     }
 
     private void ProcessNodeEvents(Event e)

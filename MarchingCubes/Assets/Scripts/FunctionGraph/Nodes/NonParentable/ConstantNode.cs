@@ -6,14 +6,14 @@ public class ConstantNode : BaseFuncGraphNode
 {
     public override string ShortDescription { get { return "Const"; } }
 
-    [SerializeField] protected float constant;
+    public float Constant;
 
     public ConstantNode(FunctionGraph g):base(g)
     {}
 
     public override float Evaluate()
     {
-        return constant;
+        return Constant;
     }
 
     public override int Validate()

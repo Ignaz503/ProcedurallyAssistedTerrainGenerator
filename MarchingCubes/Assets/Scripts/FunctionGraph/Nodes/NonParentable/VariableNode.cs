@@ -2,16 +2,15 @@
 
 public class VariableNode : BaseFuncGraphNode
 {
-    public override string ShortDescription { get { return var.ToString(); } }
-    [SerializeField] FunctionGraph.VariableNames var;
+    public override string ShortDescription { get { return "Variable"; } }
+    public FunctionGraph.VariableNames Var;
 
     public VariableNode(FunctionGraph g): base(g)
     {    }
 
     public override float Evaluate()
     {
-        return Graph.GetVariableValue(var);
-        //return parent.GetVariableValue(var);
+        return Graph.GetVariableValue(Var);
     }
 
     public override int Validate()
