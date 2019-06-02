@@ -64,7 +64,15 @@ public class FunctionGraphEditorNodeLayout : ScriptableObject
         [Range(0f, 1f)] public float Width;
         [Range(0f, 1f)] public float Height;
 
-        public GUIStyle Style;
+        public ConnectionPointStyle ConPointStyle;
+
+        public GUIStyle Style
+        {
+            get
+            {
+                return ConPointStyle.Style;
+            }
+        }
     }
 
     [Serializable]

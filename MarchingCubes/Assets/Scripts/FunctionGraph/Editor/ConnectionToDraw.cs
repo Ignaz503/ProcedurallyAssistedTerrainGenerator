@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
+[Serializable]
 public class ConnectionToDraw
 {
     public FunctionGraphEditorNode fromNode;
@@ -10,12 +11,15 @@ public class ConnectionToDraw
     public ConnectionPoint fromPoint;
     public ConnectionPoint toPoint;
 
-    public ConnectionToDraw(FunctionGraphEditorNode fromNode, FunctionGraphEditorNode toNode, ConnectionPoint fromPoint, ConnectionPoint toPoint)
+    public int IDX;
+
+    public ConnectionToDraw(FunctionGraphEditorNode fromNode, FunctionGraphEditorNode toNode, ConnectionPoint fromPoint, ConnectionPoint toPoint, int idx)
     {
         this.fromNode = fromNode ?? throw new ArgumentNullException(nameof(fromNode));
         this.toNode = toNode ?? throw new ArgumentNullException(nameof(toNode));
         this.fromPoint = fromPoint ?? throw new ArgumentNullException(nameof(fromPoint));
         this.toPoint = toPoint ?? throw new ArgumentNullException(nameof(toPoint));
+        IDX = idx;
     }
 
     public void Draw()

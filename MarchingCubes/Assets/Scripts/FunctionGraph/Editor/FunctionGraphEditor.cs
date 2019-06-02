@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public partial class FunctionGraphEditor : EditorWindow
 {
@@ -90,9 +91,11 @@ public partial class FunctionGraphEditor : EditorWindow
 
         GUILayout.BeginArea(new Rect(offset,size));
         GUILayout.BeginHorizontal();
-
+        GUILayout.Label("Graph Name: ",EditorStyles.boldLabel);
         graph.GraphName = GUILayout.TextField(graph.GraphName);
-
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        
         if(GUILayout.Button("Validate"))
         {
             ValidateGraph();
@@ -105,7 +108,7 @@ public partial class FunctionGraphEditor : EditorWindow
         }
 
         GUILayout.EndHorizontal();
-        DrawSaveButton();
+        DrawSaveAndLoadButtons();
         GUILayout.EndArea();
     }
 
@@ -123,12 +126,12 @@ public partial class FunctionGraphEditor : EditorWindow
         }
     }
 
-    private void DrawSaveButton()
+    private void DrawSaveAndLoadButtons()
     {
         if (graph.GraphName == null || graph.GraphName == "")
             return;
 
-        if (GUILayout.Button("Save"))
+        if (GUILayout.Button("Compile To C#"))
         {
             ValidateGraph();
             if(!isValidGraph)
@@ -144,6 +147,7 @@ public partial class FunctionGraphEditor : EditorWindow
                     graph.Write(writer);
                 }
             }
+            AssetDatabase.Refresh();
         }
     }
 
@@ -335,4 +339,8 @@ public partial class FunctionGraphEditor : EditorWindow
         editorLogger.Log(msg);
     }
 
+    public int GetIndex(FunctionGraphEditorNode n)
+    {
+        return nodesList.IndexOf(n);
+    }
 }

@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+[Serializable]
 public class FunctionGraphEditorNode
 {
-    public event Action<FunctionGraphEditorNode,ConnectionPoint, int> OnInConnectionPointClicked;
-    public event Action<FunctionGraphEditorNode,ConnectionPoint, int> OnOutConnectionPointClicked;
-    
+    public event Action<FunctionGraphEditorNode, ConnectionPoint, int> OnInConnectionPointClicked;
+    public event Action<FunctionGraphEditorNode, ConnectionPoint, int> OnOutConnectionPointClicked;
+
     public BaseFuncGraphNode GraphNode { get; protected set; }
     FunctionGraphEditor editorBelongingTo;
     public FunctionGraphEditor Editor { get { return editorBelongingTo; } }
@@ -33,14 +34,14 @@ public class FunctionGraphEditorNode
 
     List<ConnectionPoint> connectionPoints;
 
-    public FunctionGraphEditorNode(Vector2 creationPosition, BaseFuncGraphNode node, FunctionGraphEditor editor,FunctionGraphEditorNodeLayout layout)
+    public FunctionGraphEditorNode(Vector2 creationPosition, BaseFuncGraphNode node, FunctionGraphEditor editor, FunctionGraphEditorNodeLayout layout)
     {
         editorBelongingTo = editor;
         GraphNode = node;
         connectionPoints = new List<ConnectionPoint>();
-        CreateNodeDrawableInfo(creationPosition,layout);
+        CreateNodeDrawableInfo(creationPosition, layout);
     }
-    
+
     public void Draw()
     {
         //todo: draw rect
@@ -57,7 +58,7 @@ public class FunctionGraphEditorNode
         {
             //wehn we set the parent we need to update the conn to draw object
             //todo: Draw connection and so on
-            editorBelongingTo.AddConnectionToDraw(conToDraw);     
+            editorBelongingTo.AddConnectionToDraw(conToDraw);
         }
     }
 
@@ -72,17 +73,17 @@ public class FunctionGraphEditorNode
         GraphNode.ParentTo(to.GraphNode, idx);
 
         //create con ToDraw
-        CreateConnectionDrawable(to,fromPoint,toPoint);
+        CreateConnectionDrawable(to, fromPoint, toPoint, idx);
     }
 
-    private void CreateConnectionDrawable(FunctionGraphEditorNode to,ConnectionPoint fromPoint, ConnectionPoint toPoint)
+    private void CreateConnectionDrawable(FunctionGraphEditorNode to, ConnectionPoint fromPoint, ConnectionPoint toPoint, int idx)
     {
-        conToDraw = new ConnectionToDraw(this, to, fromPoint, toPoint);   
+        conToDraw = new ConnectionToDraw(this, to, fromPoint, toPoint, idx);
     }
 
     private void RemoveConnectionToDrawDrawable()
     {
-        if(conToDraw != null)
+        if (conToDraw != null)
         {
             editorBelongingTo.RemoveConnection(conToDraw);
             conToDraw = null;
@@ -98,12 +99,12 @@ public class FunctionGraphEditorNode
             conToDraw = null;
         }
 
-        if(GraphNode is ParentableNode)
+        if (GraphNode is ParentableNode)
         {
             var n = GraphNode as ParentableNode;
 
             //unset con to draw for all child nodes
-            foreach (BaseFuncGraphNode node  in n)
+            foreach (BaseFuncGraphNode node in n)
             {
                 if (node != null)
                 {
@@ -127,7 +128,7 @@ public class FunctionGraphEditorNode
         GraphNode = null;
     }
 
-    public  bool ProcessEvent(Event e)
+    public bool ProcessEvent(Event e)
     {
         if (Rect.Contains(e.mousePosition))
         {
@@ -179,7 +180,7 @@ public class FunctionGraphEditorNode
         GenericMenu menu = new GenericMenu();
 
         menu.AddItem(new GUIContent("Remove"), false, () => DeleteNode());
-        menu.AddItem(new GUIContent("Set As Evaluation Start Point"), false,() => MakeNodeEvaluationStartPoint());
+        menu.AddItem(new GUIContent("Set As Evaluation Start Point"), false, () => MakeNodeEvaluationStartPoint());
 
         menu.ShowAsContext();
     }
@@ -200,7 +201,7 @@ public class FunctionGraphEditorNode
         }
     }
 
-    public virtual void CreateNodeDrawableInfo(Vector2 creationPosition,FunctionGraphEditorNodeLayout layout)
+    public virtual void CreateNodeDrawableInfo(Vector2 creationPosition, FunctionGraphEditorNodeLayout layout)
     {
         //one out conn point
         Rect = new Rect(creationPosition, new Vector2(layout.Width, layout.Height));
@@ -212,18 +213,18 @@ public class FunctionGraphEditorNode
 
     private void CreateConnectionPoints(FunctionGraphEditorNodeLayout layout)
     {
-        CreateConnectionPoints(layout.Width, layout.Height, layout , FunctionGraphEditorNodeLayout.ListType.Out, OnOutConnectionPointClick);
+        CreateConnectionPoints(layout.Width, layout.Height, layout, FunctionGraphEditorNodeLayout.ListType.Out, OnOutConnectionPointClick);
 
         CreateConnectionPoints(layout.Width, layout.Height, layout, FunctionGraphEditorNodeLayout.ListType.In, OnInConnectionPointClick);
     }
 
-    private void CreateConnectionPoints(float width, float height, FunctionGraphEditorNodeLayout layout,FunctionGraphEditorNodeLayout.ListType list, Action<ConnectionPoint,int> onClick)
+    private void CreateConnectionPoints(float width, float height, FunctionGraphEditorNodeLayout layout, FunctionGraphEditorNodeLayout.ListType list, Action<ConnectionPoint, int> onClick)
     {
         int count = (list == 0) ? layout.InConnectionPointCount : layout.OutConnectionPointCount;
         //loop over all set create type and set offset rect correctly
         for (int i = 0; i < count; i++)
         {
-            FunctionGraphEditorNodeLayout.ConnectionPointInfo info = layout[list,i];
+            FunctionGraphEditorNodeLayout.ConnectionPointInfo info = layout[list, i];
 
             //figure out width and height
             Vector2 size = new Vector2(width * info.Width, height * info.Height);
@@ -247,7 +248,7 @@ public class FunctionGraphEditorNode
 
     }
 
-    void OnOutConnectionPointClick(ConnectionPoint conP,int nodeChildIdx)
+    void OnOutConnectionPointClick(ConnectionPoint conP, int nodeChildIdx)
     {
         //TODO: realay event
         OnOutConnectionPointClicked?.Invoke(this, conP, nodeChildIdx);
@@ -256,7 +257,7 @@ public class FunctionGraphEditorNode
     void OnInConnectionPointClick(ConnectionPoint conP, int nodeChildIndex)
     {
         //TODO realay event
-        OnInConnectionPointClicked?.Invoke(this, conP,nodeChildIndex);
+        OnInConnectionPointClicked?.Invoke(this, conP, nodeChildIndex);
     }
 
 }

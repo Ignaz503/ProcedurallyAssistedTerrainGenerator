@@ -75,7 +75,6 @@ public struct ClickedNodesTracker
 
     }
 
-
     void Draw(ClickedNodeInfo info, Vector2 mousePos)
     {
         Rect startRect = info.ConPoint.OffsetRect;

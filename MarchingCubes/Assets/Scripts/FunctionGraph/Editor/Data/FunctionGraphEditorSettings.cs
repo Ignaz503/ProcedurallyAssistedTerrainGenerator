@@ -49,8 +49,7 @@ public class FunctionGraphEditorSettings : ScriptableObject, ISerializationCallb
         else if (serializableMapping != null)
         {
             RemapFromSerializedData();
-            //throw away "old" data
-            //serializableMapping = null;
+
             TryAddMissing();
         }
     }
