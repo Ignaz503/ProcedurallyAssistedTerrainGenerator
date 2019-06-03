@@ -260,4 +260,27 @@ public class FunctionGraphEditorNode
         OnInConnectionPointClicked?.Invoke(this, conP, nodeChildIndex);
     }
 
+    public virtual FunctionGraphEditorNodeSerializable CreateSerializeable()
+    {
+        FunctionGraphEditorNodeSerializable ser = new FunctionGraphEditorNodeSerializable();
+
+        ser.EditorNodeType = GetType().ToString();
+        ser.NodeRect = Rect;
+        ser.NodeValue = "";
+        ser.GraphNodeType = GraphNode.GetType().ToString();
+
+        if (GraphNode is ParentableNode)
+        {
+            var n = GraphNode as ParentableNode;
+            ser.Children = new List<FunctionGraphEditorNodeSerializable>();
+            foreach (var child in n)
+            {
+                
+            }
+
+        }
+
+        return ser;
+    }
+
 }
