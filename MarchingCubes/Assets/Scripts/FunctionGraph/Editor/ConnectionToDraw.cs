@@ -30,11 +30,16 @@ public class ConnectionToDraw
         Vector3 startPos = startRect.position + startRect.size * .5f;
         Vector3 endPos = endRect.position + endRect.size * .5f;
 
+        float dirChange = 1f;
+        if (startRect.x > endPos.x)
+            dirChange = -1f;
+
+
         Handles.DrawBezier(
              endRect.center,
              startRect.center,
-             endRect.center + Vector2.left * 50f,
-             startRect.center - Vector2.left * 50f,
+             endRect.center + (Vector2.left*dirChange) * 50f,
+             startRect.center - (Vector2.left*dirChange) * 50f,
              Color.white,
              null,
              2f

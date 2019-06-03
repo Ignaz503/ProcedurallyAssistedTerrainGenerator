@@ -81,13 +81,16 @@ public struct ClickedNodesTracker
         startRect.position += info.EditorNode.Rect.position;
 
         Vector3 startPos = startRect.position + startRect.size * .5f;
+        float dirChange = 1f;
 
+        if (startRect.x > mousePos.x)
+            dirChange = -1f;
 
         Handles.DrawBezier(
              mousePos,
              startRect.center,
-             mousePos + Vector2.left * 50f,
-             startRect.center - Vector2.left * 50f,
+             mousePos + (Vector2.left* dirChange) * 50f,
+             startRect.center - (Vector2.left*dirChange) * 50f,
              Color.white,
              null,
              2f

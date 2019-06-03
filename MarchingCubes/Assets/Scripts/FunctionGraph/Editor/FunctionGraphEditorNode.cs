@@ -58,6 +58,7 @@ public class FunctionGraphEditorNode
         {
             //wehn we set the parent we need to update the conn to draw object
             //todo: Draw connection and so on
+            Debug.Log("Has Parent");
             editorBelongingTo.AddConnectionToDraw(conToDraw);
         }
     }
@@ -74,6 +75,12 @@ public class FunctionGraphEditorNode
 
         //create con ToDraw
         CreateConnectionDrawable(to, fromPoint, toPoint, idx);
+    }
+
+
+    public ConnectionPoint GetConnectionPoint(int idx)
+    {
+        return connectionPoints[idx];
     }
 
     private void CreateConnectionDrawable(FunctionGraphEditorNode to, ConnectionPoint fromPoint, ConnectionPoint toPoint, int idx)
@@ -265,22 +272,46 @@ public class FunctionGraphEditorNode
         FunctionGraphEditorNodeSerializable ser = new FunctionGraphEditorNodeSerializable();
 
         ser.EditorNodeType = GetType().ToString();
-        ser.NodeRect = Rect;
+        ser.NodePosition = Rect.position;
         ser.NodeValue = "";
         ser.GraphNodeType = GraphNode.GetType().ToString();
+        ser.Children = new List<FunctionGraphEditorNodeSerializable>();
+
+        if (GraphNode.HasParent)
+        {
+            ser.toIdx = conToDraw.IDX;
+            ser.fromIDX = connectionPoints.IndexOf(conToDraw.fromPoint);
+        }
+        else
+        {
+            ser.toIdx = ser.fromIDX = -1;
+        }
 
         if (GraphNode is ParentableNode)
         {
             var n = GraphNode as ParentableNode;
-            ser.Children = new List<FunctionGraphEditorNodeSerializable>();
             foreach (var child in n)
             {
-                
+                if(child == null)
+                    continue;
+                var editorNode = Editor.GetNode(child);
+                ser.Children.Add(editorNode.CreateSerializeable());
             }
 
         }
 
         return ser;
+    }
+
+    public virtual void DeserializeData(string data)
+    {
+        return;
+    }
+
+    public void InformOfConnectionToDraw()
+    {
+        editorBelongingTo.AddConnectionToDraw(conToDraw);
+        GUI.changed = true;
     }
 
 }

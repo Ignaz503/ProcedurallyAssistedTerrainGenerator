@@ -7,9 +7,12 @@ using UnityEngine;
 public struct FunctionGraphEditorNodeSerializable 
 {
     public string EditorNodeType;
-    public Rect NodeRect;
+    public Vector2 NodePosition;
     public string GraphNodeType;
     public string NodeValue;
+
+    public int toIdx;
+    public int fromIDX;
 
     public List<FunctionGraphEditorNodeSerializable> Children;
 }

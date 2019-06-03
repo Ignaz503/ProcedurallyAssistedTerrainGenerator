@@ -27,4 +27,16 @@ public class FunctionGraphEditorNodeConstant : FunctionGraphEditorNode
         GUILayout.EndArea();
     }
 
+    public override FunctionGraphEditorNodeSerializable CreateSerializeable()
+    {
+        var ser = base.CreateSerializeable();
+        ser.NodeValue = n.Constant.ToString();
+        return ser;
+    }
+
+    public override void DeserializeData(string data)
+    {
+        float.TryParse(data, out n.Constant);
+    }
+
 }

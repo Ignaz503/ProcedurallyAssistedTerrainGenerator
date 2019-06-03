@@ -5,6 +5,7 @@ using UnityEditor;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Reflection;
 
 public partial class FunctionGraphEditor : EditorWindow
 {
@@ -128,17 +129,28 @@ public partial class FunctionGraphEditor : EditorWindow
 
     private void DrawSaveAndLoadButtons()
     {
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Load"))
+        {
+            string path = EditorUtility.OpenFilePanel("Graph To open", Application.dataPath, "asset");
+
+            if (path.Length != 0)
+            {
+                Load(path);
+            }
+        }
+
+
         if (graph.GraphName == null || graph.GraphName == "")
             return;
-
         if (GUILayout.Button("Compile To C#"))
         {
             ValidateGraph();
             if(!isValidGraph)
                 return;
 
-            string path = EditorUtility.SaveFilePanelInProject("Save Graph", graph.GraphName, "cs",
-                "Please enter a file name to save the graph to");
+            string path = EditorUtility.SaveFilePanelInProject("Compile Graph", graph.GraphName, "cs",
+                "Please enter a file name to save the compiled graph to");
 
             if (path.Length != 0)
             {
@@ -149,6 +161,20 @@ public partial class FunctionGraphEditor : EditorWindow
             }
             AssetDatabase.Refresh();
         }
+
+        if (GUILayout.Button("Save"))
+        {
+            string path = EditorUtility.SaveFilePanelInProject("Save Graph", graph.GraphName, "asset",
+    "Please enter a file name to save the graph to");
+
+            if (path.Length != 0)
+            {
+                Save(path);
+            }
+        }
+
+
+        GUILayout.EndHorizontal();
     }
 
     private bool ProcessEvent(Event e)
@@ -342,5 +368,97 @@ public partial class FunctionGraphEditor : EditorWindow
     public int GetIndex(FunctionGraphEditorNode n)
     {
         return nodesList.IndexOf(n);
+    }
+
+    public void Save(string path)
+    {
+        var data = CreateInstance<FunctionGraphEditorData>();
+        data.Nodes = new List<FunctionGraphEditorNodeSerializable>();
+        data.GraphName = graph.GraphName;
+        for (int i = 0; i < nodesList.Count; i++)
+        {
+            if (!nodesList[i].GraphNode.HasParent)
+            {
+                // write all nodes without a parent
+                // other nodes taken care of by parent
+                data.Nodes.Add(nodesList[i].CreateSerializeable());
+            }
+        }
+        data.Save(path);
+    }
+
+    public void Load(string path)
+    {
+        string s = MakeRelativePath(path);
+
+        var data = AssetDatabase.LoadAssetAtPath<FunctionGraphEditorData>(s);
+
+        if (data == null)
+        {
+            Debug.LogError("Failed to load graph at " + s);
+            return;
+        }
+
+        graph = new FunctionGraph();
+        for (int i = nodesList.Count -1 ; i >= 0; i--)
+        {
+            nodesList[i].DeleteNode();
+        }
+
+        nodes.Clear();
+        nodes.Clear();
+        connectionsToDraw.Clear();
+
+        graph.GraphName = data.GraphName;
+        
+        foreach (var nodeData in data.Nodes)
+        {
+            DeserializeNodeData(nodeData);
+        }
+    }
+
+    /// <summary>
+    /// FUKCING RETARDED WAY TO MAKE RELATIVE PATH FROM ABSOLUTE
+    /// </summary>
+    private string MakeRelativePath(string path)
+    {
+        return path.Replace(Application.dataPath.Substring(0,Application.dataPath.LastIndexOf('/') + 1), "");
+    }
+
+    private void DeserializeNodeData(FunctionGraphEditorNodeSerializable nodeData)
+    {
+        BaseFuncGraphNode n = FuncGraphNodeFactory.CreateNode(Type.GetType($"{nodeData.GraphNodeType}, {Assembly.GetAssembly(typeof(BaseFuncGraphNode)).FullName}"), graph);
+        CreateNode(nodeData.NodePosition, n);
+
+        var nodeParent = nodesList[nodesList.Count - 1];//last elem
+
+        for (int i = 0; i < nodeData.Children.Count; i++)
+        {
+            n = FuncGraphNodeFactory.CreateNode(Type.GetType($"{nodeData.Children[i].GraphNodeType}, {Assembly.GetAssembly(typeof(BaseFuncGraphNode)).FullName}"), graph);
+            CreateNode(nodeData.Children[i].NodePosition, n);
+
+            var recentChild = nodesList[nodesList.Count - 1];
+
+            if (nodeData.Children[i].fromIDX >= 0 && nodeData.Children[i].toIdx >= 0)
+            {
+                recentChild.CreateConnection(nodeParent, nodeData.toIdx, recentChild.GetConnectionPoint(nodeData.Children[i].fromIDX), nodeParent.GetConnectionPoint(nodeData.Children[i].toIdx));
+            }
+            recentChild.DeserializeData(nodeData.Children[i].NodeValue);
+        }
+        Repaint();
+    }
+}
+
+[Serializable]
+public class FunctionGraphEditorData : ScriptableObject
+{
+    public string GraphName;
+    public List<FunctionGraphEditorNodeSerializable> Nodes;
+
+    public void Save(string path)
+    {
+        AssetDatabase.CreateAsset(this, path);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
     }
 }

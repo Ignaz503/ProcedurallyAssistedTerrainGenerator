@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System;
 
 public class FunctionGraphEditorNodeVariable : FunctionGraphEditorNode
 {
@@ -26,4 +27,17 @@ public class FunctionGraphEditorNodeVariable : FunctionGraphEditorNode
 
         GUILayout.EndArea();
     }
+
+    public override FunctionGraphEditorNodeSerializable CreateSerializeable()
+    {
+        var ser =  base.CreateSerializeable();
+        ser.NodeValue = n.Var.ToString();
+        return ser;
+    }
+
+    public override void DeserializeData(string data)
+    {
+        Enum.TryParse(data, out n.Var);
+    }
+
 }
