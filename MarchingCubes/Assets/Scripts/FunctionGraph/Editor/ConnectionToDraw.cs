@@ -11,19 +11,20 @@ public class ConnectionToDraw
     public ConnectionPoint fromPoint;
     public ConnectionPoint toPoint;
 
-    public int IDX;
+    public int EditorNodeConnectionPointIndex;
 
-    public ConnectionToDraw(FunctionGraphEditorNode fromNode, FunctionGraphEditorNode toNode, ConnectionPoint fromPoint, ConnectionPoint toPoint, int idx)
+    public ConnectionToDraw(FunctionGraphEditorNode fromNode, FunctionGraphEditorNode toNode, ConnectionPoint fromPoint, ConnectionPoint toPoint, int editorNodeConnectionPointIndex)
     {
         this.fromNode = fromNode ?? throw new ArgumentNullException(nameof(fromNode));
         this.toNode = toNode ?? throw new ArgumentNullException(nameof(toNode));
         this.fromPoint = fromPoint ?? throw new ArgumentNullException(nameof(fromPoint));
         this.toPoint = toPoint ?? throw new ArgumentNullException(nameof(toPoint));
-        IDX = idx;
+        EditorNodeConnectionPointIndex = editorNodeConnectionPointIndex;
     }
 
     public void Draw()
     {
+
         Rect startRect = CalculateRectFromOffsetRectAndParent(fromNode.Rect, fromPoint.OffsetRect);
         Rect endRect = CalculateRectFromOffsetRectAndParent(toNode.Rect, toPoint.OffsetRect);
 

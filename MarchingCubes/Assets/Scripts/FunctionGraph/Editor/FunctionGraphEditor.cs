@@ -413,8 +413,14 @@ public partial class FunctionGraphEditor : EditorWindow
         
         foreach (var nodeData in data.Nodes)
         {
-            DeserializeNodeData(nodeData);
+            BaseFuncGraphNode n = FuncGraphNodeFactory.CreateNode(Type.GetType($"{nodeData.GraphNodeType}, {Assembly.GetAssembly(typeof(BaseFuncGraphNode)).FullName}"), graph);
+            CreateNode(nodeData.NodePosition, n);
+
+            var nodeParent = nodesList[nodesList.Count - 1];//last elem
+
+            DeserializeNodeData(nodeParent,nodeData);
         }
+        Repaint();
     }
 
     /// <summary>
@@ -425,27 +431,27 @@ public partial class FunctionGraphEditor : EditorWindow
         return path.Replace(Application.dataPath.Substring(0,Application.dataPath.LastIndexOf('/') + 1), "");
     }
 
-    private void DeserializeNodeData(FunctionGraphEditorNodeSerializable nodeData)
+    private void DeserializeNodeData(FunctionGraphEditorNode nodeParent,FunctionGraphEditorNodeSerializable nodeParentData)
     {
-        BaseFuncGraphNode n = FuncGraphNodeFactory.CreateNode(Type.GetType($"{nodeData.GraphNodeType}, {Assembly.GetAssembly(typeof(BaseFuncGraphNode)).FullName}"), graph);
-        CreateNode(nodeData.NodePosition, n);
+        if (nodeParentData.Children.Count == 0)
+            return;
 
-        var nodeParent = nodesList[nodesList.Count - 1];//last elem
-
-        for (int i = 0; i < nodeData.Children.Count; i++)
+        for (int i = 0; i < nodeParentData.Children.Count; i++)
         {
-            n = FuncGraphNodeFactory.CreateNode(Type.GetType($"{nodeData.Children[i].GraphNodeType}, {Assembly.GetAssembly(typeof(BaseFuncGraphNode)).FullName}"), graph);
-            CreateNode(nodeData.Children[i].NodePosition, n);
+            var data = nodeParentData.Children[i];
+            BaseFuncGraphNode n = FuncGraphNodeFactory.CreateNode(Type.GetType($"{data.GraphNodeType}, {Assembly.GetAssembly(typeof(BaseFuncGraphNode)).FullName}"), graph);
+            CreateNode(data.NodePosition, n);
 
             var recentChild = nodesList[nodesList.Count - 1];
 
-            if (nodeData.Children[i].fromIDX >= 0 && nodeData.Children[i].toIdx >= 0)
+            if (data.fromIDX >= 0 && data.toIdx >= 0)
             {
-                recentChild.CreateConnection(nodeParent, nodeData.toIdx, recentChild.GetConnectionPoint(nodeData.Children[i].fromIDX), nodeParent.GetConnectionPoint(nodeData.Children[i].toIdx));
+                //Debug.Log("Creating Node Connection from editor ");
+                recentChild.CreateConnection(nodeParent, nodeParent.GetConnectionPoint(data.toIdx).Idx, recentChild.GetConnectionPoint(data.fromIDX), nodeParent.GetConnectionPoint(data.toIdx));
             }
-            recentChild.DeserializeData(nodeData.Children[i].NodeValue);
-        }
-        Repaint();
+            recentChild.DeserializeData(data.NodeValue);
+            DeserializeNodeData(recentChild, data);
+        } 
     }
 }
 

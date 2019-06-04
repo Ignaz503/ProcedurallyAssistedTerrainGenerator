@@ -44,6 +44,7 @@ public class FunctionGraphEditorNode
 
     public void Draw()
     {
+        //Debug.Log($"Draw Node {GraphNode.ShortDescription}");
         //todo: draw rect
         DrawNode();
 
@@ -58,7 +59,6 @@ public class FunctionGraphEditorNode
         {
             //wehn we set the parent we need to update the conn to draw object
             //todo: Draw connection and so on
-            Debug.Log("Has Parent");
             editorBelongingTo.AddConnectionToDraw(conToDraw);
         }
     }
@@ -74,7 +74,7 @@ public class FunctionGraphEditorNode
         GraphNode.ParentTo(to.GraphNode, idx);
 
         //create con ToDraw
-        CreateConnectionDrawable(to, fromPoint, toPoint, idx);
+        CreateConnectionDrawable(to, fromPoint, toPoint);
     }
 
 
@@ -83,9 +83,9 @@ public class FunctionGraphEditorNode
         return connectionPoints[idx];
     }
 
-    private void CreateConnectionDrawable(FunctionGraphEditorNode to, ConnectionPoint fromPoint, ConnectionPoint toPoint, int idx)
+    private void CreateConnectionDrawable(FunctionGraphEditorNode to, ConnectionPoint fromPoint, ConnectionPoint toPoint)
     {
-        conToDraw = new ConnectionToDraw(this, to, fromPoint, toPoint, idx);
+        conToDraw = new ConnectionToDraw(this, to, fromPoint, toPoint, to.connectionPoints.IndexOf(toPoint));
     }
 
     private void RemoveConnectionToDrawDrawable()
@@ -279,7 +279,7 @@ public class FunctionGraphEditorNode
 
         if (GraphNode.HasParent)
         {
-            ser.toIdx = conToDraw.IDX;
+            ser.toIdx = conToDraw.EditorNodeConnectionPointIndex;
             ser.fromIDX = connectionPoints.IndexOf(conToDraw.fromPoint);
         }
         else

@@ -19,6 +19,7 @@ public class ConnectionPoint
     Action<ConnectionPoint,int> OnConnectionPointClick;
     public Rect OffsetRect { get; protected set; }
     int idx;
+    public int Idx { get { return idx; } }
 
     public ConnectionPoint(ConnectionPointType pointType,int idx, FunctionGraphEditorNode nodeBelongingTo,Rect offsetRect, GUIStyle style, Action<ConnectionPoint, int> onConnectionPointClick)
     {
