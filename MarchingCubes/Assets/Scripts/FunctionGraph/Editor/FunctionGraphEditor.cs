@@ -157,6 +157,7 @@ public partial class FunctionGraphEditor : EditorWindow
                 using (var writer = new StreamWriter(path))
                 {
                     graph.Write(writer);
+                    Close();
                 }
             }
             AssetDatabase.Refresh();
@@ -458,13 +459,14 @@ public partial class FunctionGraphEditor : EditorWindow
 [Serializable]
 public class FunctionGraphEditorData : ScriptableObject
 {
+
     public string GraphName;
     public List<FunctionGraphEditorNodeSerializable> Nodes;
-
     public void Save(string path)
     {
         AssetDatabase.CreateAsset(this, path);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
     }
+
 }

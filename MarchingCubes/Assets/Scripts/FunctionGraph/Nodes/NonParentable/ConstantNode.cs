@@ -25,7 +25,7 @@ public class ConstantNode : BaseFuncGraphNode
 
     public override void Write(StreamWriter writer)
     {
-        writer.Write(Constant.ToString());
+        writer.Write(Constant.ToString()+"f");
         writer.Write(" ");
     }
 }
