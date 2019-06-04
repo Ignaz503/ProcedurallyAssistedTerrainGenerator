@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: NewLoadingAndSaving
+  m_EditorClassIdentifier: Assembly-CSharp-Editor::FunctionGraphEditorData
+  GraphName: NewLoadingAndSaving
+  Nodes:
+  - EditorNodeType: FunctionGraphEditorNodeConstant
+    NodePosition: {x: 136, y: 720}
+    GraphNodeType: ConstantNode
+    NodeValue: 0
+    ToIdx: 1
+    FromIdx: 0
+    ParentIndex: 1
+  - EditorNodeType: FunctionGraphEditorNode
+    NodePosition: {x: 293, y: 468}
+    GraphNodeType: AbsNode
+    NodeValue: 
+    ToIdx: 1
+    FromIdx: 0
+    ParentIndex: 2
+  - EditorNodeType: FunctionGraphEditorNode
+    NodePosition: {x: 440, y: 211}
+    GraphNodeType: AddNode
+    NodeValue: 
+    ToIdx: -1
+    FromIdx: -1
+    ParentIndex: -1
+  - EditorNodeType: FunctionGraphEditorNode
+    NodePosition: {x: 685, y: 660}
+    GraphNodeType: PINode
+    NodeValue: 
+    ToIdx: 2
+    FromIdx: 0
+    ParentIndex: 2

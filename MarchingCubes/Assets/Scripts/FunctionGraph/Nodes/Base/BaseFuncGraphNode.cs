@@ -25,6 +25,7 @@ public abstract class BaseFuncGraphNode : IFuncGraphNode
     public event Action<BaseFuncGraphNode> OnUncoupleFromParent;
     public FunctionGraph Graph { get; protected set; }
     protected ParentableNode parent;
+    public ParentableNode Parent { get { return parent; } }
     public virtual int PossibleChildrenCount{ get { return 0; } }
     public abstract string ShortDescription { get; }
 

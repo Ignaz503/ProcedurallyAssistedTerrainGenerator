@@ -298,6 +298,11 @@ public partial class FunctionGraphEditor : EditorWindow
         node.OnOutConnectionPointClicked += OnOutConnectionPointClicked;
     }
 
+    public int GetListIndexOf(FunctionGraphEditorNode node)
+    {
+        return nodesList.IndexOf(node);
+    }
+
     public FunctionGraphEditorNode GetNode(BaseFuncGraphNode n)
     {
         if (nodes.ContainsKey(n))
@@ -378,12 +383,9 @@ public partial class FunctionGraphEditor : EditorWindow
         data.GraphName = graph.GraphName;
         for (int i = 0; i < nodesList.Count; i++)
         {
-            if (!nodesList[i].GraphNode.HasParent)
-            {
-                // write all nodes without a parent
-                // other nodes taken care of by parent
-                data.Nodes.Add(nodesList[i].CreateSerializeable());
-            }
+            // write all nodes without a parent
+            // other nodes taken care of by parent
+            data.Nodes.Add(nodesList[i].CreateSerializeable());
         }
         data.Save(path);
     }
@@ -411,16 +413,29 @@ public partial class FunctionGraphEditor : EditorWindow
         connectionsToDraw.Clear();
 
         graph.GraphName = data.GraphName;
+
+        var nodesNeedingParenting = new List<NodeNeedingParenting>();
         
         foreach (var nodeData in data.Nodes)
         {
-            BaseFuncGraphNode n = FuncGraphNodeFactory.CreateNode(Type.GetType($"{nodeData.GraphNodeType}, {Assembly.GetAssembly(typeof(BaseFuncGraphNode)).FullName}"), graph);
-            CreateNode(nodeData.NodePosition, n);
-
-            var nodeParent = nodesList[nodesList.Count - 1];//last elem
-
-            DeserializeNodeData(nodeParent,nodeData);
+            DeserializeNodeData(nodeData,nodesNeedingParenting);
         }
+
+        for (int i = 0; i < nodesNeedingParenting.Count; i++)
+        {
+            var nodeData = nodesNeedingParenting[i].Data;
+            var node = nodesNeedingParenting[i].Node;
+
+            if (nodeData.FromIdx >= 0 && nodeData.ToIdx >= 0)
+            {
+                //Debug.Log("Creating Node Connection from editor ");
+
+                var parent = nodesList[nodeData.ParentIndex];
+
+                node.CreateConnection(parent, parent.GetConnectionPoint(nodeData.ToIdx).Idx, node.GetConnectionPoint(nodeData.FromIdx), parent.GetConnectionPoint(nodeData.ToIdx));
+            }
+        }
+
         Repaint();
     }
 
@@ -432,29 +447,39 @@ public partial class FunctionGraphEditor : EditorWindow
         return path.Replace(Application.dataPath.Substring(0,Application.dataPath.LastIndexOf('/') + 1), "");
     }
 
-    private void DeserializeNodeData(FunctionGraphEditorNode nodeParent,FunctionGraphEditorNodeSerializable nodeParentData)
+    private void DeserializeNodeData(FunctionGraphEditorNodeSerializable data,List<NodeNeedingParenting> needParenting)
     {
-        if (nodeParentData.Children.Count == 0)
-            return;
+        BaseFuncGraphNode n = FuncGraphNodeFactory.CreateNode(Type.GetType($"{data.GraphNodeType}, {Assembly.GetAssembly(typeof(BaseFuncGraphNode)).FullName}"), graph);
+        CreateNode(data.NodePosition, n);
 
-        for (int i = 0; i < nodeParentData.Children.Count; i++)
+        var newNode = nodesList[nodesList.Count - 1];
+
+        //if (data.fromIDX >= 0 && data.toIdx >= 0)
+        //{
+        //    //Debug.Log("Creating Node Connection from editor ");
+        //    recentChild.CreateConnection(nodeParent, nodeParent.GetConnectionPoint(data.toIdx).Idx, recentChild.GetConnectionPoint(data.fromIDX), nodeParent.GetConnectionPoint(data.toIdx));
+        //}
+        newNode.DeserializeData(data.NodeValue);
+        if (data.ParentIndex >= 0)
         {
-            var data = nodeParentData.Children[i];
-            BaseFuncGraphNode n = FuncGraphNodeFactory.CreateNode(Type.GetType($"{data.GraphNodeType}, {Assembly.GetAssembly(typeof(BaseFuncGraphNode)).FullName}"), graph);
-            CreateNode(data.NodePosition, n);
-
-            var recentChild = nodesList[nodesList.Count - 1];
-
-            if (data.fromIDX >= 0 && data.toIdx >= 0)
-            {
-                //Debug.Log("Creating Node Connection from editor ");
-                recentChild.CreateConnection(nodeParent, nodeParent.GetConnectionPoint(data.toIdx).Idx, recentChild.GetConnectionPoint(data.fromIDX), nodeParent.GetConnectionPoint(data.toIdx));
-            }
-            recentChild.DeserializeData(data.NodeValue);
-            DeserializeNodeData(recentChild, data);
-        } 
+            needParenting.Add(new NodeNeedingParenting(data, newNode));
+        }
+            
     }
 }
+
+public struct NodeNeedingParenting
+{
+    public FunctionGraphEditorNodeSerializable Data;
+    public FunctionGraphEditorNode Node;
+
+    public NodeNeedingParenting(FunctionGraphEditorNodeSerializable data, FunctionGraphEditorNode node)
+    {
+        this.Data = data;
+        this.Node = node ?? throw new ArgumentNullException(nameof(node));
+    }
+}
+
 
 [Serializable]
 public class FunctionGraphEditorData : ScriptableObject

@@ -275,29 +275,20 @@ public class FunctionGraphEditorNode
         ser.NodePosition = Rect.position;
         ser.NodeValue = "";
         ser.GraphNodeType = GraphNode.GetType().ToString();
-        ser.Children = new List<FunctionGraphEditorNodeSerializable>();
+        
 
         if (GraphNode.HasParent)
         {
-            ser.toIdx = conToDraw.EditorNodeConnectionPointIndex;
-            ser.fromIDX = connectionPoints.IndexOf(conToDraw.fromPoint);
+            var parent = Editor.GetNode(GraphNode.Parent);
+            ser.ParentIndex = Editor.GetListIndexOf(parent);
+            ser.ToIdx = conToDraw.EditorNodeConnectionPointIndex;
+            ser.FromIdx = connectionPoints.IndexOf(conToDraw.fromPoint);
         }
         else
         {
-            ser.toIdx = ser.fromIDX = -1;
-        }
-
-        if (GraphNode is ParentableNode)
-        {
-            var n = GraphNode as ParentableNode;
-            foreach (var child in n)
-            {
-                if(child == null)
-                    continue;
-                var editorNode = Editor.GetNode(child);
-                ser.Children.Add(editorNode.CreateSerializeable());
-            }
-
+            ser.ParentIndex = -1;
+            ser.ToIdx = ser.FromIdx = -1;
+            ser.FromIdx = -1;
         }
 
         return ser;

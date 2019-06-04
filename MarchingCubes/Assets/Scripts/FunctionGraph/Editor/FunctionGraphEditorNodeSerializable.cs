@@ -11,8 +11,8 @@ public struct FunctionGraphEditorNodeSerializable
     public string GraphNodeType;
     public string NodeValue;
 
-    public int toIdx;
-    public int fromIDX;
+    public int ToIdx;
+    public int FromIdx;
 
-    public List<FunctionGraphEditorNodeSerializable> Children;
+    public int ParentIndex;
 }
