@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Globalization;
 using System.IO;
 using UnityEngine;
 
@@ -25,7 +26,7 @@ public class ConstantNode : BaseFuncGraphNode
 
     public override void Write(StreamWriter writer)
     {
-        writer.Write(Constant.ToString()+"f");
+        writer.Write(Constant.ToString(new CultureInfo("en-US")) +"f");
         writer.Write(" ");
     }
 }

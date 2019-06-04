@@ -14,6 +14,8 @@ public class FunctionGraphEditorNode
     FunctionGraphEditor editorBelongingTo;
     public FunctionGraphEditor Editor { get { return editorBelongingTo; } }
 
+
+
     Rect rect;
     public Rect Rect
     {
@@ -194,7 +196,6 @@ public class FunctionGraphEditorNode
 
     void MakeNodeEvaluationStartPoint()
     {
-        Debug.Log("Marking Node as root");
         editorBelongingTo.MarkeAsRoot(GraphNode);
     }
 

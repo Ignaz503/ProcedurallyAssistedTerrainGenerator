@@ -33,7 +33,7 @@ public partial class FunctionGraphEditor : EditorWindow
 
     public void Initialize()
     {
-
+        
         graph = new FunctionGraph();
         connectionsToDraw = new List<ConnectionToDraw>();
         isValidGraph = false;
@@ -156,11 +156,23 @@ public partial class FunctionGraphEditor : EditorWindow
             {
                 using (var writer = new StreamWriter(path))
                 {
+                                       
                     graph.Write(writer);
                     Close();
                 }
             }
+
+            //Temp save current graph
+            string tempPath = MakeRelativePath(Application.dataPath + "/TempGraphStorage.asset");
+            Save(tempPath);
+
+            Debug.Log("Window Will Be Reopened after compilation, just wait paitently");
+
+            //close window
+            Close();
+
             AssetDatabase.Refresh();
+
         }
 
         if (GUILayout.Button("Save"))
@@ -176,6 +188,26 @@ public partial class FunctionGraphEditor : EditorWindow
 
 
         GUILayout.EndHorizontal();
+    }
+
+    [UnityEditor.Callbacks.DidReloadScripts]
+    private static void OnScriptsReloaded()
+    {
+        string tempPath = MakeRelativePath(Application.dataPath + "/TempGraphStorage.asset");
+        //open new window and load from temp
+
+        //ugly window open fix
+        var data = AssetDatabase.LoadAssetAtPath<FunctionGraphEditorData>(tempPath);
+        if (data == null)
+            return;
+
+        OpenWindow();
+        var window = GetWindow<FunctionGraphEditor>();
+
+        window.Load(tempPath, false);
+        AssetDatabase.DeleteAsset(tempPath);
+        AssetDatabase.Refresh();
+
     }
 
     private bool ProcessEvent(Event e)
@@ -225,7 +257,6 @@ public partial class FunctionGraphEditor : EditorWindow
         Vector2 pos = mousePosition - layout.Size*.5f;
 
         AddNode(FunctionGraphEditorNodeFactory.CreateEditorNode(mousePosition, n, this, layout));
-
     }
 
     /// <summary>
@@ -390,7 +421,7 @@ public partial class FunctionGraphEditor : EditorWindow
         data.Save(path);
     }
 
-    public void Load(string path)
+    public bool Load(string path, bool giveError = true)
     {
         string s = MakeRelativePath(path);
 
@@ -398,8 +429,8 @@ public partial class FunctionGraphEditor : EditorWindow
 
         if (data == null)
         {
-            Debug.LogError("Failed to load graph at " + s);
-            return;
+            if(giveError) Debug.LogError("Failed to load graph at " + s);
+            return false;
         }
 
         graph = new FunctionGraph();
@@ -437,12 +468,13 @@ public partial class FunctionGraphEditor : EditorWindow
         }
 
         Repaint();
+        return true;
     }
 
     /// <summary>
     /// FUKCING RETARDED WAY TO MAKE RELATIVE PATH FROM ABSOLUTE
     /// </summary>
-    private string MakeRelativePath(string path)
+    private static string MakeRelativePath(string path)
     {
         return path.Replace(Application.dataPath.Substring(0,Application.dataPath.LastIndexOf('/') + 1), "");
     }
