@@ -4,9 +4,8 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEditor;
-using UnityEditor.SceneManagement;
+
 
 
 public class TerrainChunkWindow : EditorWindow
@@ -35,9 +34,7 @@ public class TerrainChunkWindow : EditorWindow
     string functionTypeString;
     Type functionType;
 
-    ChunkManager chunkManager;
-
-
+    ChunksToManage chunksToManage;
 
     bool show;
 
@@ -46,10 +43,16 @@ public class TerrainChunkWindow : EditorWindow
         chunkResolution = settings.MinChunkResolution;
         densityFuncApplyMode = DensityFuncApplyMode.OneForAll;
 
-        chunkManager = CreateInstance<ChunkManager>();
-        chunkManager.Chunks = new List<ChunkToGenerate>();
+        chunksToManage = new ChunksToManage();
+        chunksToManage.Chunks = new List<ChunkToGenerate>();
+
         show = true;
         
+    }
+
+    public void UpdateChunksToManage(ChunksToManage toManage)
+    {
+        chunksToManage = toManage;
     }
 
     public void OnGUI()
@@ -76,20 +79,19 @@ public class TerrainChunkWindow : EditorWindow
         {
             if (EditorUtility.DisplayDialog("Start Editing Chunks", "This is going to open a new scene and close all currently open ones (saving them beforehand). Make sure there are no unwanted changes that would get saved in any open scene.", "Proceed"))
             {
+
                 var sv =  GetWindow<ChunkSceneView>();
-                //GetActiveScenesAndTempStore();
-                //Scene sc = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-                sv.SetChunkManager(chunkManager);
-                Docker.Dock(this, sv, Docker.DockPosition.Bottom);          
+                sv.Initialize(this);
+
+                sv.SetChunksToManage(chunksToManage);
+                sv.Focus();
+                Docker.Dock(this, sv, Docker.DockPosition.Bottom);
             }
             
         }
         EditorGUILayout.EndHorizontal();
     }
 
-
-
-    
     private void DrawGeneralInfoArea()
     {
         EditorGUILayout.LabelField(new GUIContent("General Info"), EditorStyles.largeLabel);
@@ -135,7 +137,7 @@ public class TerrainChunkWindow : EditorWindow
             show = EditorGUILayout.Foldout(show, $"Chunks: ");
             if (show)
             {
-                foreach(var chunkInfo  in chunkManager.Chunks)
+                foreach(var chunkInfo  in chunksToManage.Chunks)
                 {
                     EditorGUILayout.BeginVertical();
                     EditorGUILayout.LabelField($"Function For: {chunkInfo.chunk.Center}");
@@ -212,27 +214,6 @@ public class TerrainChunkWindow : EditorWindow
     }
 }
 
-[Serializable]
-public struct ChunkToGenerate
-{
-    public Chunk chunk;
-    public Type DensityFunc;
 
-    public ChunkToGenerate(Chunk chunk, Type densityFunc)
-    {
-        this.chunk = chunk ?? throw new ArgumentNullException(nameof(chunk));
-        DensityFunc = densityFunc ?? throw new ArgumentNullException(nameof(densityFunc));
-    }
-
-    public ChunkToGenerate(Chunk chunk) : this()
-    {
-        this.chunk = chunk ?? throw new ArgumentNullException(nameof(chunk));
-    }
-
-    public void SetDensityFunction(Type t)
-    {
-        DensityFunc = t;
-    }
-}
 
 

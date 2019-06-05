@@ -3,43 +3,76 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 
 public class ChunkSceneView : SceneView
 {
     List<string> prevOpenScenePahs;
     public ChunkManager manager;
+    Scene openScene;
+    TerrainChunkWindow callingWindow;
 
-    public void Awake()
+    public void Initialize(TerrainChunkWindow callingWindow)
     {
+
         prevOpenScenePahs = new List<string>();
 
         //save all active scenes
         //open a new one with name something bs
+        GetActiveScenesAndTempStore();
+        this.callingWindow = callingWindow;
+        CreateScene();
+    }
+
+    void CreateScene()
+    {
+        openScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+        GameObject obj = new GameObject();
+        manager = obj.AddComponent<ChunkManager>();
+
+        pivot = Vector3.up*10;
+        rotation = Quaternion.Euler(90, 0, 0);
+
+        //mark gameobject in scene hierarchy
+        Selection.activeObject = obj;
+
     }
 
     public new void OnDestroy()
     {
+        //inform  calling window of new chunks list
+        callingWindow.UpdateChunksToManage(manager.ToManage);
+
+        //reload all old scenes
+        ReopenPreviousScenes();
+
+        //close current scene and destoy i guess
+        EditorSceneManager.CloseScene(openScene,true);
+        
         base.OnDestroy();
     }
 
     public new void OnGUI()
     {
-        base.OnGUI(); 
+        base.OnGUI();
 
-        //close current scene and destoy i guess
-
-        //reload all old scenes
+        if (GUILayout.Button("Close"))
+        {
+            Close();
+        }
 
     }
 
-    public void SetChunkManager(ChunkManager m)
+    public void SetChunksToManage(ChunksToManage m)
     {
-        manager = m;
+        manager.ToManage = m;
     }
 
     void GetActiveScenesAndTempStore()
     {
         prevOpenScenePahs.Clear();
+        EditorSceneManager.SaveOpenScenes();
         int countLoaded = EditorSceneManager.sceneCount;
 
         for (int i = 0; i < countLoaded; i++)
