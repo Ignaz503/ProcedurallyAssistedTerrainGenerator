@@ -44,7 +44,6 @@ public class SurfaceGenerator : MonoBehaviour
     }
 }
 
-
 public class SphereDensityFunc : IDensityFunc
 {
     float rad;

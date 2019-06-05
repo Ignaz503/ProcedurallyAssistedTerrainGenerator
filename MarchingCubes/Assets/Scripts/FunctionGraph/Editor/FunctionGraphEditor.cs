@@ -9,7 +9,9 @@ using System.Reflection;
 
 public partial class FunctionGraphEditor : EditorWindow
 {
-    [MenuItem("Window/Function Graph Editor")]
+    static string DummyName = "Enter Graph Name Here";
+
+    [MenuItem("Function Graph/Function Graph Editor")]
     private static void OpenWindow()
     {
         FunctionGraphEditor window = GetWindow<FunctionGraphEditor>();
@@ -81,36 +83,35 @@ public partial class FunctionGraphEditor : EditorWindow
 
     private void DrawEditorButtons()
     {
-
         //figure out width and height
         Vector2 size = new Vector2(1f * position.size.x, .15f * position.size.y);
 
         //figure out offset
         Vector2 offset = position.size;
         offset.Scale(new Vector2(0f, .95f));
-       // offset -= size * .5f;
+        // offset -= size * .5f;
 
-        GUILayout.BeginArea(new Rect(offset,size));
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Graph Name: ",EditorStyles.boldLabel);
-        graph.GraphName = GUILayout.TextField(graph.GraphName);
-        GUILayout.EndHorizontal();
-        GUILayout.BeginHorizontal();
+        //GUILayout.BeginArea(new Rect(offset,size));
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Graph Name: ", EditorStyles.boldLabel,  GUILayout.ExpandWidth(false));
+        graph.GraphName = EditorGUILayout.TextField(graph. GraphName,  GUILayout.ExpandWidth(false));
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
         
-        if(GUILayout.Button("Validate"))
+        if(GUILayout.Button("Validate", GUILayout.ExpandWidth(false)))
         {
             ValidateGraph();
 
         }
 
-        if (GUILayout.Button("Dummy Evaluate (x:0,y:0,z:0)"))
+        if (GUILayout.Button("Dummy Evaluate (x:0,y:0,z:0)", GUILayout.ExpandWidth(false)))
         {
             Log(graph.Evaluate(new SamplePointVariables(0,0), new SamplePointVariables(0, 0), new SamplePointVariables(0, 0)).ToString());
         }
 
-        GUILayout.EndHorizontal();
+        EditorGUILayout.EndHorizontal();
         DrawSaveAndLoadButtons();
-        GUILayout.EndArea();
+       // GUILayout.EndArea();
     }
 
     void ValidateGraph()
@@ -129,8 +130,8 @@ public partial class FunctionGraphEditor : EditorWindow
 
     private void DrawSaveAndLoadButtons()
     {
-        GUILayout.BeginHorizontal();
-        if (GUILayout.Button("Load"))
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Load", GUILayout.ExpandWidth(false)))
         {
             string path = EditorUtility.OpenFilePanel("Graph To open", Application.dataPath, "asset");
 
@@ -141,9 +142,9 @@ public partial class FunctionGraphEditor : EditorWindow
         }
 
 
-        if (graph.GraphName == null || graph.GraphName == "")
+        if (graph.GraphName == null || graph.GraphName == "" || graph.GraphName == DummyName)
             return;
-        if (GUILayout.Button("Compile To C#"))
+        if (GUILayout.Button("Compile To C#", GUILayout.ExpandWidth(false)))
         {
             ValidateGraph();
             if(!isValidGraph)
@@ -175,7 +176,7 @@ public partial class FunctionGraphEditor : EditorWindow
 
         }
 
-        if (GUILayout.Button("Save"))
+        if (GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
         {
             string path = EditorUtility.SaveFilePanelInProject("Save Graph", graph.GraphName, "asset",
     "Please enter a file name to save the graph to");
@@ -187,7 +188,7 @@ public partial class FunctionGraphEditor : EditorWindow
         }
 
 
-        GUILayout.EndHorizontal();
+        EditorGUILayout.EndHorizontal();
     }
 
     [UnityEditor.Callbacks.DidReloadScripts]

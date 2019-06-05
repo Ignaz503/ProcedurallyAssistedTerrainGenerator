@@ -7,6 +7,7 @@ using UnityEngine;
 public interface IDensityFunc
 {
     float Evaluate(SamplePointVariables x, SamplePointVariables y, SamplePointVariables z);
+
 }
 
 public class SimpleSurface : IDensityFunc

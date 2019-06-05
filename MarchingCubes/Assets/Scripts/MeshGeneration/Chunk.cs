@@ -55,6 +55,9 @@ public class Chunk
     }
 
     float x;
+
+    public Vector3 Center { get { return chunkBounds.center; } }
+
     public float GetX()
     {
         return x;
