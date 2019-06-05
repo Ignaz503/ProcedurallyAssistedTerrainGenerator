@@ -10,7 +10,6 @@ public class SurfaceGenerator : MonoBehaviour
     [SerializeField] Chunk testChunk = null;
     [SerializeField] MeshFilter mesh = null;
 
-
     public void Generate()
     {
         if(mesh != null)
