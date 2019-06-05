@@ -33,7 +33,7 @@ public class TerrainChunkWindow : EditorWindow
 
     List<ChunkToGenerate> chunks;
 
-
+    bool show;
 
     public void Initialize()
     {
@@ -41,6 +41,7 @@ public class TerrainChunkWindow : EditorWindow
         densityFuncApplyMode = DensityFuncApplyMode.OneForAll;
 
         chunks = new List<ChunkToGenerate>();
+        show = true;
     }
 
     public void OnGUI()
@@ -98,24 +99,32 @@ public class TerrainChunkWindow : EditorWindow
             string buttonString = functionType != null ? functionType.ToString() : "Chose";
             if (GUILayout.Button(buttonString, EditorStyles.popup))
             {
-                DrawDensityFuncChooser(EditorGUILayout.GetControlRect());
+                Rect r = EditorGUILayout.GetControlRect();
+                r.position = Event.current.mousePosition;
+                DrawDensityFuncChooser(r);
             }
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.EndHorizontal();
         }
         else
         {
-            foreach(var chunk  in chunks)
+            show = EditorGUILayout.Foldout(show, $"Chunks: ");
+            if (show)
             {
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField($"Function For: {chunk.chunk.Center}");
-                string buttonString = chunk.DensityFunc != null ? chunk.DensityFunc.ToString() : "Chose";
-                var c = chunk;//just to be save with closure
-                if (GUILayout.Button(buttonString, EditorStyles.popup))
+                foreach(var chunk  in chunks)
                 {
-                    DrawDensityFuncChooser(EditorGUILayout.GetControlRect(), c);
-                }
+                    EditorGUILayout.BeginVertical();
+                    EditorGUILayout.LabelField($"Function For: {chunk.chunk.Center}");
+                    string buttonString = chunk.DensityFunc != null ? chunk.DensityFunc.ToString() : "Chose";
+                    var c = chunk;//just to be save with closure
+                    if (GUILayout.Button(buttonString, EditorStyles.popup))
+                    {
+                        Rect r = EditorGUILayout.GetControlRect();
+                        r.position = Event.current.mousePosition;
+                        DrawDensityFuncChooser(r, c);
+                    }
 
-                EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.EndVertical();
+                }
             }
         }
     }
@@ -139,19 +148,20 @@ public class TerrainChunkWindow : EditorWindow
 
     void DrawDensityFuncChooser(Rect r)
     {
-        Debug.Log("TODO");
-        ////Get all density functions
-        //var allPossFuncTypes = GetTypes().Where(t => t.IsAssignableFrom(typeof(IDensityFunc)));
 
-        ////generic menu shown as dropdown
-        //GenericMenu menu = new GenericMenu();
+        //Get all density functions
+        var assem = Assembly.GetAssembly(typeof(IDensityFunc));
+        var allPossFuncTypes = assem.GetTypes().Where(t => typeof(IDensityFunc).IsAssignableFrom(t) && t != typeof(IDensityFunc));
 
-        //foreach (var funcType in allPossFuncTypes)
-        //{
-        //    menu.AddItem(new GUIContent(funcType.ToString()), false, () => SetFunctionType(funcType));
-        //}
+        //generic menu shown as dropdown
+        GenericMenu menu = new GenericMenu();
 
-        //menu.DropDown(r);
+        foreach (var funcType in allPossFuncTypes)
+        {
+            menu.AddItem(new GUIContent(funcType.ToString()), false, () => SetFunctionType(funcType));
+        }
+
+        menu.DropDown(r);
     }
 
     void DrawDensityFuncChooser(Rect r, ChunkToGenerate chunk)
