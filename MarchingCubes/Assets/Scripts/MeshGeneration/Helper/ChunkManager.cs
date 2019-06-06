@@ -81,7 +81,7 @@ public struct ChunksToManage
 }
 
 [Serializable]
-public struct ChunkToGenerate
+public class ChunkToGenerate
 {
     public Chunk chunk;
     public Type DensityFunc;
@@ -92,7 +92,7 @@ public struct ChunkToGenerate
         DensityFunc = densityFunc ?? throw new ArgumentNullException(nameof(densityFunc));
     }
 
-    public ChunkToGenerate(Chunk chunk) : this()
+    public ChunkToGenerate(Chunk chunk)
     {
         this.chunk = chunk ?? throw new ArgumentNullException(nameof(chunk));
     }

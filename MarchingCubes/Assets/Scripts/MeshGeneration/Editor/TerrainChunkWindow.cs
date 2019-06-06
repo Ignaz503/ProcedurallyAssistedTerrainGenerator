@@ -155,9 +155,12 @@ public class TerrainChunkWindow : EditorWindow
                 for (int i = chunksToManage.Chunks.Count -1 ; i >= 0 ; i--)
                 {
                     var chunkInfo = chunksToManage.Chunks[i];
+
                     EditorGUILayout.BeginVertical();
                     EditorGUILayout.BeginHorizontal();
+
                     EditorGUILayout.LabelField($"Function For: {chunkInfo.chunk.Center}");
+
                     if (chunksToManage.Chunks.Count > 1)
                     {
                         if (GUILayout.Button("x", EditorStyles.label))
@@ -166,13 +169,14 @@ public class TerrainChunkWindow : EditorWindow
                         }
                     }
                     EditorGUILayout.EndHorizontal();
+
                     string buttonString = chunkInfo.DensityFunc != null ? chunkInfo.DensityFunc.ToString() : "Chose";
-                    var c = chunkInfo;//just to be save with closure
+
                     if (GUILayout.Button(buttonString, EditorStyles.popup))
                     {
                         Rect r = EditorGUILayout.GetControlRect();
                         r.position = Event.current.mousePosition;
-                        DrawDensityFuncChooser(r, c);
+                        DrawDensityFuncChooser(r, chunkInfo);
                     }
 
                     EditorGUILayout.EndVertical();
@@ -278,7 +282,8 @@ public class TerrainChunkWindow : EditorWindow
 
         foreach (var funcType in allPossFuncTypes)
         {
-            menu.AddItem(new GUIContent(funcType.ToString()), false, () => chunk.SetDensityFunction(funcType));
+            var type = funcType;//closure safety
+            menu.AddItem(new GUIContent(funcType.ToString()), false, () => chunk.SetDensityFunction(type));
         }
 
         menu.DropDown(r);
