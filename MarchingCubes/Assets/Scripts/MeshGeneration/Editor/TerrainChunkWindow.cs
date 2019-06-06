@@ -32,7 +32,7 @@ public class TerrainChunkWindow : EditorWindow
 
     DensityFuncApplyMode densityFuncApplyMode;
     string functionTypeString;
-    Type functionType;
+    Type densityFunctionType;
 
     ChunksToManage chunksToManage;
 
@@ -43,13 +43,15 @@ public class TerrainChunkWindow : EditorWindow
         chunkResolution = settings.MinChunkResolution;
         densityFuncApplyMode = DensityFuncApplyMode.OneForAll;
 
-        chunksToManage = new ChunksToManage();
-        chunksToManage.Chunks = new List<ChunkToGenerate>();
-
         show = true;
 
         if (Chunk.DefaultExtents.sqrMagnitude <= 0)
-            Chunk.DefaultExtents = Vector3.one * 10f;
+            Chunk.DefaultExtents = Vector3.one * 5f;
+
+
+        chunksToManage = new ChunksToManage();
+        chunksToManage.Chunks = new List<ChunkToGenerate>();
+        chunksToManage.AddChunk(Vector3.zero);
 
     }
 
@@ -136,7 +138,7 @@ public class TerrainChunkWindow : EditorWindow
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField($"Function: ");
-            string buttonString = functionType != null ? functionType.ToString() : "Chose";
+            string buttonString = densityFunctionType != null ? densityFunctionType.ToString() : "Chose";
             if (GUILayout.Button(buttonString, EditorStyles.popup))
             {
                 Rect r = EditorGUILayout.GetControlRect();
@@ -150,10 +152,20 @@ public class TerrainChunkWindow : EditorWindow
             show = EditorGUILayout.Foldout(show, $"Chunks: ");
             if (show)
             {
-                foreach(var chunkInfo  in chunksToManage.Chunks)
+                for (int i = chunksToManage.Chunks.Count -1 ; i >= 0 ; i--)
                 {
+                    var chunkInfo = chunksToManage.Chunks[i];
                     EditorGUILayout.BeginVertical();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField($"Function For: {chunkInfo.chunk.Center}");
+                    if (chunksToManage.Chunks.Count > 1)
+                    {
+                        if (GUILayout.Button("x", EditorStyles.label))
+                        {
+                            chunksToManage.RemoveChunkAt(i,true);
+                        }
+                    }
+                    EditorGUILayout.EndHorizontal();
                     string buttonString = chunkInfo.DensityFunc != null ? chunkInfo.DensityFunc.ToString() : "Chose";
                     var c = chunkInfo;//just to be save with closure
                     if (GUILayout.Button(buttonString, EditorStyles.popup))
@@ -182,7 +194,7 @@ public class TerrainChunkWindow : EditorWindow
         chunkResolution = EditorGUILayout.IntSlider(chunkResolution, settings.MinChunkResolution, settings.MaxChunkResolution);
         EditorGUILayout.EndHorizontal();
 
-        Chunk.DefaultExtents = EditorGUILayout.Vector3Field(new GUIContent("Base Chunk Extents: "), Chunk.DefaultExtents);
+        Chunk.DefaultExtents = EditorGUILayout.Vector3Field(new GUIContent("Base Chunk Extents (extends are half bounds size): "), Chunk.DefaultExtents);
 
         EditorGUILayout.EndVertical();
     }
@@ -192,8 +204,49 @@ public class TerrainChunkWindow : EditorWindow
         if (GUILayout.Button("Generate"))
         {
             //TODO Generate
-            Debug.Log("Generate not implemented");
+
+            if (PossibleToGenerate())
+            {
+                Debug.Log("Possible to generate, only implementation is left^^");
+            }
+
         }
+    }
+
+    private bool PossibleToGenerate()
+    {
+        switch (densityFuncApplyMode)
+        {
+            case DensityFuncApplyMode.OneForAll:
+                return CheckIfOneForAllApplyOK();
+            case DensityFuncApplyMode.PerChunk:
+                return CheckIfPerChunkApllyOk();
+            default:
+                Debug.LogError("Unknown Density Function Apply Mode");
+                return false;
+        }
+    }
+
+    private bool CheckIfPerChunkApllyOk()
+    {
+        for (int i = 0; i < chunksToManage.Chunks.Count; i++)
+        {
+            if (chunksToManage.Chunks[i].DensityFunc == null)
+            {
+                Debug.Log($"Chunk {i} (coords: {chunksToManage.Chunks[i].chunk.Center}) still needs a density function to be chosen");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private bool CheckIfOneForAllApplyOK()
+    {
+        if (densityFunctionType != null) 
+            return true;
+
+        Debug.Log("Please chose a density function before generating");
+        return false;
     }
 
     void DrawDensityFuncChooser(Rect r)
@@ -217,7 +270,8 @@ public class TerrainChunkWindow : EditorWindow
     void DrawDensityFuncChooser(Rect r, ChunkToGenerate chunk)
     {
         //Get all density functions
-        var allPossFuncTypes = Assembly.GetAssembly(typeof(IDensityFunc)).GetTypes().Where(t => t.IsAssignableFrom(typeof(IDensityFunc)));
+        var assem = Assembly.GetAssembly(typeof(IDensityFunc));
+        var allPossFuncTypes = assem.GetTypes().Where(t => typeof(IDensityFunc).IsAssignableFrom(t) && t != typeof(IDensityFunc));
 
         //generic menu shown as dropdown
         GenericMenu menu = new GenericMenu();
@@ -233,7 +287,7 @@ public class TerrainChunkWindow : EditorWindow
 
     void SetFunctionType(Type t)
     {
-        functionType = t;
+        densityFunctionType = t;
     }
 }
 

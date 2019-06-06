@@ -25,12 +25,59 @@ public class ChunkManager : MonoBehaviour
     {
         ToManage.Chunks.Add(new ChunkToGenerate(new Chunk(pos, Chunk.DefaultExtents)));
     }
+
+    public void RemoveChunk(Chunk chunk)
+    {
+        if (ToManage.Chunks.Count > 1)
+        {
+            ToManage.RemoveChunk(chunk);
+        }
+        else
+        {
+            Debug.LogWarning("One chunk must remain (Only one will reign supreme)");
+        }
+    }
 }
 
 public struct ChunksToManage
 {
     public List<ChunkToGenerate> Chunks;
 
+    public void RemoveChunk(Chunk chunk)
+    {
+        for (int i = Chunks.Count -1 ; i >= 0; i--)
+        {
+            if (Chunks[i].chunk == chunk)
+            {
+                Chunks[i] = Chunks[Chunks.Count - 1];//switch last elem to this
+                Chunks.RemoveAt(Chunks.Count - 1); //remove last elem
+                return;
+            }
+        }
+    }
+
+    public void AddChunk(Vector3 pos)
+    {
+        Chunks.Add(new ChunkToGenerate(new Chunk(pos, Chunk.DefaultExtents)));
+    }
+
+    public void RemoveChunk(ChunkToGenerate chunkInfo)
+    {
+        Chunks.Remove(chunkInfo);
+    }
+
+    public void RemoveChunkAt(int i, bool keepOrder = false)
+    {
+        if (!keepOrder)
+        {
+            Chunks[i] = Chunks[Chunks.Count - 1];
+            Chunks.RemoveAt(Chunks.Count - 1);
+        }
+        else
+        {
+            Chunks.RemoveAt(i);
+        }
+    }
 }
 
 [Serializable]

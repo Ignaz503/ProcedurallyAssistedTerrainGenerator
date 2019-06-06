@@ -11,11 +11,12 @@ public class ChunkManagerEditor : Editor
     public void OnSceneGUI()
     {
         Tools.hidden = false;
+
         manager = target as ChunkManager;
 
         HandleInitialCreation();
 
-        for (int i = 0; i < manager.ToManage.Chunks.Count; i++)
+        for (int i = manager.ToManage.Chunks.Count - 1; i >= 0 ; i--)
         {
             var cTM = manager.ToManage.Chunks[i];
 
@@ -45,6 +46,11 @@ public class ChunkManagerEditor : Editor
     {
         manager.AddChunk(pos);
     }
+
+    public void RemoveChunk(Chunk chunk)
+    {
+        manager.RemoveChunk(chunk);
+    }
 }
 
 public struct ChunkHandle
@@ -55,7 +61,7 @@ public struct ChunkHandle
     public Chunk ChunkToHandle;
     public ChunkManagerEditor Editor;
 
-    Vector3 Center
+    Vector3 CenterLocal
     {
         get
         {
@@ -63,12 +69,28 @@ public struct ChunkHandle
             Vector3 ext = ChunkToHandle.Extents;
 
             chunkNormViaExtends.Scale(new Vector3(
-                1.0f / ext.x,
-                1.0f / ext.y,
-                1.0f / ext.z
+                1.0f / (2f*ext.x),
+                1.0f / (2f * ext.y),
+                1.0f / (2f * ext.z)
                 ));
 
             return chunkNormViaExtends * HandleSize;
+        }
+    }
+
+    Vector3 Extents
+    {
+        get
+        {
+            return ChunkToHandle.Extents;
+        }
+    }
+
+    Vector3 Center
+    {
+        get
+        {
+            return ChunkToHandle.Center;
         }
     }
 
@@ -76,7 +98,16 @@ public struct ChunkHandle
     {
         Handles.zTest = UnityEngine.Rendering.CompareFunction.Less;
         Handles.color = Color.Lerp(Color.black, Color.gray, .5f);
-        Handles.CubeHandleCap(0, Center, Quaternion.identity, HandleSize, EventType.Repaint);
+        if (Handles.Button(CenterLocal, Quaternion.identity, HandleSize, HandleSize, Handles.CubeHandleCap))
+        {
+            if(Event.current.modifiers == EventModifiers.Control)
+            {
+                //right click
+                Editor.RemoveChunk(ChunkToHandle);
+            }
+
+        }
+        //Handles.CubeHandleCap(0, CenterLocal, Quaternion.identity, HandleSize, EventType.Repaint);
 
         DrawPotentialNeighbors();
 
@@ -84,7 +115,7 @@ public struct ChunkHandle
 
     private void DrawPotentialNeighbors()
     {
-        Vector3 coords = ChunkToHandle.Center;
+        Vector3 coords = CenterLocal;
         //x neighbors
         DrawPotentialNeighborsForAxis(coords, Vector3.right * HandleSize);
 
@@ -93,21 +124,31 @@ public struct ChunkHandle
 
 
         //z neighbors
-        DrawPotentialNeighborsForAxis(coords,Vector3.forward * PotentialSize);
+        DrawPotentialNeighborsForAxis(coords,Vector3.forward * HandleSize);
 
     }
 
     void DrawPotentialNeighborsForAxis(Vector3 coords, Vector3 dir)
     {
-        if (!Editor.ContainsChunkByCoord(coords + dir))
+        Vector3 pos = coords + dir;
+        if (!Editor.ContainsChunkByCoord(MakeLocalToWorldChunkCoord(pos)))
         {
-            DrawPotentialHandle(coords + dir);
+            DrawPotentialHandle(pos);
         }
 
-        if (!Editor.ContainsChunkByCoord(coords - dir))
+        pos = coords - dir;
+        if (!Editor.ContainsChunkByCoord(MakeLocalToWorldChunkCoord(pos)))
         {
-            DrawPotentialHandle(coords - dir);
+            DrawPotentialHandle(pos);
         }
+    }
+
+    Vector3 MakeLocalToWorldChunkCoord(Vector3 coord)
+    {
+        //add new chunk
+        coord.Scale(new Vector3(1.0f / HandleSize, 1.0f / HandleSize, 1.0f / HandleSize));
+        coord.Scale(2*Chunk.DefaultExtents);
+        return coord;
     }
 
     void DrawPotentialHandle(Vector3 pos)
@@ -115,10 +156,7 @@ public struct ChunkHandle
         Handles.color = Color.Lerp(Color.yellow, Color.white, .25f);
         if (Handles.Button(pos, Quaternion.identity, PotentialSize, PotentialSize, Handles.CubeHandleCap))
         {
-            //add new chunk
-            pos = pos.normalized;
-            pos.Scale(Chunk.DefaultExtents);
-            Debug.Log("Add new chunk");
+            pos = MakeLocalToWorldChunkCoord(pos);
             Editor.AddNewChunk(pos);
         }
     }

@@ -39,6 +39,7 @@ public class ChunkSceneView : SceneView
         //add light
         GameObject lightobj = new GameObject();
         lightobj.name = "Light";
+        lightobj.transform.position = new Vector3(0, 100, 0);
         lightobj.transform.rotation = Quaternion.Euler(new Vector3(50, -30, 0));
 
         var light = lightobj.AddComponent<Light>();
