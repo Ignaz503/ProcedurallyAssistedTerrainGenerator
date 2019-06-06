@@ -92,12 +92,13 @@ public class TerrainChunkWindow : EditorWindow
         {
             if (EditorUtility.DisplayDialog("Start Editing Chunks", "This is going to open a new scene and close all currently open ones (saving them beforehand). Make sure there are no unwanted changes that would get saved in any open scene.", "Proceed"))
             {
-                var sv =  GetWindow<ChunkSceneView>();
+                var sv =  GetWindow<ChunkSceneView>(typeof(TerrainChunkWindow));
                 sv.Initialize(this);
 
                 sv.SetChunksToManage(chunksToManage);
                 sv.Focus();
-                Docker.Dock(this, sv, Docker.DockPosition.Bottom);
+                sv.Show();
+                //Docker.Dock(this, sv, Docker.DockPosition.Bottom);
             }
             
         }
@@ -183,6 +184,14 @@ public class TerrainChunkWindow : EditorWindow
                 }
             }
         }
+
+        if (GUILayout.Button("Create New Denisty Function"))
+        {
+            EditorWindow window = GetWindow<FunctionGraphEditor>(typeof(TerrainChunkWindow));
+            window.Show();
+
+        }
+
     }
 
     void DrawChunkSettings()

@@ -20,6 +20,15 @@ public partial class FunctionGraphEditor : EditorWindow
         window.Initialize();
     }
 
+    public static FunctionGraphEditor OpenEditorWindow()
+    {
+        FunctionGraphEditor window = GetWindow<FunctionGraphEditor>();
+
+        window.titleContent = new GUIContent("Function Graph Editor");
+        window.Initialize();
+        return window;
+    }
+
     FunctionGraph graph;
 
     [SerializeField] FunctionGraphEditorSettings settings = null;
@@ -56,10 +65,14 @@ public partial class FunctionGraphEditor : EditorWindow
 
     public void OnGUI()
     {
+        if (graph == null)
+            Initialize();
+
         DrawGrid(20, 0.2f, Color.gray);
         DrawGrid(100, 0.4f, Color.gray);
 
         //clear old connections
+
         connectionsToDraw.Clear();
         //DO STUFF
 
@@ -94,7 +107,7 @@ public partial class FunctionGraphEditor : EditorWindow
         //GUILayout.BeginArea(new Rect(offset,size));
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Graph Name: ", EditorStyles.boldLabel,  GUILayout.ExpandWidth(false));
-        graph.GraphName = EditorGUILayout.TextField(graph. GraphName,  GUILayout.ExpandWidth(false));
+        graph.GraphName = EditorGUILayout.TextField(graph.GraphName,  GUILayout.ExpandWidth(false));
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         
