@@ -47,7 +47,10 @@ public class TerrainChunkWindow : EditorWindow
         chunksToManage.Chunks = new List<ChunkToGenerate>();
 
         show = true;
-        
+
+        if (Chunk.DefaultExtents.sqrMagnitude <= 0)
+            Chunk.DefaultExtents = Vector3.one * 10f;
+
     }
 
     public void UpdateChunksToManage(ChunksToManage toManage)
@@ -66,7 +69,9 @@ public class TerrainChunkWindow : EditorWindow
         Rect r = EditorGUILayout.BeginVertical();
 
         DrawGeneralInfoArea();
+        EditorGUIExtensions.Space(5);
         DrawChunkFormCreator();
+        EditorGUIExtensions.Space(5);
         DrawFooter();
 
         EditorGUILayout.BeginVertical();
@@ -74,12 +79,17 @@ public class TerrainChunkWindow : EditorWindow
 
     private void DrawChunkFormCreator()
     {
+        var style = EditorStyles.largeLabel;
+        style.fontStyle = FontStyle.Bold;
+        EditorGUILayout.LabelField(new GUIContent("Terrain Form:"), style);
+
+        EditorGUIExtensions.Space(2);
+
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Edit Chunks"))
         {
             if (EditorUtility.DisplayDialog("Start Editing Chunks", "This is going to open a new scene and close all currently open ones (saving them beforehand). Make sure there are no unwanted changes that would get saved in any open scene.", "Proceed"))
             {
-
                 var sv =  GetWindow<ChunkSceneView>();
                 sv.Initialize(this);
 
@@ -94,26 +104,29 @@ public class TerrainChunkWindow : EditorWindow
 
     private void DrawGeneralInfoArea()
     {
-        EditorGUILayout.LabelField(new GUIContent("General Info"), EditorStyles.largeLabel);
-        EditorGUILayout.Space();
-        EditorGUILayout.Space();
+        var style = EditorStyles.largeLabel;
+        style.fontStyle = FontStyle.Bold;
+        EditorGUILayout.LabelField(new GUIContent("General Settings"), style);
+
+        EditorGUIExtensions.Space(3);
 
         EditorGUILayout.BeginVertical();
 
-        EditorGUILayout.LabelField(new GUIContent("Settings:"),EditorStyles.boldLabel);
-        EditorGUILayout.Space();
+        DrawChunkSettings();
 
-        DrawResolutionChooser();
-
-        EditorGUILayout.Space();
+        EditorGUIExtensions.Space(3);
 
         DrawDensityFunctionChooser();
-
+        
         EditorGUILayout.EndVertical();
     }
 
     private void DrawDensityFunctionChooser()
     {
+        EditorGUILayout.LabelField(new GUIContent("Density Function Settings: "), EditorStyles.boldLabel);
+
+        EditorGUIExtensions.Space(2);
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField(new GUIContent("Density Function Apply Mode: "));
         densityFuncApplyMode = (DensityFuncApplyMode)EditorGUILayout.EnumPopup(densityFuncApplyMode) ;
@@ -156,12 +169,22 @@ public class TerrainChunkWindow : EditorWindow
         }
     }
 
-    void DrawResolutionChooser()
+    void DrawChunkSettings()
     {
+        EditorGUILayout.BeginVertical();
+
+        EditorGUILayout.LabelField(new GUIContent("Chunk Settings: "), EditorStyles.boldLabel);
+
+        EditorGUILayout.Space();
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField(new GUIContent("Chunk Sample Resolution: "));
         chunkResolution = EditorGUILayout.IntSlider(chunkResolution, settings.MinChunkResolution, settings.MaxChunkResolution);
         EditorGUILayout.EndHorizontal();
+
+        Chunk.DefaultExtents = EditorGUILayout.Vector3Field(new GUIContent("Base Chunk Extents: "), Chunk.DefaultExtents);
+
+        EditorGUILayout.EndVertical();
     }
 
     private void DrawFooter()

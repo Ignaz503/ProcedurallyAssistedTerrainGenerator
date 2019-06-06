@@ -5,11 +5,16 @@ using UnityEngine;
 [System.Serializable]
 public class Chunk 
 {
+    public static Vector3 DefaultExtents;
+
     [SerializeField] Bounds chunkBounds;
 
 #if UNITY_EDITOR
     [SerializeField] bool visualizeBounds = false;
 #endif
+
+    public Vector3 Center { get { return chunkBounds.center; } }
+    public Vector3 Extents{ get { return chunkBounds.extents; } }
 
     public Chunk(Bounds chunkBounds)
     {
@@ -37,6 +42,9 @@ public class Chunk
         };
     }
 
+
+ 
+
     /// <summary>
     /// assumed to be in -0.5 to 0.5
     /// </summary>
@@ -53,15 +61,7 @@ public class Chunk
     {
         return CubeMarch(Vector3.one * girdResolution, func, isoLevel);
     }
-
-    float x;
-
-    public Vector3 Center { get { return chunkBounds.center; } }
-
-    public float GetX()
-    {
-        return x;
-    }
+    
 
     public MeshData CubeMarch(Vector3 gridResolution, IDensityFunc func, float isoLevel = 0f)
     {

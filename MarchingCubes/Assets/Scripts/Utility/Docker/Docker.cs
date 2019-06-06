@@ -88,7 +88,7 @@ public static class Docker
 
         public object DragOver( EditorWindow child, Vector2 screenPoint ) {
             var method = type.GetMethod( "DragOver", BindingFlags.Instance | BindingFlags.Public );
-            return method.Invoke( instance, new object[] { child, screenPoint } );
+            return method.Invoke(instance, new object[] { child, screenPoint });
         }
 
         public void PerformDrop( EditorWindow child, object dropInfo, Vector2 screenPoint ) {
@@ -142,7 +142,8 @@ public static class Docker
                 break;
         }
 
-        return GUIUtility.GUIToScreenPoint( mousePosition );
+        //return GUIUtility.GUIToScreenPoint( mousePosition );
+        return new Vector2(wnd.position.x + mousePosition.x, wnd.position.y + mousePosition.y);
     }
 }
 #endif

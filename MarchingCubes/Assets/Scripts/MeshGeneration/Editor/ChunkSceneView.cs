@@ -11,6 +11,7 @@ public class ChunkSceneView : SceneView
     public ChunkManager manager;
     Scene openScene;
     TerrainChunkWindow callingWindow;
+    GameObject chunkObject;
 
     public void Initialize(TerrainChunkWindow callingWindow)
     {
@@ -28,15 +29,36 @@ public class ChunkSceneView : SceneView
     {
         openScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
+        CenterView();
+
         GameObject obj = new GameObject();
+        obj.name = "Chunks Holder";
         manager = obj.AddComponent<ChunkManager>();
 
-        pivot = Vector3.up*10;
-        rotation = Quaternion.Euler(90, 0, 0);
+
+        //add light
+        GameObject lightobj = new GameObject();
+        lightobj.name = "Light";
+        lightobj.transform.rotation = Quaternion.Euler(new Vector3(50, -30, 0));
+
+        var light = lightobj.AddComponent<Light>();
+
+        light.color = Color.white;
+        light.type = LightType.Directional;
+
+        Lightmapping.Bake();
 
         //mark gameobject in scene hierarchy
         Selection.activeObject = obj;
 
+        chunkObject = obj;
+
+    }
+
+    void CenterView()
+    {
+        pivot = Vector3.up * 10;
+        rotation = Quaternion.Euler(90, 0, 0);
     }
 
     public new void OnDestroy()
@@ -52,15 +74,28 @@ public class ChunkSceneView : SceneView
         
         base.OnDestroy();
     }
-
+    
     public new void OnGUI()
     {
         base.OnGUI();
+
+        EditorGUILayout.BeginHorizontal();
+
+        if (GUILayout.Button("Ahh the chunks are missing, please make them be drawn again"))
+        {
+            Selection.activeObject = chunkObject;
+        }
+
+        if (GUILayout.Button("Recenter me, i'm lost"))
+        {
+            CenterView();
+        }
 
         if (GUILayout.Button("Close"))
         {
             Close();
         }
+        EditorGUILayout.EndHorizontal();
 
     }
 
