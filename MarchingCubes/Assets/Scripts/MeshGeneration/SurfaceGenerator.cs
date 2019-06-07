@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 public class SurfaceGenerator : MonoBehaviour
@@ -28,9 +30,40 @@ public class SurfaceGenerator : MonoBehaviour
         ThreadedDataRequester.Instance.RequestData(()=> { return testChunk.CubeMarch(resolution, new SimpleSurface()); }, OnDataRecieved);
     }
 
+
+    public void RequestMesh(List<Generate> chunksToGen, Type idensityFunc, int resolution)
+    {
+        //TODO maybe instance for each and every one extra instead of one
+        IDensityFunc densFunc = Activator.CreateInstance(idensityFunc) as IDensityFunc;
+
+        for (int i = 0; i < chunksToGen.Count; i++)
+        {
+            var chunk = chunksToGen[i].Chunk;
+            ThreadedDataRequester.Instance.RequestData(() => { return chunk.CubeMarch(resolution, densFunc); }, (obj) => OnDataRecieved((MeshData)obj ,chunk) );
+        }
+
+    }
+
+    public void RequestMesh(List<Generate> chunksToGen, int resolution)
+    {
+        for (int i = 0; i < chunksToGen.Count; i++)
+        {
+            IDensityFunc f = Activator.CreateInstance(chunksToGen[i].DensityFunc) as IDensityFunc;
+            var chunk = chunksToGen[i].Chunk;
+
+            ThreadedDataRequester.Instance.RequestData(() => { return chunk.CubeMarch(resolution, f); }, (obj) => OnDataRecieved((MeshData)obj, chunk));
+        }
+    }
+
     void OnDataRecieved(object obj)
     {
         MeshData data = (MeshData)obj;
+        data.ToMesh(mesh.sharedMesh);
+    }
+
+    public void OnDataRecieved(MeshData data, Chunk chunk)
+    {
+        Debug.Log("Ayy we recieved a chunk");
         data.ToMesh(mesh.sharedMesh);
     }
 

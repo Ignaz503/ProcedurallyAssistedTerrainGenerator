@@ -20,7 +20,7 @@ public class ChunkManagerEditor : Editor
         {
             var cTM = manager.ToManage.Chunks[i];
 
-            var chunkHandle = new ChunkHandle() { ChunkToHandle = cTM.chunk, Editor = this };
+            var chunkHandle = new ChunkHandle() { ChunkToHandle = cTM.Chunk, Editor = this };
 
             chunkHandle.DrawChunkHandle();
 
@@ -93,23 +93,26 @@ public struct ChunkHandle
             return ChunkToHandle.Center;
         }
     }
-
+    
     public void DrawChunkHandle()
     {
         Handles.zTest = UnityEngine.Rendering.CompareFunction.Less;
         Handles.color = Color.Lerp(Color.black, Color.gray, .5f);
-        if (Handles.Button(CenterLocal, Quaternion.identity, HandleSize, HandleSize, Handles.CubeHandleCap))
+        if (Event.current.modifiers == EventModifiers.Control)
         {
-            if(Event.current.modifiers == EventModifiers.Control)
+            if (Handles.Button(CenterLocal, Quaternion.identity, HandleSize, HandleSize, Handles.CubeHandleCap))
             {
                 //right click
                 Editor.RemoveChunk(ChunkToHandle);
             }
 
         }
-        //Handles.CubeHandleCap(0, CenterLocal, Quaternion.identity, HandleSize, EventType.Repaint);
+        else
+        {
+            Handles.CubeHandleCap(0, CenterLocal, Quaternion.identity, HandleSize, EventType.Repaint);
 
-        DrawPotentialNeighbors();
+            DrawPotentialNeighbors();
+        }
 
     }
 

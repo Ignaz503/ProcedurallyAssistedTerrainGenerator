@@ -35,6 +35,7 @@ public class TerrainChunkWindow : EditorWindow
     Type densityFunctionType;
 
     ChunksToManage chunksToManage;
+    SurfaceGenerator generator;
 
     bool show;
 
@@ -50,9 +51,30 @@ public class TerrainChunkWindow : EditorWindow
 
 
         chunksToManage = new ChunksToManage();
-        chunksToManage.Chunks = new List<ChunkToGenerate>();
+        chunksToManage.Chunks = new List<Generate>();
         chunksToManage.AddChunk(Vector3.zero);
 
+        FindOrCreateSurfaceGenerator();
+
+    }
+
+    void FindOrCreateSurfaceGenerator()
+    {
+        var generator = FindObjectOfType<SurfaceGenerator>();
+
+        if (generator == null)
+        {
+            //need to create surface generator
+            Debug.Log("Need to create surface generator, will be an editor only gameobject in your current scene");
+            GameObject gen = new GameObject();
+            gen.name = "Surface Generator";
+            gen.tag = "EditorOnly";
+            gen.transform.position = Vector3.zero;
+
+            generator = gen.AddComponent<SurfaceGenerator>();
+
+        }
+        this.generator = generator;
     }
 
     public void UpdateChunksToManage(ChunksToManage toManage)
@@ -160,7 +182,7 @@ public class TerrainChunkWindow : EditorWindow
                     EditorGUILayout.BeginVertical();
                     EditorGUILayout.BeginHorizontal();
 
-                    EditorGUILayout.LabelField($"Function For: {chunkInfo.chunk.Center}");
+                    EditorGUILayout.LabelField($"Function For: {chunkInfo.Chunk.Center}");
 
                     if (chunksToManage.Chunks.Count > 1)
                     {
@@ -220,9 +242,24 @@ public class TerrainChunkWindow : EditorWindow
 
             if (PossibleToGenerate())
             {
-                Debug.Log("Possible to generate, only implementation is left^^");
+                Generate();
             }
+        }
+    }
 
+    private void Generate()
+    {
+        switch (densityFuncApplyMode)
+        {
+            case DensityFuncApplyMode.OneForAll:
+                generator.RequestMesh(chunksToManage.Chunks, densityFunctionType, chunkResolution);
+                break;
+            case DensityFuncApplyMode.PerChunk:
+                generator.RequestMesh(chunksToManage.Chunks, chunkResolution);
+                break;
+            default:
+                Debug.LogError("Unknonw Density Function Apply mode");
+                break;
         }
     }
 
@@ -246,7 +283,7 @@ public class TerrainChunkWindow : EditorWindow
         {
             if (chunksToManage.Chunks[i].DensityFunc == null)
             {
-                Debug.Log($"Chunk {i} (coords: {chunksToManage.Chunks[i].chunk.Center}) still needs a density function to be chosen");
+                Debug.Log($"Chunk {i} (coords: {chunksToManage.Chunks[i].Chunk.Center}) still needs a density function to be chosen");
                 return false;
             }
         }
@@ -280,7 +317,7 @@ public class TerrainChunkWindow : EditorWindow
         menu.DropDown(r);
     }
 
-    void DrawDensityFuncChooser(Rect r, ChunkToGenerate chunk)
+    void DrawDensityFuncChooser(Rect r, Generate chunk)
     {
         //Get all density functions
         var assem = Assembly.GetAssembly(typeof(IDensityFunc));

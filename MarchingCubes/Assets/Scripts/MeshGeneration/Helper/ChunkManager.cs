@@ -13,7 +13,7 @@ public class ChunkManager : MonoBehaviour
         {
             var chunk = ToManage.Chunks[i];
 
-            if ((chunk.chunk.Center - coord).sqrMagnitude <= 0f)
+            if ((chunk.Chunk.Center - coord).sqrMagnitude <= 0f)
             {
                 return true;
             }
@@ -23,7 +23,7 @@ public class ChunkManager : MonoBehaviour
 
     public void AddChunk(Vector3 pos)
     {
-        ToManage.Chunks.Add(new ChunkToGenerate(new Chunk(pos, Chunk.DefaultExtents)));
+        ToManage.Chunks.Add(new Generate(new Chunk(pos, Chunk.DefaultExtents)));
     }
 
     public void RemoveChunk(Chunk chunk)
@@ -41,13 +41,13 @@ public class ChunkManager : MonoBehaviour
 
 public struct ChunksToManage
 {
-    public List<ChunkToGenerate> Chunks;
+    public List<Generate> Chunks;
 
     public void RemoveChunk(Chunk chunk)
     {
         for (int i = Chunks.Count -1 ; i >= 0; i--)
         {
-            if (Chunks[i].chunk == chunk)
+            if (Chunks[i].Chunk == chunk)
             {
                 Chunks[i] = Chunks[Chunks.Count - 1];//switch last elem to this
                 Chunks.RemoveAt(Chunks.Count - 1); //remove last elem
@@ -58,10 +58,10 @@ public struct ChunksToManage
 
     public void AddChunk(Vector3 pos)
     {
-        Chunks.Add(new ChunkToGenerate(new Chunk(pos, Chunk.DefaultExtents)));
+        Chunks.Add(new Generate(new Chunk(pos, Chunk.DefaultExtents)));
     }
 
-    public void RemoveChunk(ChunkToGenerate chunkInfo)
+    public void RemoveChunk(Generate chunkInfo)
     {
         Chunks.Remove(chunkInfo);
     }
@@ -81,20 +81,20 @@ public struct ChunksToManage
 }
 
 [Serializable]
-public class ChunkToGenerate
+public class Generate
 {
-    public Chunk chunk;
+    public Chunk Chunk;
     public Type DensityFunc;
 
-    public ChunkToGenerate(Chunk chunk, Type densityFunc)
+    public Generate(Chunk chunk, Type densityFunc)
     {
-        this.chunk = chunk ?? throw new ArgumentNullException(nameof(chunk));
+        this.Chunk = chunk ?? throw new ArgumentNullException(nameof(chunk));
         DensityFunc = densityFunc ?? throw new ArgumentNullException(nameof(densityFunc));
     }
 
-    public ChunkToGenerate(Chunk chunk)
+    public Generate(Chunk chunk)
     {
-        this.chunk = chunk ?? throw new ArgumentNullException(nameof(chunk));
+        this.Chunk = chunk ?? throw new ArgumentNullException(nameof(chunk));
     }
 
     public void SetDensityFunction(Type t)
