@@ -9,4 +9,9 @@ public class FurtherTests : IDensityFunc
 	{
 		return ( ( -y.ValueWorld ) + SimplexNoise.Evaulate( x.ValueWorld , y.ValueWorld , z.ValueWorld ) ) ;
 	}
+
+    public float Evaluate(Vector3 point)
+    {
+        return -1;//+ (Mathf.PerlinNoise(point.x,point.y));
+    }
 }

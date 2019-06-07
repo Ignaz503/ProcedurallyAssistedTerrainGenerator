@@ -59,6 +59,7 @@ public class SurfaceGenerator : MonoBehaviour
     {
         MeshData data = (MeshData)obj;
         data.ToMesh(mesh.sharedMesh);
+        Debug.Log("Added Mesh");
     }
 
     public void OnDataRecieved(MeshData data, Chunk chunk)
@@ -92,7 +93,7 @@ public class SphereDensityFunc : IDensityFunc
         return Evaluate(new Vector3(x.ValueWorld, y.ValueWorld, z.ValueWorld));
     }
 
-    protected float Evaluate(Vector3 point)
+    public float Evaluate(Vector3 point)
     {
         return -(((point - center).magnitude - rad));//+ (Mathf.PerlinNoise(point.x,point.y));
     }

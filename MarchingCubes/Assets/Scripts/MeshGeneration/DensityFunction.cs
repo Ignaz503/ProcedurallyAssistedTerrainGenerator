@@ -8,6 +8,8 @@ public interface IDensityFunc
 {
     float Evaluate(SamplePointVariables x, SamplePointVariables y, SamplePointVariables z);
 
+    float Evaluate(Vector3 point);
+
 }
 
 public class SimpleSurface : IDensityFunc
@@ -17,7 +19,7 @@ public class SimpleSurface : IDensityFunc
         return Evaluate(new Vector3(x.ValueWorld, y.ValueWorld, z.ValueWorld));
     }
 
-    protected float Evaluate(Vector3 point)
+    public float Evaluate(Vector3 point)
     {
         return -point.y + Mathf.PerlinNoise(point.x, point.z) * 2f;
     }

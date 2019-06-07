@@ -202,14 +202,13 @@ public class Chunk
 
         Vector3 localP = GetLocalPoint(x, y, z + 1, gridResolution);
         Vector3 p = LocalToWorld(localP);
-
         voxel[0] = new Vertex
         {
             Point = p,
             IsoVal = densFunc.Evaluate(
-                new SamplePointVariables(p.x,localP.x),
-                new SamplePointVariables(p.y,localP.y),
-                new SamplePointVariables(p.z,localP.z)
+                new SamplePointVariables(p.x, localP.x),
+                new SamplePointVariables(p.y, localP.y),
+                new SamplePointVariables(p.z, localP.z)
                 )
         };
         localP = GetLocalPoint(x + 1, y, z + 1, gridResolution);
@@ -298,6 +297,74 @@ public class Chunk
 
         return voxel;
     }
+
+    //Vertex[] GetVoxel(int x, int y, int z, Vector3 gridResolution, IDensityFunc densFunc)
+    //{
+    //    Vertex[] voxel = new Vertex[8];
+
+    //    Vector3 p = LocalToWorld(GetLocalPoint(x, y, z + 1, gridResolution));
+
+    //    voxel[0] = new Vertex
+    //    {
+    //        Point = p,
+    //        IsoVal = densFunc.Evaluate(p)
+    //    };
+
+    //    p = LocalToWorld(GetLocalPoint(x + 1, y, z + 1, gridResolution));
+
+    //    voxel[1] = new Vertex
+    //    {
+    //        Point = p,
+    //        IsoVal = densFunc.Evaluate(p)
+    //    };
+
+    //    p = LocalToWorld(GetLocalPoint(x + 1, y, z, gridResolution));
+    //    voxel[2] = new Vertex
+    //    {
+    //        Point = p,
+    //        IsoVal = densFunc.Evaluate(p)
+    //    };
+
+    //    p = LocalToWorld(GetLocalPoint(x, y, z, gridResolution));
+    //    voxel[3] = new Vertex
+    //    {
+    //        Point = p,
+    //        IsoVal = densFunc.Evaluate(p)
+    //    };
+
+    //    p = LocalToWorld(GetLocalPoint(x, y + 1, z + 1, gridResolution));
+    //    voxel[4] = new Vertex
+    //    {
+    //        Point = p,
+    //        IsoVal = densFunc.Evaluate(p)
+    //    };
+
+    //    p = LocalToWorld(GetLocalPoint(x + 1, y + 1, z + 1, gridResolution));
+
+    //    voxel[5] = new Vertex
+    //    {
+    //        Point = p,
+    //        IsoVal = densFunc.Evaluate(p)
+    //    };
+
+    //    p = LocalToWorld(GetLocalPoint(x + 1, y + 1, z, gridResolution));
+    //    voxel[6] = new Vertex
+    //    {
+    //        Point = p,
+    //        IsoVal = densFunc.Evaluate(p)
+    //    };
+
+    //    p = LocalToWorld(GetLocalPoint(x, y + 1, z, gridResolution));
+
+    //    voxel[7] = new Vertex
+    //    {
+    //        Point = p,
+    //        IsoVal = densFunc.Evaluate(p)
+    //    };
+
+    //    return voxel;
+
+    //}
 
 #if UNITY_EDITOR
     public void Visualize()
