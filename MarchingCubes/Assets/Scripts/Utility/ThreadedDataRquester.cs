@@ -82,10 +82,14 @@ public class ThreadedDataRequester : MonoBehaviour
 
     static ThreadedDataRequester CreateInstance() {
 
-        if (FindObjectOfType<ThreadedDataRequester>() != null)
+        var inst = FindObjectOfType<ThreadedDataRequester>();
+        if ( inst != null)
         {
-            Debug.Log("Already requester in existance");
-            return FindObjectOfType<ThreadedDataRequester>();
+            //after recompile?
+            #if UNITY_EDITOR
+                inst.MakeUseableInEditor();
+            #endif
+            return inst;
         }
 
         GameObject obj = new GameObject();
@@ -102,6 +106,7 @@ public class ThreadedDataRequester : MonoBehaviour
     }
 
 #if UNITY_EDITOR
+
 
     public void MakeUseableInEditor()
     {

@@ -47,7 +47,7 @@ public class TerrainChunkWindow : EditorWindow
         show = true;
 
         if (Chunk.DefaultExtents.sqrMagnitude <= 0)
-            Chunk.DefaultExtents = Vector3.one * 5f;
+            Chunk.DefaultExtents = Vector3.one * 10f;
 
 
         chunksToManage = new ChunksToManage();
@@ -55,7 +55,18 @@ public class TerrainChunkWindow : EditorWindow
         chunksToManage.AddChunk(Vector3.zero);
 
         FindOrCreateSurfaceGenerator();
+        CheckIfAlreadyExistentTerrainChunks();
+    }
 
+    private void CheckIfAlreadyExistentTerrainChunks()
+    {
+        var obj =GameObject.FindGameObjectsWithTag("TerrainRoot");
+
+        if (obj != null)
+        {
+            //TODO Get All the info about a chunk
+            //but do i really wanna store that info on the gameobject
+        }
     }
 
     void FindOrCreateSurfaceGenerator()
@@ -192,20 +203,22 @@ public class TerrainChunkWindow : EditorWindow
                 EditorGUILayout.BeginVertical();
                 EditorGUILayout.BeginHorizontal();
 
-                EditorGUILayout.LabelField($"Function For: {chunkInfo.Chunk.Center}");
+                EditorGUILayout.LabelField($"Chunk at: {chunkInfo.Chunk.Center}");
 
-                    if (chunksToManage.Chunks.Count > 1)
+                if (chunksToManage.Chunks.Count > 1)
+                {
+                    if (GUILayout.Button("x", EditorStyles.label))
                     {
-                        if (GUILayout.Button("x", EditorStyles.label))
-                        {
-                            chunksToManage.RemoveChunkAt(i, true);
-                        }
+                        chunksToManage.RemoveChunkAt(i, true);
                     }
+                }
                 EditorGUILayout.EndHorizontal();
 
-                    if (densityFuncApplyMode == DensityFuncApplyMode.PerChunk)
-                    {
+                if (densityFuncApplyMode == DensityFuncApplyMode.PerChunk)
+                {
                     string buttonString = chunkInfo.DensityFunc != null ? chunkInfo.DensityFunc.ToString() : "Chose";
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Function");
 
                     if (GUILayout.Button(buttonString, EditorStyles.popup))
                     {
@@ -213,7 +226,7 @@ public class TerrainChunkWindow : EditorWindow
                         r.position = Event.current.mousePosition;
                         DrawDensityFuncChooser(r, chunkInfo);
                     }
-
+                    EditorGUILayout.EndHorizontal();
                 }
                 EditorGUILayout.EndVertical();
             }

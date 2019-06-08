@@ -13,12 +13,13 @@ public class SurfaceGenerator : MonoBehaviour
     [SerializeField] MeshFilter mesh = null;
     [SerializeField] bool sphere = false;
 
+    public Transform Terrain { get; protected set; }
+
     public void Generate()
     {
         if(mesh != null)
         {
             RequestMesh();
-            
         }
         else
         {
@@ -70,11 +71,16 @@ public class SurfaceGenerator : MonoBehaviour
 
     public void OnDataRecieved(MeshData data, Chunk chunk)
     {
+        if (Terrain == null)
+        {
+            CreateTerrainParent();
+        }
+
         //Create A gameobject with mesh filter and renderer
         GameObject newChunk = new GameObject();
         newChunk.transform.position = chunk.Center;
         newChunk.transform.rotation = Quaternion.identity;
-
+        newChunk.transform.SetParent(Terrain);
         newChunk.name = $"Chunk: {chunk.Center}";
 
         var mFilter = newChunk.AddComponent<MeshFilter>();
@@ -83,6 +89,16 @@ public class SurfaceGenerator : MonoBehaviour
         mRenderer.sharedMaterial = new Material(Shader.Find("Standard"));
 
         mFilter.sharedMesh = data.ToMesh();
+    }
+
+    private void CreateTerrainParent()
+    {
+        GameObject tObj = new GameObject();
+        tObj.name = "Terrain";
+        tObj.tag = "TerrainRoot";
+        tObj.transform.position = Vector3.zero;
+        tObj.transform.rotation = Quaternion.identity;
+        Terrain = tObj.transform;
     }
 
     private void OnDrawGizmos()

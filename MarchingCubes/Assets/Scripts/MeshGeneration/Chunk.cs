@@ -13,13 +13,29 @@ public class Chunk
     [SerializeField] bool visualizeBounds = false;
 #endif
 
-    public Vector3 Center { get { return chunkBounds.center; } }
+    public Vector3 Center
+    {
+        get
+        {
+            return chunkBounds.center;
+        }
+        set
+        {
+            chunkBounds.center = value;
+        }
+    }
+
     public Vector3 Extents
     {
         get { return chunkBounds.extents; }
         set
         {
+            Vector3 oldExt = chunkBounds.extents;
             chunkBounds.extents = value;
+
+            Vector3 center = Center;
+            center.Scale(new Vector3(chunkBounds.extents.x / oldExt.x, chunkBounds.extents.y / oldExt.y, chunkBounds.extents.z / oldExt.z));
+            Center = center;
         }
     }
 
