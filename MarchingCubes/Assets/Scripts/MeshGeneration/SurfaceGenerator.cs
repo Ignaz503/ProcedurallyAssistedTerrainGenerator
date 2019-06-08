@@ -65,6 +65,7 @@ public class SurfaceGenerator : MonoBehaviour
     void OnDataRecieved(object obj)
     {
         MeshData data = (MeshData)obj;
+
         data.ToMesh(mesh.sharedMesh);
         Debug.Log("Added Mesh");
     }

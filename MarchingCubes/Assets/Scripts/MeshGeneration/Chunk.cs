@@ -119,8 +119,11 @@ public class Chunk
                             new Triangle()
                             {
                                 A = CubeMarchLerp(voxel[idxA0], voxel[idxB0], isoLevel),
+                                VertexA = new PointCreators(voxel[idxA0].ID, voxel[idxB0].ID),
                                 B = CubeMarchLerp(voxel[idxA1], voxel[idxB1], isoLevel),
-                                C = CubeMarchLerp(voxel[idxA2], voxel[idxB2], isoLevel)   
+                                VertexB = new PointCreators(voxel[idxA1].ID, voxel[idxB1].ID),
+                                C = CubeMarchLerp(voxel[idxA2], voxel[idxB2], isoLevel),   
+                               VertexC = new PointCreators(voxel[idxA2].ID, voxel[idxB2].ID) 
                             }
                             );
 
@@ -129,22 +132,54 @@ public class Chunk
             }
        }// end for z
 
-        Vector3[] vertices = new Vector3[trianglesFromMarch.Count * 3];
+        //Vector3[] vertices = new Vector3[trianglesFromMarch.Count * 3];
+        //int[] triangles = new int[trianglesFromMarch.Count * 3];
+
+        //for (int triIdx = 0; triIdx < trianglesFromMarch.Count; triIdx++)
+        //{
+        //    for (int vertIdx = 0; vertIdx < 3; vertIdx++)
+        //    {
+        //        vertices[triIdx * 3 + vertIdx] = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
+        //        triangles[triIdx * 3 + vertIdx] = triIdx * 3 + vertIdx;
+
+        //        triangles[triIdx * 3 + vertIdx] = alreadyAddedVertices[trianglesFromMarch[triIdx].GetPointCreator(vertIdx)];
+        //    }
+        //}
+
+        //MeshData m = new MeshData()
+        //{
+        //    vertices = vertices,
+        //    triangles = triangles
+        //};
+
+        Dictionary<PointCreators, int> alreadyAddedVertices = new Dictionary<PointCreators, int>();
+        List<Vector3>vertices = new List<Vector3>();
         int[] triangles = new int[trianglesFromMarch.Count * 3];
 
         for (int triIdx = 0; triIdx < trianglesFromMarch.Count; triIdx++)
         {
             for (int vertIdx = 0; vertIdx < 3; vertIdx++)
             {
-                vertices[triIdx * 3 + vertIdx] = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
-                triangles[triIdx * 3 + vertIdx] = triIdx * 3 + vertIdx;
+                if (!alreadyAddedVertices.ContainsKey(trianglesFromMarch[triIdx].GetPointCreator(vertIdx)))
+                {
+                    vertices.Add(WorldToLocal(trianglesFromMarch[triIdx][vertIdx]));
+                    triangles[triIdx * 3 + vertIdx] = vertices.Count - 1;
+                    alreadyAddedVertices.Add(trianglesFromMarch[triIdx].GetPointCreator(vertIdx), vertices.Count - 1);
+                }
+                else
+                {
+                    triangles[triIdx * 3 + vertIdx] = alreadyAddedVertices[trianglesFromMarch[triIdx].GetPointCreator(vertIdx)];
+                }
             }
         }
+
+
         MeshData m = new MeshData()
         {
-            vertices = vertices,
+            vertices = vertices.ToArray(),
             triangles = triangles
         };
+
         return m;
     }
 
@@ -228,11 +263,10 @@ public class Chunk
         Vector3 localP = GetLocalPoint(x, y, z + 1, gridResolution);
         Vector3 p = LocalToWorld(localP);
 
-
         voxel[0] = new Vertex
         {
+            ID = new VertexID(x,  y,  z + 1),
             Point = p,
-            //IsoVal = densFunc.Evaluate(p)
             IsoVal = densFunc.Evaluate(
             new SamplePointVariables(p.x, localP.x),
             new SamplePointVariables(p.y, localP.y),
@@ -245,9 +279,8 @@ public class Chunk
 
         voxel[1] = new Vertex
         {
+            ID = new VertexID(x + 1,  y,  z + 1),
             Point = p,
-            //IsoVal = densFunc.Evaluate(p)
-
             IsoVal = densFunc.Evaluate(
             new SamplePointVariables(p.x, localP.x),
             new SamplePointVariables(p.y, localP.y),
@@ -259,9 +292,8 @@ public class Chunk
         p = LocalToWorld(localP);
         voxel[2] = new Vertex
         {
+            ID = new VertexID(x + 1,  y,  z),
             Point = p,
-            //IsoVal = densFunc.Evaluate(p)
-
             IsoVal = densFunc.Evaluate(
             new SamplePointVariables(p.x, localP.x),
             new SamplePointVariables(p.y, localP.y),
@@ -273,9 +305,8 @@ public class Chunk
         p = LocalToWorld(localP);
         voxel[3] = new Vertex
         {
+            ID = new VertexID(x, y,  z),
             Point = p,
-            //IsoVal = densFunc.Evaluate(p)
-
             IsoVal = densFunc.Evaluate(
             new SamplePointVariables(p.x, localP.x),
             new SamplePointVariables(p.y, localP.y),
@@ -287,9 +318,8 @@ public class Chunk
         p = LocalToWorld(localP);
         voxel[4] = new Vertex
         {
+            ID = new VertexID(x, y + 1,  z + 1),
             Point = p,
-            //IsoVal = densFunc.Evaluate(p)
-
             IsoVal = densFunc.Evaluate(
             new SamplePointVariables(p.x, localP.x),
             new SamplePointVariables(p.y, localP.y),
@@ -301,9 +331,8 @@ public class Chunk
         p = LocalToWorld(localP);
         voxel[5] = new Vertex
         {
+            ID = new VertexID(x + 1, y + 1,  z + 1),
             Point = p,
-            //IsoVal = densFunc.Evaluate(p)
-
             IsoVal = densFunc.Evaluate(
             new SamplePointVariables(p.x, localP.x),
             new SamplePointVariables(p.y, localP.y),
@@ -315,9 +344,8 @@ public class Chunk
         p = LocalToWorld(localP);
         voxel[6] = new Vertex
         {
+            ID = new VertexID(x + 1, y + 1,  z),
             Point = p,
-            //IsoVal = densFunc.Evaluate(p)
-
             IsoVal = densFunc.Evaluate(
             new SamplePointVariables(p.x, localP.x),
             new SamplePointVariables(p.y, localP.y),
@@ -329,9 +357,8 @@ public class Chunk
         p = LocalToWorld(localP);
         voxel[7] = new Vertex
         {
+            ID = new VertexID( x,  y + 1,  z ),
             Point = p,
-            //IsoVal = densFunc.Evaluate(p)
-
             IsoVal = densFunc.Evaluate(
             new SamplePointVariables(p.x, localP.x),
             new SamplePointVariables(p.y, localP.y),
@@ -356,15 +383,64 @@ public class Chunk
 
     struct Vertex
     {
+        public VertexID ID;
         public Vector3 Point;
         public float IsoVal;
+
+    }
+
+    struct VertexID
+    {
+        int X;
+        int Y;
+        int Z;
+
+        public VertexID(int x, int y, int z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -307843816;
+            hashCode = hashCode * -1521134295 + X.GetHashCode();
+            hashCode = hashCode * -1521134295 + Y.GetHashCode();
+            hashCode = hashCode * -1521134295 + Z.GetHashCode();
+            return hashCode;
+        }
+    }
+
+    struct PointCreators
+    {
+        VertexID First;
+        VertexID Second;
+
+        public PointCreators(VertexID first, VertexID second)
+        {
+            First = first;
+            Second = second;
+        }
+
+
+        public override int GetHashCode()
+        {
+            var hashCode = 43270662;
+            hashCode = hashCode * -1521134295 + First.GetHashCode();
+            hashCode = hashCode * -1521134295 + Second.GetHashCode();
+            return hashCode;
+        }
     }
 
     struct Triangle
     {
         public Vector3 A;
+        public PointCreators VertexA;
         public Vector3 B;
+        public PointCreators VertexB;
         public Vector3 C;
+        public PointCreators VertexC;
 
         public Vector3 this[int idx]
         {
@@ -383,6 +459,22 @@ public class Chunk
                 }
             }
         }
+
+        public PointCreators GetPointCreator(int idx)
+        {
+            switch (idx)
+            {
+                case 0:
+                    return VertexA;
+                case 1:
+                    return VertexB;
+                case 2:
+                    return VertexB;
+                default:
+                    throw new System.IndexOutOfRangeException($"Only three vertices per triangle index must be between [0..2] and not {idx}");
+            }
+        }
+
     }
 
 }
