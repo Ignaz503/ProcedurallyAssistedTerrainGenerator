@@ -69,9 +69,9 @@ public struct ChunkHandle
             Vector3 ext = ChunkToHandle.Extents;
 
             chunkNormViaExtends.Scale(new Vector3(
-                1.0f / (2f*ext.x),
-                1.0f / (2f * ext.y),
-                1.0f / (2f * ext.z)
+                1.0f / (ext.x),
+                1.0f / ( ext.y),
+                1.0f / ( ext.z)
                 ));
 
             return chunkNormViaExtends * HandleSize;
@@ -150,7 +150,7 @@ public struct ChunkHandle
     {
         //add new chunk
         coord.Scale(new Vector3(1.0f / HandleSize, 1.0f / HandleSize, 1.0f / HandleSize));
-        coord.Scale(2*Chunk.DefaultExtents);
+        coord.Scale(Chunk.DefaultExtents);
         return coord;
     }
 
@@ -163,5 +163,4 @@ public struct ChunkHandle
             Editor.AddNewChunk(pos);
         }
     }
-
 }

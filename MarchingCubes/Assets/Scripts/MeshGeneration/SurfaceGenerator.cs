@@ -70,8 +70,19 @@ public class SurfaceGenerator : MonoBehaviour
 
     public void OnDataRecieved(MeshData data, Chunk chunk)
     {
-        Debug.Log("Ayy we recieved a chunk");
-        data.ToMesh(mesh.sharedMesh);
+        //Create A gameobject with mesh filter and renderer
+        GameObject newChunk = new GameObject();
+        newChunk.transform.position = Vector3.zero;
+        newChunk.transform.rotation = Quaternion.identity;
+
+        newChunk.name = $"Chunk: {chunk.Center}";
+
+        var mFilter = newChunk.AddComponent<MeshFilter>();
+
+        var mRenderer = newChunk.AddComponent<MeshRenderer>();
+        mRenderer.sharedMaterial = new Material(Shader.Find("Standard"));
+
+        mFilter.sharedMesh = data.ToMesh();
     }
 
     private void OnDrawGizmos()

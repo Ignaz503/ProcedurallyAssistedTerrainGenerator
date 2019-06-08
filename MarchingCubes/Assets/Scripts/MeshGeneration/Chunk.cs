@@ -14,7 +14,14 @@ public class Chunk
 #endif
 
     public Vector3 Center { get { return chunkBounds.center; } }
-    public Vector3 Extents{ get { return chunkBounds.extents; } }
+    public Vector3 Extents
+    {
+        get { return chunkBounds.extents; }
+        set
+        {
+            chunkBounds.extents = value;
+        }
+    }
 
     public Chunk(Bounds chunkBounds)
     {

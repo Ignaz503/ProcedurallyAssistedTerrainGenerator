@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: TerrainGenSettings
   m_EditorClassIdentifier: 
   MinChunkResolution: 5
-  MaxChunkResolution: 100
+  MaxChunkResolution: 50

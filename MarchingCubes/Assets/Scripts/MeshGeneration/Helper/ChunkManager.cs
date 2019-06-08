@@ -78,6 +78,14 @@ public struct ChunksToManage
             Chunks.RemoveAt(i);
         }
     }
+
+    public void UpdateExtents(Vector3 newExt)
+    {
+        for (int i = 0; i < Chunks.Count; i++)
+        {
+            Chunks[i].Chunk.Extents = newExt;
+        }
+    }
 }
 
 [Serializable]

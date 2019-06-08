@@ -229,7 +229,14 @@ public class TerrainChunkWindow : EditorWindow
         chunkResolution = EditorGUILayout.IntSlider(chunkResolution, settings.MinChunkResolution, settings.MaxChunkResolution);
         EditorGUILayout.EndHorizontal();
 
+        Vector3 old = Chunk.DefaultExtents;
         Chunk.DefaultExtents = EditorGUILayout.Vector3Field(new GUIContent("Base Chunk Extents (extends are half bounds size): "), Chunk.DefaultExtents);
+
+        if ((old - Chunk.DefaultExtents).sqrMagnitude > 0)
+        {
+            //we have new extents
+            chunksToManage.UpdateExtents(Chunk.DefaultExtents);
+        }
 
         EditorGUILayout.EndVertical();
     }
