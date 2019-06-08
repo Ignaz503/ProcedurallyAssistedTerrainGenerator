@@ -72,7 +72,7 @@ public class SurfaceGenerator : MonoBehaviour
     {
         //Create A gameobject with mesh filter and renderer
         GameObject newChunk = new GameObject();
-        newChunk.transform.position = Vector3.zero;
+        newChunk.transform.position = chunk.Center;
         newChunk.transform.rotation = Quaternion.identity;
 
         newChunk.name = $"Chunk: {chunk.Center}";

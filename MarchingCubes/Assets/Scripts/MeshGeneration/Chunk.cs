@@ -49,9 +49,6 @@ public class Chunk
         };
     }
 
-
- 
-
     /// <summary>
     /// assumed to be in -0.5 to 0.5
     /// </summary>
@@ -62,6 +59,11 @@ public class Chunk
         Vector3 ex = chunkBounds.extents;
         ex.Scale(v);
         return chunkBounds.center + ex;
+    }
+
+    Vector3 WorldToLocal(Vector3 world)
+    {
+        return world - Center;
     }
 
     public MeshData CubeMarch(float girdResolution, IDensityFunc func, float isoLevel = 0f)
@@ -118,7 +120,7 @@ public class Chunk
         {
             for (int vertIdx = 0; vertIdx < 3; vertIdx++)
             {
-                vertices[triIdx * 3 + vertIdx] = trianglesFromMarch[triIdx][vertIdx];
+                vertices[triIdx * 3 + vertIdx] = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
                 triangles[triIdx * 3 + vertIdx] = triIdx * 3 + vertIdx;
             }
         }

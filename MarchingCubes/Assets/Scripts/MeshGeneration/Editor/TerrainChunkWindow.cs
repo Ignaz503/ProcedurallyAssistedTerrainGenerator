@@ -142,7 +142,7 @@ public class TerrainChunkWindow : EditorWindow
         EditorGUIExtensions.Space(3);
 
         DrawDensityFunctionChooser();
-        
+        DrawChunks();
         EditorGUILayout.EndVertical();
     }
 
@@ -170,42 +170,6 @@ public class TerrainChunkWindow : EditorWindow
             }
             EditorGUILayout.EndHorizontal();
         }
-        else
-        {
-            show = EditorGUILayout.Foldout(show, $"Chunks: ");
-            if (show)
-            {
-                for (int i = chunksToManage.Chunks.Count -1 ; i >= 0 ; i--)
-                {
-                    var chunkInfo = chunksToManage.Chunks[i];
-
-                    EditorGUILayout.BeginVertical();
-                    EditorGUILayout.BeginHorizontal();
-
-                    EditorGUILayout.LabelField($"Function For: {chunkInfo.Chunk.Center}");
-
-                    if (chunksToManage.Chunks.Count > 1)
-                    {
-                        if (GUILayout.Button("x", EditorStyles.label))
-                        {
-                            chunksToManage.RemoveChunkAt(i,true);
-                        }
-                    }
-                    EditorGUILayout.EndHorizontal();
-
-                    string buttonString = chunkInfo.DensityFunc != null ? chunkInfo.DensityFunc.ToString() : "Chose";
-
-                    if (GUILayout.Button(buttonString, EditorStyles.popup))
-                    {
-                        Rect r = EditorGUILayout.GetControlRect();
-                        r.position = Event.current.mousePosition;
-                        DrawDensityFuncChooser(r, chunkInfo);
-                    }
-
-                    EditorGUILayout.EndVertical();
-                }
-            }
-        }
 
         if (GUILayout.Button("Create New Denisty Function"))
         {
@@ -215,6 +179,47 @@ public class TerrainChunkWindow : EditorWindow
         }
 
     }
+
+    void DrawChunks()
+    {
+        show = EditorGUILayout.Foldout(show, $"Chunks: ");
+        if (show)
+        {
+            for (int i = chunksToManage.Chunks.Count - 1; i >= 0; i--)
+            {
+                var chunkInfo = chunksToManage.Chunks[i];
+
+                EditorGUILayout.BeginVertical();
+                EditorGUILayout.BeginHorizontal();
+
+                EditorGUILayout.LabelField($"Function For: {chunkInfo.Chunk.Center}");
+
+                    if (chunksToManage.Chunks.Count > 1)
+                    {
+                        if (GUILayout.Button("x", EditorStyles.label))
+                        {
+                            chunksToManage.RemoveChunkAt(i, true);
+                        }
+                    }
+                EditorGUILayout.EndHorizontal();
+
+                    if (densityFuncApplyMode == DensityFuncApplyMode.PerChunk)
+                    {
+                    string buttonString = chunkInfo.DensityFunc != null ? chunkInfo.DensityFunc.ToString() : "Chose";
+
+                    if (GUILayout.Button(buttonString, EditorStyles.popup))
+                    {
+                        Rect r = EditorGUILayout.GetControlRect();
+                        r.position = Event.current.mousePosition;
+                        DrawDensityFuncChooser(r, chunkInfo);
+                    }
+
+                }
+                EditorGUILayout.EndVertical();
+            }
+        }
+    }
+
 
     void DrawChunkSettings()
     {
