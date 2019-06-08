@@ -8,8 +8,6 @@ public interface IDensityFunc
 {
     float Evaluate(SamplePointVariables x, SamplePointVariables y, SamplePointVariables z);
 
-    float Evaluate(Vector3 point);
-
 }
 
 public class SimpleSurface : IDensityFunc

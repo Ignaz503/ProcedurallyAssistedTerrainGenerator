@@ -11,6 +11,7 @@ public class SurfaceGenerator : MonoBehaviour
     [SerializeField] Vector3 center = Vector3.zero;
     [SerializeField] Chunk testChunk = null;
     [SerializeField] MeshFilter mesh = null;
+    [SerializeField] bool sphere = false;
 
     public void Generate()
     {
@@ -27,7 +28,12 @@ public class SurfaceGenerator : MonoBehaviour
 
     void RequestMesh()
     {
-        ThreadedDataRequester.Instance.RequestData(()=> { return testChunk.CubeMarch(resolution, new SimpleSurface()); }, OnDataRecieved);
+        IDensityFunc func;
+        if (sphere)
+            func = new SphereDensityFunc(2f, center);
+        else
+            func = new SimpleSurface();
+        ThreadedDataRequester.Instance.RequestData(()=> { return testChunk.CubeMarch(resolution, func); }, OnDataRecieved);
     }
 
 
