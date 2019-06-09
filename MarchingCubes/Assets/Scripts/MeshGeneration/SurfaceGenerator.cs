@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEditor;
 
 public class SurfaceGenerator : MonoBehaviour
 {
@@ -28,6 +29,10 @@ public class SurfaceGenerator : MonoBehaviour
             terrain = value;
         }
     }
+
+    Queue<MeshDataForChunk> meshQueue = new Queue<MeshDataForChunk>();
+
+    public bool IsUseableInEditor { get; protected set; }
 
     private void Awake()
     {
@@ -58,7 +63,6 @@ public class SurfaceGenerator : MonoBehaviour
             func = new SimpleSurface();
         ThreadedDataRequester.Instance.RequestData(()=> { return testChunk.CubeMarch(resolution, func); }, OnDataRecieved);
     }
-
 
     public void RequestMesh(List<Generate> chunksToGen, Type idensityFunc, int resolution)
     {
@@ -103,6 +107,39 @@ public class SurfaceGenerator : MonoBehaviour
 
     public void OnDataRecieved(MeshData data, Chunk chunk)
     {
+        meshQueue.Enqueue(new MeshDataForChunk(chunk, data));
+    }
+
+    void OnUpdate()
+    {
+        if (meshQueue.Count > 0)
+        {
+            var mData = meshQueue.Dequeue();
+            BuildMeshForChunk(mData);
+        }
+    }
+
+    public void MakeUseableInEditor()
+    {
+        EditorApplication.update += OnUpdate;
+        EditorApplication.quitting += OnQuit;
+        IsUseableInEditor = true;
+    }
+
+    private void OnQuit()
+    {
+        EditorApplication.update -= OnUpdate;
+        IsUseableInEditor = false;
+    }
+
+    private void OnDestroy()
+    {
+        IsUseableInEditor = false;//unnecessary lol
+        EditorApplication.update -= OnUpdate;
+    }
+
+    void BuildMeshForChunk(MeshDataForChunk mData)
+    {
         if (Terrain == null)
         {
             CreateTerrainParent();
@@ -110,18 +147,18 @@ public class SurfaceGenerator : MonoBehaviour
 
         //Create A gameobject with mesh filter and renderer
         GameObject newChunk = new GameObject();
-        newChunk.transform.position = chunk.Center;
+        newChunk.transform.position = mData.Chunk.Center;
         newChunk.transform.rotation = Quaternion.identity;
         newChunk.transform.SetParent(Terrain);
-        newChunk.name = $"Chunk: {chunk.Center}";
+        newChunk.name = $"Chunk: {mData.Chunk.Center}";
 
         var mFilter = newChunk.AddComponent<MeshFilter>();
 
         var mRenderer = newChunk.AddComponent<MeshRenderer>();
         mRenderer.sharedMaterial = new Material(Shader.Find("Standard"));
 
-        mFilter.sharedMesh = data.ToMesh();
-        OnChunkGenreated?.Invoke(chunk);
+        mFilter.sharedMesh = mData.Data.ToMesh();
+        OnChunkGenreated?.Invoke(mData.Chunk);
     }
 
     private void CreateTerrainParent()
@@ -149,6 +186,19 @@ public class SurfaceGenerator : MonoBehaviour
             testChunk.Visualize();
         }
     }
+
+    struct MeshDataForChunk
+    {
+        public Chunk Chunk;
+        public MeshData Data;
+
+        public MeshDataForChunk(Chunk chunk, MeshData data)
+        {
+            Chunk = chunk;
+            Data = data;
+        }
+    }
+
 }
 
 public class SphereDensityFunc : IDensityFunc
@@ -172,4 +222,5 @@ public class SphereDensityFunc : IDensityFunc
         return -(((point - center).magnitude - rad));//+ (Mathf.PerlinNoise(point.x,point.y));
     }
 }
+
 

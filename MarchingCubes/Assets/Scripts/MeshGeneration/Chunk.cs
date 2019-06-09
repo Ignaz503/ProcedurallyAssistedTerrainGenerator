@@ -132,63 +132,63 @@ public class Chunk
             }
        }// end for z
 
-        //Vector3[] vertices = new Vector3[trianglesFromMarch.Count * 3];
-        //int[] triangles = new int[trianglesFromMarch.Count * 3];
-
-        //for (int triIdx = 0; triIdx < trianglesFromMarch.Count; triIdx++)
-        //{
-        //    for (int vertIdx = 0; vertIdx < 3; vertIdx++)
-        //    {
-        //        vertices[triIdx * 3 + vertIdx] = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
-        //        triangles[triIdx * 3 + vertIdx] = triIdx * 3 + vertIdx;
-        //    }
-        //}
-
-        //MeshData m = new MeshData()
-        //{
-        //    vertices = vertices,
-        //    triangles = triangles
-        //};
-
-        List<Vector3> vert = new List<Vector3>();
-        List<Vector2> uvs = new List<Vector2>();
-        int[] tri = new int[trianglesFromMarch.Count * 3];
+        Vector3[] vertices = new Vector3[trianglesFromMarch.Count * 3];
+        int[] triangles = new int[trianglesFromMarch.Count * 3];
 
         for (int triIdx = 0; triIdx < trianglesFromMarch.Count; triIdx++)
         {
             for (int vertIdx = 0; vertIdx < 3; vertIdx++)
             {
-                int actualTriIDX = triIdx * 3 + vertIdx;
-
-                Vector3 vertToAdd = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
-                int vertID = vert.Count - 1;
-                bool foundOverlaping = false;
-
-                for (int i = 0; i < vert.Count; i++)
-                {
-                    if ((vertToAdd - vert[i]).sqrMagnitude <= 0)
-                    {
-                        vertID = i;
-                        foundOverlaping = true;
-                        break;
-                    }
-                }
-                if (!foundOverlaping)
-                {
-                    vert.Add(vertToAdd);
-                    uvs.Add(Vector2.zero);
-                    vertID = vert.Count - 1;
-                }
-                tri[actualTriIDX] = vertID;
+                vertices[triIdx * 3 + vertIdx] = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
+                triangles[triIdx * 3 + vertIdx] = triIdx * 3 + vertIdx;
             }
         }
 
         MeshData m = new MeshData()
         {
-            vertices = vert.ToArray(),
-            uvs = uvs.ToArray(),
-            triangles = tri
+            vertices = vertices,
+            triangles = triangles
         };
+
+        //List<Vector3> vert = new List<Vector3>();
+        //List<Vector2> uvs = new List<Vector2>();
+        //int[] tri = new int[trianglesFromMarch.Count * 3];
+
+        //for (int triIdx = 0; triIdx < trianglesFromMarch.Count; triIdx++)
+        //{
+        //    for (int vertIdx = 0; vertIdx < 3; vertIdx++)
+        //    {
+        //        int actualTriIDX = triIdx * 3 + vertIdx;
+
+        //        Vector3 vertToAdd = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
+        //        int vertID = vert.Count - 1;
+        //        bool foundOverlaping = false;
+
+        //        for (int i = 0; i < vert.Count; i++)
+        //        {
+        //            if ((vertToAdd - vert[i]).sqrMagnitude <= 0)
+        //            {
+        //                vertID = i;
+        //                foundOverlaping = true;
+        //                break;
+        //            }
+        //        }
+        //        if (!foundOverlaping)
+        //        {
+        //            vert.Add(vertToAdd);
+        //            uvs.Add(Vector2.zero);
+        //            vertID = vert.Count - 1;
+        //        }
+        //        tri[actualTriIDX] = vertID;
+        //    }
+        //}
+
+        //MeshData m = new MeshData()
+        //{
+        //    vertices = vert.ToArray(),
+        //    uvs = uvs.ToArray(),
+        //    triangles = tri
+        //};
 
         return m;
     }

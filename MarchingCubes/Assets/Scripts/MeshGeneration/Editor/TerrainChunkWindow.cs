@@ -80,6 +80,8 @@ public class TerrainChunkWindow : EditorWindow
         this.generator = generator;
         generator.OnChunkGenreated += OnChunkGenerated;
         terrainRoot = generator.Terrain;
+        if (!generator.IsUseableInEditor)
+            generator.MakeUseableInEditor();
     }
 
     public void UpdateChunksToManage(ChunksToManage toManage)
@@ -285,9 +287,9 @@ public class TerrainChunkWindow : EditorWindow
 
     string GeneratingDots()
     {
-        int val = update / 10;
+        int val = update / 20;
         string s = "";
-        for (int i = 0; i < val % 3; i++)
+        for (int i = 0; i < val % 4; i++)
         {
             s += ".";
         }
