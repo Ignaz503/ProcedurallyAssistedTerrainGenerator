@@ -119,11 +119,11 @@ public class Chunk
                             new Triangle()
                             {
                                 A = CubeMarchLerp(voxel[idxA0], voxel[idxB0], isoLevel),
-                                VertexA = new PointCreators(voxel[idxA0].ID, voxel[idxB0].ID),
+                                VertexA_ID = new PointCreators(voxel[idxA0].ID, voxel[idxB0].ID),
                                 B = CubeMarchLerp(voxel[idxA1], voxel[idxB1], isoLevel),
-                                VertexB = new PointCreators(voxel[idxA1].ID, voxel[idxB1].ID),
+                                VertexB_ID = new PointCreators(voxel[idxA1].ID, voxel[idxB1].ID),
                                 C = CubeMarchLerp(voxel[idxA2], voxel[idxB2], isoLevel),   
-                               VertexC = new PointCreators(voxel[idxA2].ID, voxel[idxB2].ID) 
+                               VertexC_ID = new PointCreators(voxel[idxA2].ID, voxel[idxB2].ID) 
                             }
                             );
 
@@ -141,8 +141,6 @@ public class Chunk
         //    {
         //        vertices[triIdx * 3 + vertIdx] = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
         //        triangles[triIdx * 3 + vertIdx] = triIdx * 3 + vertIdx;
-
-        //        triangles[triIdx * 3 + vertIdx] = alreadyAddedVertices[trianglesFromMarch[triIdx].GetPointCreator(vertIdx)];
         //    }
         //}
 
@@ -152,32 +150,44 @@ public class Chunk
         //    triangles = triangles
         //};
 
-        Dictionary<PointCreators, int> alreadyAddedVertices = new Dictionary<PointCreators, int>();
-        List<Vector3>vertices = new List<Vector3>();
-        int[] triangles = new int[trianglesFromMarch.Count * 3];
+        List<Vector3> vert = new List<Vector3>();
+        List<Vector2> uvs = new List<Vector2>();
+        int[] tri = new int[trianglesFromMarch.Count * 3];
 
         for (int triIdx = 0; triIdx < trianglesFromMarch.Count; triIdx++)
         {
             for (int vertIdx = 0; vertIdx < 3; vertIdx++)
             {
-                if (!alreadyAddedVertices.ContainsKey(trianglesFromMarch[triIdx].GetPointCreator(vertIdx)))
+                int actualTriIDX = triIdx * 3 + vertIdx;
+
+                Vector3 vertToAdd = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
+                int vertID = vert.Count - 1;
+                bool foundOverlaping = false;
+
+                for (int i = 0; i < vert.Count; i++)
                 {
-                    vertices.Add(WorldToLocal(trianglesFromMarch[triIdx][vertIdx]));
-                    triangles[triIdx * 3 + vertIdx] = vertices.Count - 1;
-                    alreadyAddedVertices.Add(trianglesFromMarch[triIdx].GetPointCreator(vertIdx), vertices.Count - 1);
+                    if ((vertToAdd - vert[i]).sqrMagnitude <= 0)
+                    {
+                        vertID = i;
+                        foundOverlaping = true;
+                        break;
+                    }
                 }
-                else
+                if (!foundOverlaping)
                 {
-                    triangles[triIdx * 3 + vertIdx] = alreadyAddedVertices[trianglesFromMarch[triIdx].GetPointCreator(vertIdx)];
+                    vert.Add(vertToAdd);
+                    uvs.Add(Vector2.zero);
+                    vertID = vert.Count - 1;
                 }
+                tri[actualTriIDX] = vertID;
             }
         }
 
-
         MeshData m = new MeshData()
         {
-            vertices = vertices.ToArray(),
-            triangles = triangles
+            vertices = vert.ToArray(),
+            uvs = uvs.ToArray(),
+            triangles = tri
         };
 
         return m;
@@ -436,11 +446,11 @@ public class Chunk
     struct Triangle
     {
         public Vector3 A;
-        public PointCreators VertexA;
+        public PointCreators VertexA_ID;
         public Vector3 B;
-        public PointCreators VertexB;
+        public PointCreators VertexB_ID;
         public Vector3 C;
-        public PointCreators VertexC;
+        public PointCreators VertexC_ID;
 
         public Vector3 this[int idx]
         {
@@ -465,11 +475,11 @@ public class Chunk
             switch (idx)
             {
                 case 0:
-                    return VertexA;
+                    return VertexA_ID;
                 case 1:
-                    return VertexB;
+                    return VertexB_ID;
                 case 2:
-                    return VertexB;
+                    return VertexB_ID;
                 default:
                     throw new System.IndexOutOfRangeException($"Only three vertices per triangle index must be between [0..2] and not {idx}");
             }
@@ -484,16 +494,18 @@ public class Chunk
 public struct MeshData
 {
     public Vector3[] vertices;
+    public Vector2[] uvs;
     public int[] triangles;
 
 
     public Mesh ToMesh(Mesh m)
     {
         m.Clear();
-
         m.vertices = vertices;
         m.triangles = triangles;
+        m.uv = uvs;
         m.RecalculateNormals();
+        m.RecalculateTangents();
         return m;
     }
 
@@ -502,7 +514,10 @@ public struct MeshData
         Mesh m = new Mesh();
         m.vertices = vertices;
         m.triangles = triangles;
+        m.uv = uvs;
         m.RecalculateNormals();
+        m.RecalculateNormals();
+        m.RecalculateTangents();
         return m;
     }
 

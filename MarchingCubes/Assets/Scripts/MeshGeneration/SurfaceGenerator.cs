@@ -66,6 +66,15 @@ public class SurfaceGenerator : MonoBehaviour
     {
         MeshData data = (MeshData)obj;
 
+
+        for (int a = 0; a < data.triangles.Length; a++)
+        {
+            if (data.triangles[a] >= data.vertices.Length)
+            {
+                Debug.Log($"{a}: referencing out of bounds vert: {data.triangles[a]} ");
+            }
+        }
+
         data.ToMesh(mesh.sharedMesh);
         Debug.Log("Added Mesh");
     }
