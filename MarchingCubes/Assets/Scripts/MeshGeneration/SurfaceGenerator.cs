@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class SurfaceGenerator : MonoBehaviour
 {
+    public event Action<Chunk> OnChunkGenreated;
     [SerializeField][Range(1,100)] int resolution = 10;
     //[SerializeField][Range(0.1f,10f)] float sphereRadius =2f;
     [SerializeField] Vector3 center = Vector3.zero;
@@ -13,7 +14,28 @@ public class SurfaceGenerator : MonoBehaviour
     [SerializeField] MeshFilter mesh = null;
     [SerializeField] bool sphere = false;
 
-    public Transform Terrain { get; protected set; }
+    Transform terrain;
+    public Transform Terrain
+    {
+        get
+        {
+            if (terrain == null)
+                CreateTerrainParent();
+            return terrain;
+        }
+        protected set
+        {
+            terrain = value;
+        }
+    }
+
+    private void Awake()
+    {
+        if (Terrain == null)
+        {
+            CreateTerrainParent();
+        }
+    }
 
     public void Generate()
     {
@@ -76,7 +98,7 @@ public class SurfaceGenerator : MonoBehaviour
         }
 
         data.ToMesh(mesh.sharedMesh);
-        Debug.Log("Added Mesh");
+        OnChunkGenreated?.Invoke(testChunk);
     }
 
     public void OnDataRecieved(MeshData data, Chunk chunk)
@@ -99,16 +121,25 @@ public class SurfaceGenerator : MonoBehaviour
         mRenderer.sharedMaterial = new Material(Shader.Find("Standard"));
 
         mFilter.sharedMesh = data.ToMesh();
+        OnChunkGenreated?.Invoke(chunk);
     }
 
     private void CreateTerrainParent()
     {
-        GameObject tObj = new GameObject();
-        tObj.name = "Terrain";
-        tObj.tag = "TerrainRoot";
-        tObj.transform.position = Vector3.zero;
-        tObj.transform.rotation = Quaternion.identity;
-        Terrain = tObj.transform;
+        var root = GameObject.FindGameObjectWithTag("TerrainRoot");
+        if (root == null)
+        {
+            GameObject tObj = new GameObject();
+            tObj.name = "Terrain";
+            tObj.tag = "TerrainRoot";
+            tObj.transform.position = Vector3.zero;
+            tObj.transform.rotation = Quaternion.identity;
+            Terrain = tObj.transform;
+        }
+        else
+        {
+            Terrain = root.transform;
+        }
     }
 
     private void OnDrawGizmos()

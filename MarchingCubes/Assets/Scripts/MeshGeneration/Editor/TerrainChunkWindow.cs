@@ -36,8 +36,13 @@ public class TerrainChunkWindow : EditorWindow
 
     ChunksToManage chunksToManage;
     SurfaceGenerator generator;
+    Transform terrainRoot;
 
     bool show;
+    bool generating = false;
+    int toGenerate;
+    int alreadyDone;
+    int update = 0;
 
     public void Initialize()
     {
@@ -53,20 +58,8 @@ public class TerrainChunkWindow : EditorWindow
         chunksToManage = new ChunksToManage();
         chunksToManage.Chunks = new List<Generate>();
         chunksToManage.AddChunk(Vector3.zero);
-
+        TagHelper.AddTag("TerrainRoot");
         FindOrCreateSurfaceGenerator();
-        CheckIfAlreadyExistentTerrainChunks();
-    }
-
-    private void CheckIfAlreadyExistentTerrainChunks()
-    {
-        var obj =GameObject.FindGameObjectsWithTag("TerrainRoot");
-
-        if (obj != null)
-        {
-            //TODO Get All the info about a chunk
-            //but do i really wanna store that info on the gameobject
-        }
     }
 
     void FindOrCreateSurfaceGenerator()
@@ -81,11 +74,12 @@ public class TerrainChunkWindow : EditorWindow
             gen.name = "Surface Generator";
             gen.tag = "EditorOnly";
             gen.transform.position = Vector3.zero;
-
             generator = gen.AddComponent<SurfaceGenerator>();
 
         }
         this.generator = generator;
+        generator.OnChunkGenreated += OnChunkGenerated;
+        terrainRoot = generator.Terrain;
     }
 
     public void UpdateChunksToManage(ChunksToManage toManage)
@@ -98,6 +92,14 @@ public class TerrainChunkWindow : EditorWindow
         DrawWithLayout();
     }
 
+    void OnChunkGenerated(Chunk c)
+    {
+        alreadyDone++;
+        if (alreadyDone >= toGenerate)
+        {
+            generating = false;
+        }
+    }
 
     private void DrawWithLayout()
     {
@@ -233,7 +235,6 @@ public class TerrainChunkWindow : EditorWindow
         }
     }
 
-
     void DrawChunkSettings()
     {
         EditorGUILayout.BeginVertical();
@@ -267,9 +268,38 @@ public class TerrainChunkWindow : EditorWindow
 
             if (PossibleToGenerate())
             {
+                StartTrackingProcess();
                 Generate();
             }
         }
+        if (generating)
+            DisplayGeneratingProgress();
+    }
+
+    void DisplayGeneratingProgress()
+    {
+        update++;
+        EditorGUILayout.LabelField($"Generating {GeneratingDots()}");
+        Repaint();
+    }
+
+    string GeneratingDots()
+    {
+        int val = update / 10;
+        string s = "";
+        for (int i = 0; i < val % 3; i++)
+        {
+            s += ".";
+        }
+        return s;
+    }
+
+    private void StartTrackingProcess()
+    {
+        generating = true;
+        toGenerate = chunksToManage.Chunks.Count;
+        alreadyDone = 0;
+        update = 0;
     }
 
     private void Generate()
