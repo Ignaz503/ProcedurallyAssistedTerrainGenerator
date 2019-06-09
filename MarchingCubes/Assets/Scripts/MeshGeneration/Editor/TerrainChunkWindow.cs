@@ -58,7 +58,7 @@ public class TerrainChunkWindow : EditorWindow
 
 
         chunksToManage = new ChunksToManage();
-        chunksToManage.Chunks = new List<Generate>();
+        chunksToManage.Chunks = new List<ChunkToGenerate>();
         chunksToManage.AddChunk(Vector3.zero);
         TagHelper.AddTag("TerrainRoot");
         FindOrCreateSurfaceGenerator();
@@ -382,7 +382,7 @@ public class TerrainChunkWindow : EditorWindow
         menu.DropDown(r);
     }
 
-    void DrawDensityFuncChooser(Rect r, Generate chunk)
+    void DrawDensityFuncChooser(Rect r, ChunkToGenerate chunk)
     {
         //Get all density functions
         var assem = Assembly.GetAssembly(typeof(IDensityFunc));

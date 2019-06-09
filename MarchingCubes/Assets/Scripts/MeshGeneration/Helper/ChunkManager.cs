@@ -2,10 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class ChunkManager : MonoBehaviour
 {
     public ChunksToManage ToManage;
+
+    CubePool pool = new CubePool();
+
+    public void CreateChunks()
+    {
+        for (int i = 0; i < ToManage.Chunks.Count; i++)
+        {
+            var chunkToGen = ToManage.Chunks[i];
+            CreateChunkCube(chunkToGen.Chunk);
+        }
+        Selection.activeObject = this;
+    }
+
+    void CreateChunkCube(Chunk c)
+    {
+        var cC = pool.Get();
+        cC.ChunkToHandle = c;
+        cC.Manager = this;
+        Selection.activeObject = cC;
+    }
 
     public bool ContainsChunkByCoord(Vector3 coord)
     {
@@ -21,27 +42,38 @@ public class ChunkManager : MonoBehaviour
         return false;
     }
 
-    public void AddChunk(Vector3 pos)
+    public void Remove(ChunkCube chunkCube)
     {
-        ToManage.Chunks.Add(new Generate(new Chunk(pos, Chunk.DefaultExtents)));
+        if (RemoveChunk(chunkCube.ChunkToHandle))
+        {
+            pool.Return(chunkCube);
+        }
     }
 
-    public void RemoveChunk(Chunk chunk)
+    public void AddChunk(Vector3 pos)
+    {
+        ToManage.Chunks.Add(new ChunkToGenerate(new Chunk(pos, Chunk.DefaultExtents)));
+        CreateChunkCube(ToManage.Chunks[ToManage.Chunks.Count - 1].Chunk);
+    }
+
+    public bool RemoveChunk(Chunk chunk)
     {
         if (ToManage.Chunks.Count > 1)
         {
             ToManage.RemoveChunk(chunk);
+            return true;
         }
         else
         {
             Debug.LogWarning("One chunk must remain (Only one will reign supreme)");
+            return false;
         }
     }
 }
 
 public struct ChunksToManage
 {
-    public List<Generate> Chunks;
+    public List<ChunkToGenerate> Chunks;
 
     public void RemoveChunk(Chunk chunk)
     {
@@ -58,10 +90,10 @@ public struct ChunksToManage
 
     public void AddChunk(Vector3 pos)
     {
-        Chunks.Add(new Generate(new Chunk(pos, Chunk.DefaultExtents)));
+        Chunks.Add(new ChunkToGenerate(new Chunk(pos, Chunk.DefaultExtents)));
     }
 
-    public void RemoveChunk(Generate chunkInfo)
+    public void RemoveChunk(ChunkToGenerate chunkInfo)
     {
         Chunks.Remove(chunkInfo);
     }
@@ -89,18 +121,18 @@ public struct ChunksToManage
 }
 
 [Serializable]
-public class Generate
+public class ChunkToGenerate
 {
     public Chunk Chunk;
     public Type DensityFunc;
 
-    public Generate(Chunk chunk, Type densityFunc)
+    public ChunkToGenerate(Chunk chunk, Type densityFunc)
     {
         this.Chunk = chunk ?? throw new ArgumentNullException(nameof(chunk));
         DensityFunc = densityFunc ?? throw new ArgumentNullException(nameof(densityFunc));
     }
 
-    public Generate(Chunk chunk)
+    public ChunkToGenerate(Chunk chunk)
     {
         this.Chunk = chunk ?? throw new ArgumentNullException(nameof(chunk));
     }
@@ -108,5 +140,37 @@ public class Generate
     public void SetDensityFunction(Type t)
     {
         DensityFunc = t;
+    }
+}
+
+
+public class CubePool
+{
+    Queue<ChunkCube> pool;
+
+    public CubePool()
+    {
+        pool = new Queue<ChunkCube>();
+    }
+
+    public ChunkCube Get()
+    {
+        if (pool.Count > 0)
+        {
+            var obj = pool.Dequeue();
+            obj.gameObject.SetActive(true);
+            return obj;
+        }
+        else
+        {
+            var nC = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            return nC.AddComponent<ChunkCube>();
+        }
+    }
+
+    public void Return(ChunkCube c)
+    {
+        c.gameObject.SetActive(false);
+        pool.Enqueue(c);
     }
 }

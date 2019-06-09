@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+using System;
 
 public class ChunkSceneView : SceneView
 {
@@ -23,6 +24,7 @@ public class ChunkSceneView : SceneView
         GetActiveScenesAndTempStore();
         this.callingWindow = callingWindow;
         CreateScene();
+        Tools.hidden = true;
     }
 
     void CreateScene()
@@ -73,6 +75,7 @@ public class ChunkSceneView : SceneView
         //close current scene and destoy i guess
         EditorSceneManager.CloseScene(openScene,true);
         
+        Tools.hidden = false;
         base.OnDestroy();
     }
     
@@ -103,6 +106,7 @@ public class ChunkSceneView : SceneView
     public void SetChunksToManage(ChunksToManage m)
     {
         manager.ToManage = m;
+        manager.CreateChunks();
     }
 
     void GetActiveScenesAndTempStore()

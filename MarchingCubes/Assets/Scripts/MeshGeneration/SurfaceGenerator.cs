@@ -64,7 +64,7 @@ public class SurfaceGenerator : MonoBehaviour
         ThreadedDataRequester.Instance.RequestData(()=> { return testChunk.CubeMarch(resolution, func); }, OnDataRecieved);
     }
 
-    public void RequestMesh(List<Generate> chunksToGen, Type idensityFunc, int resolution, bool flatShaded)
+    public void RequestMesh(List<ChunkToGenerate> chunksToGen, Type idensityFunc, int resolution, bool flatShaded)
     {
         //TODO maybe instance for each and every one extra instead of one
         IDensityFunc densFunc = Activator.CreateInstance(idensityFunc) as IDensityFunc;
@@ -77,7 +77,7 @@ public class SurfaceGenerator : MonoBehaviour
 
     }
 
-    public void RequestMesh(List<Generate> chunksToGen, int resolution, bool flatShaded)
+    public void RequestMesh(List<ChunkToGenerate> chunksToGen, int resolution, bool flatShaded)
     {
         for (int i = 0; i < chunksToGen.Count; i++)
         {
