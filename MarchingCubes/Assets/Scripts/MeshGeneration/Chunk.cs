@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -82,13 +83,13 @@ public class Chunk
         return world - Center;
     }
 
-    public MeshData CubeMarch(float girdResolution, IDensityFunc func, float isoLevel = 0f)
+    public MeshData CubeMarch(float girdResolution, IDensityFunc func, bool flatShaded = true, float isoLevel = 0f)
     {
-        return CubeMarch(Vector3.one * girdResolution, func, isoLevel);
+        return CubeMarch(Vector3.one * girdResolution, func, flatShaded ,isoLevel);
     }
     
 
-    public MeshData CubeMarch(Vector3 gridResolution, IDensityFunc func, float isoLevel = 0f)
+    public MeshData CubeMarch(Vector3 gridResolution, IDensityFunc func, bool flatShaded = true, float isoLevel = 0f)
     {
 
         List<Triangle> trianglesFromMarch = new List<Triangle>();
@@ -132,65 +133,76 @@ public class Chunk
             }
        }// end for z
 
-        Vector3[] vertices = new Vector3[trianglesFromMarch.Count * 3];
-        int[] triangles = new int[trianglesFromMarch.Count * 3];
+        return CreatMeshData(trianglesFromMarch, flatShaded);
+    }
 
-        for (int triIdx = 0; triIdx < trianglesFromMarch.Count; triIdx++)
+    private MeshData CreatMeshData(List<Triangle> trianglesFromMarch, bool flatShaded)
+    {
+        if (flatShaded)
         {
-            for (int vertIdx = 0; vertIdx < 3; vertIdx++)
+            Vector3[] vertices = new Vector3[trianglesFromMarch.Count * 3];
+            int[] triangles = new int[trianglesFromMarch.Count * 3];
+
+            for (int triIdx = 0; triIdx < trianglesFromMarch.Count; triIdx++)
             {
-                vertices[triIdx * 3 + vertIdx] = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
-                triangles[triIdx * 3 + vertIdx] = triIdx * 3 + vertIdx;
+                for (int vertIdx = 0; vertIdx < 3; vertIdx++)
+                {
+                    vertices[triIdx * 3 + vertIdx] = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
+                    triangles[triIdx * 3 + vertIdx] = triIdx * 3 + vertIdx;
+                }
             }
+
+            MeshData m = new MeshData()
+            {
+                vertices = vertices,
+                triangles = triangles
+            };
+            return m;
         }
-
-        MeshData m = new MeshData()
+        else
         {
-            vertices = vertices,
-            triangles = triangles
-        };
+            List<Vector3> vert = new List<Vector3>();
+            List<Vector2> uvs = new List<Vector2>();
+            int[] tri = new int[trianglesFromMarch.Count * 3];
 
-        //List<Vector3> vert = new List<Vector3>();
-        //List<Vector2> uvs = new List<Vector2>();
-        //int[] tri = new int[trianglesFromMarch.Count * 3];
+            for (int triIdx = 0; triIdx < trianglesFromMarch.Count; triIdx++)
+            {
+                for (int vertIdx = 0; vertIdx < 3; vertIdx++)
+                {
+                    int actualTriIDX = triIdx * 3 + vertIdx;
 
-        //for (int triIdx = 0; triIdx < trianglesFromMarch.Count; triIdx++)
-        //{
-        //    for (int vertIdx = 0; vertIdx < 3; vertIdx++)
-        //    {
-        //        int actualTriIDX = triIdx * 3 + vertIdx;
+                    Vector3 vertToAdd = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
+                    int vertID = vert.Count - 1;
+                    bool foundOverlaping = false;
 
-        //        Vector3 vertToAdd = WorldToLocal(trianglesFromMarch[triIdx][vertIdx]);
-        //        int vertID = vert.Count - 1;
-        //        bool foundOverlaping = false;
+                    for (int i = 0; i < vert.Count; i++)
+                    {
+                        if ((vertToAdd - vert[i]).sqrMagnitude <= 0)
+                        {
+                            vertID = i;
+                            foundOverlaping = true;
+                            break;
+                        }
+                    }
+                    if (!foundOverlaping)
+                    {
+                        vert.Add(vertToAdd);
+                        uvs.Add(Vector2.zero);
+                        vertID = vert.Count - 1;
+                    }
+                    tri[actualTriIDX] = vertID;
+                }
+            }
 
-        //        for (int i = 0; i < vert.Count; i++)
-        //        {
-        //            if ((vertToAdd - vert[i]).sqrMagnitude <= 0)
-        //            {
-        //                vertID = i;
-        //                foundOverlaping = true;
-        //                break;
-        //            }
-        //        }
-        //        if (!foundOverlaping)
-        //        {
-        //            vert.Add(vertToAdd);
-        //            uvs.Add(Vector2.zero);
-        //            vertID = vert.Count - 1;
-        //        }
-        //        tri[actualTriIDX] = vertID;
-        //    }
-        //}
+            MeshData m = new MeshData()
+            {
+                vertices = vert.ToArray(),
+                uvs = uvs.ToArray(),
+                triangles = tri
+            };
 
-        //MeshData m = new MeshData()
-        //{
-        //    vertices = vert.ToArray(),
-        //    uvs = uvs.ToArray(),
-        //    triangles = tri
-        //};
-
-        return m;
+            return m;
+        }
     }
 
     Vector3 CubeMarchLerp(Vertex a, Vertex b, float isoLevel)

@@ -34,6 +34,8 @@ public class TerrainChunkWindow : EditorWindow
     string functionTypeString;
     Type densityFunctionType;
 
+    bool flatShaded = true;
+
     ChunksToManage chunksToManage;
     SurfaceGenerator generator;
     Transform terrainRoot;
@@ -259,6 +261,12 @@ public class TerrainChunkWindow : EditorWindow
             chunksToManage.UpdateExtents(Chunk.DefaultExtents);
         }
 
+        EditorGUILayout.BeginHorizontal();
+
+        EditorGUILayout.LabelField("Flat Shading: ");
+        flatShaded = EditorGUILayout.Toggle(flatShaded);
+
+        EditorGUILayout.EndHorizontal();
         EditorGUILayout.EndVertical();
     }
 
@@ -309,10 +317,10 @@ public class TerrainChunkWindow : EditorWindow
         switch (densityFuncApplyMode)
         {
             case DensityFuncApplyMode.OneForAll:
-                generator.RequestMesh(chunksToManage.Chunks, densityFunctionType, chunkResolution);
+                generator.RequestMesh(chunksToManage.Chunks, densityFunctionType, chunkResolution,flatShaded);
                 break;
             case DensityFuncApplyMode.PerChunk:
-                generator.RequestMesh(chunksToManage.Chunks, chunkResolution);
+                generator.RequestMesh(chunksToManage.Chunks, chunkResolution, flatShaded);
                 break;
             default:
                 Debug.LogError("Unknonw Density Function Apply mode");
