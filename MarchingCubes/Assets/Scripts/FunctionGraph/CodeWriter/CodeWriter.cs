@@ -88,7 +88,7 @@ public class Local : Variable
         get { return name; }
     }
 
-    public Local( string type, string name, string initializer,) : base(type, name)
+    public Local( string type, string name, string initializer) : base(type, name)
     {
         initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
     }
@@ -134,9 +134,92 @@ public class Function
     {
         this.parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
     }
+
+    public void AddParameter(Parameter param)
+    {
+        parameters.Add(param);
+    }
+
+    public void AddLocal(Local l)
+    {
+        locals.Add(l);
+    }
+
+    public void AddLine(Line l)
+    {
+        lines.Add(l);
+    }
+
+    public void InsertLine(Line l, int idx)
+    {
+        lines.Insert(idx, l);
+    }
+
+    public virtual void Write(StreamWriter writer)
+    {
+        //TODO
+    }
+}
+
+public class Ctor : Function
+{
+    public Ctor(string accessor, string name):base(accessor, "",name)
+    {
+
+    }
+
+    public Ctor(string accessor, string name,List<Parameter> parameters) : base(accessor, "", name, parameters)
+    {
+
+    }
+
+    public override void Write(StreamWriter writer)
+    {
+        //TODO
+    }
 }
 
 public abstract class Line
 {
+    //Maybe unneeded
     public abstract void Write(StreamWriter w);
+}
+
+public class Class
+{
+    public string Name { get; protected set; }
+    protected List<Member> members;
+    public List<Function> functions;
+
+    public Class(string name)
+    {
+        Name = name ?? throw new ArgumentNullException(nameof(name));
+        members = new List<Member>();
+        functions = new List<Function>();
+    }
+
+    public void AddMember(Member mem)
+    {
+        members.Add(mem);
+    }
+
+    public void AddFunctions(Function func)
+    {
+        functions.Add(func);
+    }
+
+    public Ctor GetACtor()
+    {
+        return new Ctor("public", Name);
+    }
+
+    public void AddCtor(Ctor ctor)
+    {
+        functions.Add(ctor);
+    }
+
+    public void Write(StreamWriter write)
+    {
+        //TODO
+    }
 }
