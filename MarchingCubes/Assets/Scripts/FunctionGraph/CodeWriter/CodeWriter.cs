@@ -81,7 +81,7 @@ public class Member : Variable
 
 public class Local : Variable
 {
-    string initializer;
+    protected string initializer;
 
     public string Name
     {
@@ -90,7 +90,7 @@ public class Local : Variable
 
     public Local( string type, string name, string initializer) : base(type, name)
     {
-        initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
+        this.initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
     }
 
     public override void Write(StreamWriter writer)
