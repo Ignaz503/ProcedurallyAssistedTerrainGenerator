@@ -25,25 +25,50 @@ public class FunctionGraphToCSharpCompiler
         currentLine = " ";
     }
 
+
+    /// <summary>
+    /// sets class name
+    /// </summary>
+    /// <param name="className"></param>
     public void SetClassName(string className)
     {
         this.className = className;
     }
 
-    public void AddToCurrentLine(string appendum)
+    /// <summary>
+    /// append to current line
+    /// </summary>
+    /// <param name="appendum">what to append</param>
+    public void AppendToCurrentLine(string appendum)
     {
         if (!appendum.EndsWith(" "))
             appendum += " ";
         //TODO
         currentLine += appendum;
     }
-
-    public string EndCurrentLine()
+    /// <summary>
+    /// ends current line and returns the reference to this line
+    /// eg:
+    /// temp2 = a + b;
+    /// funtion returns temp2
+    /// </summary>
+    public string EndCurrentLineAddToLinesToWrite()
     {
         methodLines.Add(currentLine + " ;");
-        currentLine = "";
+        currentLine = " ";
         return $"temp{methodLines.Count - 1}";
     }
+
+    /// <summary>
+    /// returns the current line for temp storage
+    /// </summary>
+    public string TemporarilyEndCurrentLine()
+    {
+        string st = currentLine;
+        currentLine = " ";
+        return st;
+    }
+
 
     /// <summary>
     /// Adds a local var to the function
