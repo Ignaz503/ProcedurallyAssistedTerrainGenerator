@@ -43,6 +43,11 @@ namespace FuncGraph.CodeWriting
             lines.Add(l);
         }
 
+        public string GetLocalName(string furtherIdentifier)
+        {
+            return $"local{locals.Count}_{furtherIdentifier}";
+        }
+
         public void InsertLine(Line l, int idx)
         {
             lines.Insert(idx, l);
@@ -76,11 +81,63 @@ namespace FuncGraph.CodeWriting
             return same;
         }
 
+        public bool PartialEquals(string name)
+        {
+            return this.name.Contains(name);
+        }
+
+        public bool EqualsSubstring(string retutnrType, string substring, List<Parameter> parameters)
+        {
+            if (!this.name.Contains(substring))
+                return false;
+            return PartialEquals(returnType, parameters);
+        }
+
         public bool Equals(string returnType, string name, List<Parameter> parameters)
         {
             if (name != this.name)
                 return false;
             return PartialEquals(returnType, parameters);
+        }
+
+        public bool HasLocal(string name)
+        {
+            for (int i = 0; i < locals.Count; i++)
+            {
+                if (locals[i].PartialEquals(name))
+                    return true;
+            }
+            return false;
+        }
+
+        public bool HasLocalSubstring(string substring)
+        {
+            for (int i = 0; i < locals.Count; i++)
+            {
+                if (locals[i].PartialEqualsSubstring(substring))
+                    return true;
+            }
+            return false;
+        }
+
+        public Local GetLocal(string name)
+        {
+            for (int i = 0; i < locals.Count; i++)
+            {
+                if (locals[i].PartialEquals(name))
+                    return locals[i];
+            }
+            return null;
+        }
+
+        public Local GetLocalSubstring(string subString)
+        {
+            for (int i = 0; i < locals.Count; i++)
+            {
+                if (locals[i].PartialEqualsSubstring(subString))
+                    return locals[i];
+            }
+            return null;
         }
 
     }

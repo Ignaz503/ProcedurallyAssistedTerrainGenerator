@@ -18,9 +18,14 @@ namespace FuncGraph.CodeWriting
             this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
         }
 
-        public override void Write(StreamWriter writer)
+        public override void WriteAsDefinition(StreamWriter writer)
         {
             writer.WriteLine($"{accessor} {type} {name};");
+        }
+
+        public void WriteWithAssignment(StreamWriter w, RHSExpresion initializer)
+        {
+            w.WriteLine($"{name} = {initializer.GetAsEOL()}");
         }
 
         public bool PartialEquals(string name)
@@ -28,9 +33,9 @@ namespace FuncGraph.CodeWriting
             return name == this.name;
         }
 
-        public bool SameType(string type)
+        public bool PartialEqualsSubString(string subString)
         {
-            return type == this.type;
+            return name.Contains(subString);
         }
 
         public bool PartialEquals(string type, string name)

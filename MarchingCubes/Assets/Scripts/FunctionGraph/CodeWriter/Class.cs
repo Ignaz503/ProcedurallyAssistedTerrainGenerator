@@ -78,6 +78,16 @@ namespace FuncGraph.CodeWriting
             return false;
         }
 
+        public bool HasFunctionSubString(string returnType, string subString, List<Parameter> parameters)
+        {
+            for (int i = 0; i < functions.Count; i++)
+            {
+                if (functions[i].EqualsSubstring(returnType, subString, parameters))
+                    return true;
+            }
+            return false;
+        }
+
         public bool HasCtor(List<Parameter> parameter)
         {
             //TODO
@@ -113,6 +123,18 @@ namespace FuncGraph.CodeWriting
             return null;
         }
 
+        public Function GetFunctionSubstring(string returnType, string subStr, List<Parameter> parameters)
+        {
+            for (int i = 0; i < functions.Count; i++)
+            {
+                if (functions[i].EqualsSubstring(returnType, subStr, parameters))
+                {
+                    return functions[i];
+                }
+            }
+            return null;
+        }
+
         public Ctor GetCtor(List<Parameter> parameter)
         {
             for (int i = 0; i < functions.Count; i++)
@@ -143,6 +165,16 @@ namespace FuncGraph.CodeWriting
             return false;
         }
 
+        public bool HasMemberSubstring(string substr)
+        {
+            for (int i = 0; i < members.Count; i++)
+            {
+                if (members[i].PartialEqualsSubString(substr))
+                    return true;
+            }
+            return false;
+        }
+
         public Member GetMember(string name)
         {
             for (int i = 0; i < members.Count; i++)
@@ -163,13 +195,23 @@ namespace FuncGraph.CodeWriting
             return null;
         }
 
+        public Member GetMemberSubstring(string substring)
+        {
+            for (int i = 0; i < members.Count; i++)
+            {
+                if (members[i].PartialEqualsSubString(substring))
+                    return members[i];
+            }
+            return null;
+        }
+
         public List<Member> GetMembersOfType(string type)
         {
             List<Member> mems = new List<Member>();
 
             for (int i = 0; i < members.Count; i++)
             {
-                if (members[i].SameType(type))
+                if (members[i].IsOfType(type))
                 {
                     mems.Add(members[i]);
                 }
