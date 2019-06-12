@@ -24,8 +24,7 @@ namespace FuncGraph.CodeWriting
 
         public override void Write(StreamWriter writer)
         {
-            string init = initializer.Expresion.EndsWith(";") ? initializer.Expresion : (initializer.Expresion + ";");
-            writer.WriteLine($"{type} {name} = {init}");
+            writer.WriteLine($"{type} {name} = {initializer.GetAsEOL()}");
         }
     }
 }

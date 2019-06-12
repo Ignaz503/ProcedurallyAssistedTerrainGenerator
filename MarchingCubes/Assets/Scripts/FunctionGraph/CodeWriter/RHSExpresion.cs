@@ -26,8 +26,7 @@ namespace FuncGraph.CodeWriting
         {
             if (endOfLine)
             {
-                string expr = Expresion.EndsWith(";") ? Expresion : Expresion + ";";
-                writer.WriteLine(expr);
+                writer.WriteLine(GetAsEOL());
             }
             else
             {
@@ -39,13 +38,18 @@ namespace FuncGraph.CodeWriting
         public void WriteAsAssignment(StreamWriter w, Variable v)
         {
             v.WriteAsReference(w);
-            w.Write((Expresion.StartsWith("=") ? "" : "= ") + Expresion + (Expresion.EndsWith(";") ? "" : ";"));
+            w.Write((Expresion.StartsWith("=") ? "" : "= ") + GetAsEOL());
         }
 
         public void WriteAfterKeyWord(StreamWriter w, string keyWord)
         {
             w.Write(keyWord + (keyWord.EndsWith(" ") ? "" : " "));
-            w.Write(Expresion + (Expresion.EndsWith(";") ? "" : ";")); 
+            w.Write(GetAsEOL()); 
+        }
+
+        public string GetAsEOL()
+        {
+            return Expresion + (Expresion.EndsWith(";") ? "" : ";");
         }
 
     }
