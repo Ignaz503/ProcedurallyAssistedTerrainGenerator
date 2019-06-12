@@ -35,5 +35,18 @@ namespace FuncGraph.CodeWriting
                 writer.Write(exp);
             }
         }
+
+        public void WriteAsAssignment(StreamWriter w, Variable v)
+        {
+            v.WriteAsReference(w);
+            w.Write((Expresion.StartsWith("=") ? "" : "= ") + Expresion + (Expresion.EndsWith(";") ? "" : ";"));
+        }
+
+        public void WriteAfterKeyWord(StreamWriter w, string keyWord)
+        {
+            w.Write(keyWord + (keyWord.EndsWith(" ") ? "" : " "));
+            w.Write(Expresion + (Expresion.EndsWith(";") ? "" : ";")); 
+        }
+
     }
 }

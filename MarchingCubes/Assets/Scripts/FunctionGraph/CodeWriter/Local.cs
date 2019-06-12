@@ -5,7 +5,7 @@ namespace FuncGraph.CodeWriting
 {
     public class Local : Variable
     {
-        protected string initializer;
+        protected RHSExpresion initializer;
 
         public string Name
         {
@@ -14,13 +14,18 @@ namespace FuncGraph.CodeWriting
 
         public Local(string type, string name, string initializer) : base(type, name)
         {
+            this.initializer = new RHSExpresion(initializer);
+        }
+
+        public Local(string type, string name, RHSExpresion initializer) : base(type,name)
+        {
             this.initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
         }
 
         public override void Write(StreamWriter writer)
         {
-            string init = initializer.EndsWith(";") ? initializer : initializer + ";";
-            writer.WriteLine($"{type} {name} = {init};");
+            string init = initializer.Expresion.EndsWith(";") ? initializer.Expresion : (initializer.Expresion + ";");
+            writer.WriteLine($"{type} {name} = {init}");
         }
     }
 }

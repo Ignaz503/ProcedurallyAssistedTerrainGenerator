@@ -16,5 +16,9 @@ namespace FuncGraph.CodeWriting
 
         public abstract void Write(StreamWriter writer);
 
+        public void WriteAsReference(StreamWriter writer)
+        {
+            writer.Write(name + (name.EndsWith(" ") ? "" : " "));
+        }
     }
 }
