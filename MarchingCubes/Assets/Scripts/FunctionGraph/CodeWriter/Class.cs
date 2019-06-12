@@ -52,5 +52,22 @@ namespace FuncGraph.CodeWriting
             return $"mem{members.Count}_{furtherIdentifier}";
         }
 
+        public bool HasFunction(string returnType, List<Parameter> parameter)
+        {
+            //TODO
+            return false;
+        }
+
+        public bool HasFunction(string returnType, string name, List<Parameter> parameter)
+        {
+            //TODO
+            return false;
+        }
+
+        public bool HasCtor(List<Parameter> parameter)
+        {
+            //TODO
+            return false;
+        }
     }
 }
