@@ -52,22 +52,130 @@ namespace FuncGraph.CodeWriting
             return $"mem{members.Count}_{furtherIdentifier}";
         }
 
-        public bool HasFunction(string returnType, List<Parameter> parameter)
+        public bool HasFunctionWithPartialSignature(string returnType, List<Parameter> parameter)
         {
             //TODO
+            for (int i = 0; i < functions.Count; i++)
+            {
+                if (functions[i].PartialEquals(returnType, parameter))
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
         public bool HasFunction(string returnType, string name, List<Parameter> parameter)
         {
             //TODO
+            for (int i = 0; i < functions.Count; i++)
+            {
+                if (functions[i].Equals(returnType,name, parameter))
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
         public bool HasCtor(List<Parameter> parameter)
         {
             //TODO
+            for (int i = 0; i < functions.Count; i++)
+            {
+                if (functions[i].PartialEquals("", parameter))
+                {
+                    return true;
+                }
+            }
             return false;
         }
+
+        public Function GetFunctionWithPartialSignature(string returnType, List<Parameter> parameters)
+        {
+            for (int i = 0; i < functions.Count; i++)
+            {
+                if (functions[i].PartialEquals(returnType, parameters))
+                {
+                    return functions[i];
+                }
+            }
+            return null;
+        }
+
+        public Function GetFunction(string returnType, string name, List<Parameter> parameters)
+        {
+            for (int i = 0; i < functions.Count; i++)
+            {
+                if (functions[i].Equals(returnType, name, parameters))
+                    return functions[i];
+            }
+            return null;
+        }
+
+        public Ctor GetCtor(List<Parameter> parameter)
+        {
+            for (int i = 0; i < functions.Count; i++)
+            {
+                if (functions[i].PartialEquals("", parameter))
+                    return functions[i] as Ctor;
+            }
+            return null;
+        }
+
+        public bool HasMember(string name)
+        {
+            for (int i = 0; i < members.Count; i++)
+            {
+                if (members[i].PartialEquals(name))
+                    return true;
+            }
+            return false;
+        }
+
+        public bool HasMember(string type, string name)
+        {
+            for (int i = 0; i < members.Count; i++)
+            {
+                if (members[i].PartialEquals(type, name))
+                    return true;
+            }
+            return false;
+        }
+
+        public Member GetMember(string name)
+        {
+            for (int i = 0; i < members.Count; i++)
+            {
+                if (members[i].PartialEquals(name))
+                    return members[i];
+            }
+            return null;
+        }
+
+        public Member GetMember(string type, string name)
+        {
+            for (int i = 0; i < members.Count; i++)
+            {
+                if (members[i].PartialEquals(type,name))
+                    return members[i];
+            }
+            return null;
+        }
+
+        public List<Member> GetMembersOfType(string type)
+        {
+            List<Member> mems = new List<Member>();
+
+            for (int i = 0; i < members.Count; i++)
+            {
+                if (members[i].SameType(type))
+                {
+                    mems.Add(members[i]);
+                }
+            }
+            return mems;
+        }
+
     }
 }

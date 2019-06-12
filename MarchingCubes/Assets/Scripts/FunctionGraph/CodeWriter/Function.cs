@@ -51,6 +51,37 @@ namespace FuncGraph.CodeWriting
         public virtual void Write(StreamWriter writer)
         {
             //TODO
+            throw new NotImplementedException();
         }
+
+        public bool PartialEquals(string returnType, List<Parameter> parameters)
+        {
+            if (returnType != this.returnType)
+                return false;
+            if (parameters == null && this.parameters != null && this.parameters.Count > 0)
+                return false;
+            if (parameters != null && this.parameters == null && parameters.Count > 0)
+                return false;
+            if (parameters != null && this.parameters != null && parameters.Count != this.parameters.Count)
+                return false;
+            bool same = true;
+            for (int i = 0; i < this.parameters.Count; i++)
+            {
+                if (!parameters[i].Equals(this.parameters[i]))
+                {
+                    same = false;
+                    break;
+                }
+            }
+            return same;
+        }
+
+        public bool Equals(string returnType, string name, List<Parameter> parameters)
+        {
+            if (name != this.name)
+                return false;
+            return PartialEquals(returnType, parameters);
+        }
+
     }
 }
