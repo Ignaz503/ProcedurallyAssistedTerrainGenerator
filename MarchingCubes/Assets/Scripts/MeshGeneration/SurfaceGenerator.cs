@@ -110,6 +110,16 @@ public class SurfaceGenerator : MonoBehaviour
         meshQueue.Enqueue(new MeshDataForChunk(chunk, data));
     }
 
+    [UnityEditor.Callbacks.DidReloadScripts]
+    public static void OnRecomplie()
+    {
+        var surGen = FindObjectOfType<SurfaceGenerator>();
+        if(surGen !=  null)
+        {
+            surGen.MakeUseableInEditor();
+        }
+    }
+
     void OnUpdate()
     {
         if (meshQueue.Count > 0)

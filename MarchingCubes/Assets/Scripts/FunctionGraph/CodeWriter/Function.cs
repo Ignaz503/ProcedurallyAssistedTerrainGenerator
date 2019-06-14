@@ -11,7 +11,7 @@ namespace FuncGraph.CodeWriting
         protected string name;
         protected List<Parameter> parameters;
         protected List<Local> locals;
-        protected List<Line> lines;
+        protected List<CodeStructure> codeStructures;
 
         public Function(string accessor, string returnType, string name)
         {
@@ -20,7 +20,7 @@ namespace FuncGraph.CodeWriting
             this.name = name ?? throw new ArgumentNullException(nameof(name));
             this.parameters = new List<Parameter>();
             this.locals = new List<Local>();
-            this.lines = new List<Line>();
+            this.codeStructures = new List<CodeStructure>();
         }
 
         public Function(string accessor, string returnType, string name, List<Parameter> parameters) : this(accessor, returnType, name)
@@ -38,9 +38,9 @@ namespace FuncGraph.CodeWriting
             locals.Add(l);
         }
 
-        public void AddLine(Line l)
+        public void AddLine(CodeStructure l)
         {
-            lines.Add(l);
+            codeStructures.Add(l);
         }
 
         public string GetLocalName(string furtherIdentifier)
@@ -48,9 +48,9 @@ namespace FuncGraph.CodeWriting
             return $"local{locals.Count}_{furtherIdentifier}";
         }
 
-        public void InsertLine(Line l, int idx)
+        public void InsertLine(CodeStructure l, int idx)
         {
-            lines.Insert(idx, l);
+            codeStructures.Insert(idx, l);
         }
 
         public virtual void Write(StreamWriter writer)

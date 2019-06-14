@@ -23,6 +23,11 @@ namespace FuncGraph.CodeWriting
             writer.WriteLine($"{accessor} {type} {name};");
         }
 
+        public string GetAsDefinition()
+        {
+            return $"{accessor} {type} {name}";
+        }
+
         public void WriteWithAssignment(StreamWriter w, RHSExpresion initializer)
         {
             w.WriteLine($"{name} = {initializer.GetAsEOL()}");

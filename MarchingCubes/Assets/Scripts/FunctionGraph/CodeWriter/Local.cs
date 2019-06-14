@@ -18,6 +18,11 @@ namespace FuncGraph.CodeWriting
             writer.WriteLine($"{type} {name};");
         }
 
+        public string GetAsDefinition()
+        {
+            return $"{type} {name}";
+        }
+
         public void WriteAsDefinitionWithInitializer(StreamWriter writer, RHSExpresion initializer)
         {
             writer.WriteLine($"{type} {name} = {initializer.GetAsEOL()}");
