@@ -38,7 +38,7 @@ namespace FuncGraph.CodeWriting
             locals.Add(l);
         }
 
-        public void AddLine(CodeStructure l)
+        public void AddCodeStructure(CodeStructure l)
         {
             codeStructures.Add(l);
         }

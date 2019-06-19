@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using FuncGraph.CodeWriting;
 using UnityEngine;
 
 public class DegToRadNode : SingularChildNode
@@ -22,5 +23,12 @@ public class DegToRadNode : SingularChildNode
         writer.Write(") ");
     }
 
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.AddToCurrentRHS(" (");
+        Child.WriteToCSharp(writer);
+        writer.AddToCurrentRHS(" *  Mathf.Deg2Rad");
+        writer.AddToCurrentRHS(" )");
+    }
 }
 

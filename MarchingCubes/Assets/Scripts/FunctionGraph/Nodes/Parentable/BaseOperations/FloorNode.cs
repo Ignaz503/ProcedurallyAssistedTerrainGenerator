@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using FuncGraph.CodeWriting;
 using UnityEngine;
 
 public class FloorNode : SingularChildNode
@@ -19,6 +20,13 @@ public class FloorNode : SingularChildNode
         writer.Write("Mathf.Floor( ");
         Child.Write(writer);
         writer.Write(") ");
+    }
+
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.AddToCurrentRHS(" Mathf.Floor(");
+        Child.WriteToCSharp(writer);
+        writer.AddToCurrentRHS(" )");
     }
 }
 

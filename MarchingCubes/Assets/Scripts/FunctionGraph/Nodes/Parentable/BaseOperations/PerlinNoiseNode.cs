@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using FuncGraph.CodeWriting;
 using UnityEngine;
 
 public class PerlinNoiseNode : DualChildNode
@@ -25,6 +26,15 @@ public class PerlinNoiseNode : DualChildNode
         writer.Write(", ");
         RightChild.Write(writer);
         writer.Write(") ");
+    }
+
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.AddToCurrentRHS(" Mathf.PerlinNoise(");
+        LeftChild.WriteToCSharp(writer);
+        writer.AddToCurrentRHS(",");
+        RightChild.WriteToCSharp(writer);
+        writer.AddToCurrentRHS(" )");
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using FuncGraph.CodeWriting;
 using UnityEngine;
 
 public class RoundNode : SingularChildNode
@@ -21,5 +22,11 @@ public class RoundNode : SingularChildNode
         writer.Write(") ");
     }
 
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.AddToCurrentRHS(" Mathf.Round(");
+        Child.WriteToCSharp(writer);
+        writer.AddToCurrentRHS(" )");
+    }
 }
 

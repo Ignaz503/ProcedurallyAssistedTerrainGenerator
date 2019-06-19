@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using FuncGraph.CodeWriting;
 /// <summary>
 /// Root Node of graph, maybe superfluouse
 /// instead of dedicated root node
@@ -31,5 +32,14 @@ public class AddNode : DualChildNode
         writer.Write("+ ");
         RightChild.Write(writer);
         writer.Write(") ");
+    }
+
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.AddToCurrentRHS(" (");
+        LeftChild.WriteToCSharp(writer);
+        writer.AddToCurrentRHS(" +");
+        RightChild.WriteToCSharp(writer);
+        writer.AddToCurrentRHS(" )");
     }
 }

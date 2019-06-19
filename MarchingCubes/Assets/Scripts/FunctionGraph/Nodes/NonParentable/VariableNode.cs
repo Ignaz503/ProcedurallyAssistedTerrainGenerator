@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using FuncGraph.CodeWriting;
 using UnityEngine;
 
 [EditorNodeType(EditorNodeTypeAttribute.NodeType.Variable)]
@@ -54,5 +55,30 @@ public class VariableNode : BaseFuncGraphNode
                 break;
         }
         writer.Write(" ");
+    }
+
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        switch (Var)
+        {
+            case FunctionGraph.VariableNames.X:
+                writer.AddToCurrentRHS(" x.ValueWorld");
+                break;
+            case FunctionGraph.VariableNames.XLocal:
+                writer.AddToCurrentRHS(" x.ValueLocal");
+                break;
+            case FunctionGraph.VariableNames.Y:
+                writer.AddToCurrentRHS(" y.ValueWorld");
+                break;
+            case FunctionGraph.VariableNames.YLocal:
+                writer.AddToCurrentRHS(" y.ValueLocal");
+                break;
+            case FunctionGraph.VariableNames.Z:
+                writer.AddToCurrentRHS(" z.ValueWorld");
+                break;
+            case FunctionGraph.VariableNames.ZLocal:
+                writer.AddToCurrentRHS(" z.ValueLocal");
+                break;
+        }
     }
 }

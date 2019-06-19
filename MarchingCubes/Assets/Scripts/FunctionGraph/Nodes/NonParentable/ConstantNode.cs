@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Globalization;
 using System.IO;
+using FuncGraph.CodeWriting;
 using UnityEngine;
 
 [EditorNodeType(EditorNodeTypeAttribute.NodeType.FloatField)]
@@ -28,5 +29,10 @@ public class ConstantNode : BaseFuncGraphNode
     {
         writer.Write(Constant.ToString(new CultureInfo("en-US")) +"f");
         writer.Write(" ");
+    }
+
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.AddToCurrentRHS(" " + Constant.ToString(new CultureInfo("en-US")) + "f");
     }
 }

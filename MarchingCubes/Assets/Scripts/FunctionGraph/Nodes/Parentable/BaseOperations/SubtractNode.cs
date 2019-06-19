@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using FuncGraph.CodeWriting;
 
 public class SubtractNode : DualChildNode
 {
@@ -27,4 +28,12 @@ public class SubtractNode : DualChildNode
         writer.Write(") ");
     }
 
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.AddToCurrentRHS(" (");
+        LeftChild.WriteToCSharp(writer);
+        writer.AddToCurrentRHS(" -");
+        RightChild.WriteToCSharp(writer);
+        writer.AddToCurrentRHS(" )");
+    }
 }

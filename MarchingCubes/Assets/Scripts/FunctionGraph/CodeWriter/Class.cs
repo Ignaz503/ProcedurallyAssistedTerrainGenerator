@@ -22,7 +22,7 @@ namespace FuncGraph.CodeWriting
             members.Add(mem);
         }
 
-        public void AddFunctions(Function func)
+        public void AddFunction(Function func)
         {
             functions.Add(func);
         }

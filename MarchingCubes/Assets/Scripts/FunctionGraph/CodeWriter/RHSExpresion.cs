@@ -52,5 +52,10 @@ namespace FuncGraph.CodeWriting
             return Expresion + (Expresion.EndsWith(";") ? "" : ";");
         }
 
+        public static implicit operator RHSExpresion(string str)
+        {
+            return new RHSExpresion(str);
+        } 
+
     }
 }

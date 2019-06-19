@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-using UnityEngine;
 using System.IO;
+using UnityEngine;
+using FuncGraph.CodeWriting;
 
 public abstract class BaseFuncGraphNode : IFuncGraphNode
 {
@@ -104,4 +105,6 @@ public abstract class BaseFuncGraphNode : IFuncGraphNode
     }
 
     public abstract void Write(StreamWriter writer);
+
+    public abstract void WriteToCSharp(CSharpCodeWriter writer);
 }

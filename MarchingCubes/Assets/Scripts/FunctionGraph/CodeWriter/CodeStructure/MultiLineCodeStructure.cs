@@ -20,5 +20,10 @@ namespace FuncGraph.CodeWriting
             }
         }
 
+        public void AddLine(Line l)
+        {
+            lines.Add(l);
+        }
+
     }
 }

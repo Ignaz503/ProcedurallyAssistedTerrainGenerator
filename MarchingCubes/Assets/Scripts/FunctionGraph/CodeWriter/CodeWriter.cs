@@ -1,11 +1,9 @@
 ﻿using System.Collections;
-using UnityEngine;
 
 namespace FuncGraph.CodeWriting
 {
-
-    public abstract class CodeWriter
+    public  interface ICodeWriter
     {
-        public abstract void WriteToFile(string path);
+        void WriteToFile(string path);
     }
 }

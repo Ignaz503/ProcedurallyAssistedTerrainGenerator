@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using FuncGraph.CodeWriting;
 
 public class NegativeNode : SingularChildNode
 {
@@ -18,6 +19,13 @@ public class NegativeNode : SingularChildNode
         Child.Write(writer);
         writer.Write(") ");
 
+    }
+
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.AddToCurrentRHS(" ( -");
+        Child.WriteToCSharp(writer);
+        writer.AddToCurrentRHS(" )");
     }
 }
 

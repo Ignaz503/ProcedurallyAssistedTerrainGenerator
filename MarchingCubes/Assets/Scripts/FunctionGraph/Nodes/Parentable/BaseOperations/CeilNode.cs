@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using FuncGraph.CodeWriting;
 using UnityEngine;
 
 public class CeilNode : SingularChildNode
@@ -19,6 +20,13 @@ public class CeilNode : SingularChildNode
         writer.Write("Mathf.Ceil( ");
         Child.Write(writer);
         writer.Write(") ");
+    }
+
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.AddToCurrentRHS(" Mathf.Ceil(");
+        Child.WriteToCSharp(writer);
+        writer.AddToCurrentRHS(" )");
     }
 }
 

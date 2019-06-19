@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using FuncGraph.CodeWriting;
 using UnityEngine;
 
 public class SimplexNoiseNode : FixedSizeMultiChildNode
@@ -35,5 +36,16 @@ public class SimplexNoiseNode : FixedSizeMultiChildNode
         writer.Write(", ");
         childNodes[2].Write(writer);
         writer.Write(") ");
+    }
+
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.AddToCurrentRHS(" SimplexNoise.Evaulate(");
+        childNodes[0].WriteToCSharp(writer);
+        writer.AddToCurrentRHS(",");
+        childNodes[1].WriteToCSharp(writer);
+        writer.AddToCurrentRHS(",");
+        childNodes[2].WriteToCSharp(writer);
+        writer.AddToCurrentRHS(" )");
     }
 }

@@ -8,7 +8,7 @@ namespace FuncGraph.CodeWriting
         Line initAssignment;
         RHSExpresion condition;
         Line increment;
-
+        
         public override string LineToWrite
         {
             get

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using FuncGraph.CodeWriting;
 
 public class SumNode : VariableMultiChildNode
 {
@@ -29,6 +30,19 @@ public class SumNode : VariableMultiChildNode
             children[i].Write(writer);
         }
         writer.Write(") ");
+    }
+
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.AddToCurrentRHS(" (");
+        children[0].WriteToCSharp(writer);
+
+        for (int i = 1; i < children.Count; i++)
+        {
+            writer.AddToCurrentRHS(" +");
+            children[i].WriteToCSharp(writer);
+        }
+        writer.AddToCurrentRHS(" )");
     }
 }
 
