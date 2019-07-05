@@ -40,6 +40,12 @@ namespace FuncGraph.CodeWriting
         public void Write(StreamWriter write)
         {
             //TODO
+            //WRITE HEAD:
+
+            //WRITE BODY
+            //WRITE MEMBERS
+            //WRITE FUNCTIONS
+            //DONE;
         }
 
         public string GetNameForFunction(string furtherIdentifier)

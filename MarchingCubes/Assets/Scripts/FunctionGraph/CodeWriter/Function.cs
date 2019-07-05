@@ -55,9 +55,37 @@ namespace FuncGraph.CodeWriting
 
         public virtual void Write(StreamWriter writer)
         {
-            //TODO
-            throw new NotImplementedException();
+            WriteFunctionHead(writer);
+            WriteFunctionBody(writer);
         }
+
+        void WriteFunctionHead(StreamWriter writer)
+        {
+            writer.Write($"{accessor} {returnType} {name}(");
+            if (parameters.Count > 0)
+            {
+                parameters[0].WriteAsDefinition(writer);
+                for (int i = 1; i < parameters.Count; i++)
+                {
+                    writer.Write(", ");
+                    parameters[i].WriteAsDefinition(writer);
+                }
+            }
+            writer.WriteLine(")");
+        }
+
+        void WriteFunctionBody(StreamWriter writer)
+        {
+            writer.WriteLine("{");
+
+            for (int i = 0; i < codeStructures.Count; i++)
+            {
+                codeStructures[i].Write(writer);
+            }
+
+            writer.WriteLine("}");
+        }
+
 
         public bool PartialEquals(string returnType, List<Parameter> parameters)
         {
