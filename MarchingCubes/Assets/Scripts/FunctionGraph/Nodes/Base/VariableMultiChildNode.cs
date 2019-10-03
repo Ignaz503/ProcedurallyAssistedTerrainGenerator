@@ -7,7 +7,9 @@ public abstract class VariableMultiChildNode : ParentableNode
     public override int PossibleChildrenCount { get { return int.MaxValue; } }
 
     protected VariableMultiChildNode(FunctionGraph graph) : base(graph)
-    {}
+    {
+        children = new List<BaseFuncGraphNode>();
+    }
 
     public void AddChild(BaseFuncGraphNode newChild)
     {
@@ -43,7 +45,7 @@ public abstract class VariableMultiChildNode : ParentableNode
 
     public override void AddChild(int idx, BaseFuncGraphNode n)
     { 
-        if (idx < children.Count)
+        if (children != null && idx < children.Count)
         {
             var curNode = children[idx];
             if (curNode != null)
@@ -52,7 +54,7 @@ public abstract class VariableMultiChildNode : ParentableNode
             children[idx] = n;
             n.SetParent(this);
         }
-        else if (idx > children.Count)
+        else if (children != null && idx > children.Count)
         {
             // add diference as null set child
             for (int i = children.Count; i < idx - children.Count; i++)

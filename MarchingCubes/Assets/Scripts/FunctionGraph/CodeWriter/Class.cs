@@ -1,20 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+
+//TODO WRAP STREAMWRITER with writer that tracks indentation and so on for  nicer fomratting
 
 namespace FuncGraph.CodeWriting
 {
     public class Class
     {
         public string Name { get; protected set; }
+
+        public bool HasBaseClass { get { return BaseClass != "" ; } }
+        public string BaseClass { get; protected set; }
+
+        public bool HasInterfacesImplemented { get { return implentedInterfaces.Count > 0; } }
+        List<string> implentedInterfaces;
+        public IEnumerable<string> ImplentedInterfaces { get { return implentedInterfaces; } }
+
         protected List<Member> members;
         public List<Function> functions;
 
-        public Class(string name)
+        public Class(string name, string baseClass = "")
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
+            BaseClass = baseClass;
             members = new List<Member>();
             functions = new List<Function>();
+            implentedInterfaces = new List<string>();
         }
 
         public void AddMember(Member mem)
@@ -35,17 +48,6 @@ namespace FuncGraph.CodeWriting
         public void AddCtor(Ctor ctor)
         {
             functions.Add(ctor);
-        }
-
-        public void Write(StreamWriter write)
-        {
-            //TODO
-            //WRITE HEAD:
-
-            //WRITE BODY
-            //WRITE MEMBERS
-            //WRITE FUNCTIONS
-            //DONE;
         }
 
         public string GetNameForFunction(string furtherIdentifier)
@@ -225,5 +227,82 @@ namespace FuncGraph.CodeWriting
             return mems;
         }
 
+        public bool ImplementsInterface(string interfaceName)
+        {
+            for (int i = 0; i < implentedInterfaces.Count; i++)
+            {
+                if (implentedInterfaces[i].Equals(interfaceName))
+                    return true;
+            }
+            return false;
+        }
+
+        public void AddInterface(string interfaceName)
+        {
+            implentedInterfaces.Add(interfaceName);
+        }
+
+        public bool RemoveInterface(string interfaceName)
+        {
+            return implentedInterfaces.Remove(interfaceName);
+        }
+
+        public void ChangeBaseClass(string newBaseClass)
+        {
+            BaseClass = newBaseClass;
+        }
+
+        public void Write(StreamWriter write)
+        {
+            writeHeader(write);
+            writeBody(write);
+            //DONE;
+        }
+
+        void writeHeader(StreamWriter writer)
+        {
+            writer.WriteLine(BuildHeader());
+        }
+
+        string BuildHeader()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("class ");
+
+            builder.Append(Name);
+
+            if (HasBaseClass || HasInterfacesImplemented)
+                builder.Append(" : ");
+
+            if (HasBaseClass)
+                builder.Append(BaseClass);
+
+            if (HasInterfacesImplemented)
+            {
+                for (int i = 0; i < implentedInterfaces.Count; i++)
+                {
+                    if (i == 0 && !HasBaseClass)
+                    {
+                        //case of class Ass : IInterFace1, IInterface2..
+                        // instead of class Ass : BaseClass, IInterface1, Interface2...
+                        builder.Append(implentedInterfaces[i]);
+                        continue;
+                    }
+
+                    builder.Append(", ");
+                    builder.Append(implentedInterfaces[i]);
+                }
+            }
+            return builder.ToString();
+        }
+
+        void writeBody(StreamWriter writer)
+        {
+            writer.WriteLine("{");
+            //TODO
+            //Members
+            //functions
+            writer.WriteLine("}");
+        }
     }
 }
