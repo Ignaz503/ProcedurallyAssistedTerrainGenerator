@@ -163,14 +163,14 @@ public partial class FunctionGraphEditor : EditorWindow
             if(!isValidGraph)
                 return;
 
+            //string folderPath = EditorUtility.SaveFolderPanel("Save Code To Folder", "", "");
             string path = EditorUtility.SaveFilePanelInProject("Compile Graph", graph.GraphName, "cs",
                 "Please enter a file name to save the compiled graph to");
 
             if (path.Length != 0)
             {
                 using (var writer = new StreamWriter(path))
-                {
-                                       
+                { 
                     graph.Write(writer);
                     Close();
                 }

@@ -5,7 +5,7 @@ namespace FuncGraph.CodeWriting
 {
     public class BasicLine : Line
     {
-        string lineToWrite;
+        protected string lineToWrite;
 
         public override string LineToWrite
         {
@@ -19,6 +19,8 @@ namespace FuncGraph.CodeWriting
         {
             this.lineToWrite = lineToWrite ?? throw new ArgumentNullException(nameof(lineToWrite));
         }
+
+        protected BasicLine(){ lineToWrite = ""; }
 
         public override void Write(StreamWriter w)
         {

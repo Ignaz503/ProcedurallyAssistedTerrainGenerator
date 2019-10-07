@@ -9,6 +9,7 @@ namespace FuncGraph.CodeWriting
 {
     public class Class
     {
+        public Namespace Namespace { get; protected set; }
         public string Name { get; protected set; }
 
         public bool HasBaseClass { get { return BaseClass != "" ; } }
@@ -18,16 +19,26 @@ namespace FuncGraph.CodeWriting
         List<string> implentedInterfaces;
         public IEnumerable<string> ImplentedInterfaces { get { return implentedInterfaces; } }
 
+        protected List<UsingDirective> usingDirectives;
+        public IEnumerable<UsingDirective> UsingDirectives { get { return usingDirectives; } }
         protected List<Member> members;
         public List<Function> functions;
 
-        public Class(string name, string baseClass = "")
+        public Class(string name, string baseClass = "", Namespace nameSpace = null)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
+            Namespace = nameSpace ?? Namespace.GlobalNamespace; 
             BaseClass = baseClass;
+            usingDirectives = new List<UsingDirective>();
             members = new List<Member>();
             functions = new List<Function>();
             implentedInterfaces = new List<string>();
+
+            if (nameSpace != null)
+            {
+                nameSpace.AddClass(this);
+            }
+
         }
 
         public void AddMember(Member mem)
@@ -242,6 +253,11 @@ namespace FuncGraph.CodeWriting
             implentedInterfaces.Add(interfaceName);
         }
 
+        public void AddInterfaces(List<string> interfaces)
+        {
+            implentedInterfaces.AddRange(interfaces);
+        }
+
         public bool RemoveInterface(string interfaceName)
         {
             return implentedInterfaces.Remove(interfaceName);
@@ -252,6 +268,15 @@ namespace FuncGraph.CodeWriting
             BaseClass = newBaseClass;
         }
 
+        public void ChangeNamespace(Namespace newNamespace)
+        {
+            if (Namespace != null)
+                Namespace.RemoveClass(this);
+
+            Namespace = newNamespace;
+            Namespace.AddClass(this);
+        }
+    
         public void Write(StreamWriter write)
         {
             writeHeader(write);
@@ -299,9 +324,23 @@ namespace FuncGraph.CodeWriting
         void writeBody(StreamWriter writer)
         {
             writer.WriteLine("{");
-            //TODO
+
             //Members
+            for (int i = 0; i < members.Count; i++)
+            {
+                //TODO FORMATTING
+                members[i].WriteAsDefinition(writer);
+            }
+
             //functions
+            for (int i = 0; i < functions.Count; i++)
+            {
+                functions[i].Write(writer);
+            }
+
+            //TODO More formatting
+
+
             writer.WriteLine("}");
         }
     }
