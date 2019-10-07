@@ -13,7 +13,7 @@ namespace FuncGraph.CodeWriting
         public Local(string type, string name) : base(type, name)
         {}
 
-        public override void WriteAsDefinition(StreamWriter writer)
+        public override void WriteAsDefinition(IndentedStreamWriter writer)
         {
             writer.WriteLine($"{type} {name};");
         }
@@ -23,7 +23,7 @@ namespace FuncGraph.CodeWriting
             return $"{type} {name}";
         }
 
-        public void WriteAsDefinitionWithInitializer(StreamWriter writer, RHSExpresion initializer)
+        public void WriteAsDefinitionWithInitializer(IndentedStreamWriter writer, RHSExpresion initializer)
         {
             writer.WriteLine($"{type} {name} = {initializer.GetAsEOL()}");
         }

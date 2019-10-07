@@ -73,7 +73,7 @@ namespace FuncGraph.CodeWriting
                     WriteHeader(writer);
                     WriteBodyStart(writer);
                     //write class
-                    classesInNameSpace[0].Write(writer);
+                    classesInNameSpace[0].Write(new IndentedStreamWriter(writer));
                     //end namespace body
                     WriteBodyEnd(writer);
                 }

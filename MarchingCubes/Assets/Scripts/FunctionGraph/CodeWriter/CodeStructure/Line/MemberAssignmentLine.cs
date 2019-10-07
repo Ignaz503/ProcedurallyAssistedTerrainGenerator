@@ -20,7 +20,7 @@ namespace FuncGraph.CodeWriting
             this.mem = mem ?? throw new ArgumentNullException(nameof(mem));
         }
 
-        public override void Write(StreamWriter w)
+        public override void Write(IndentedStreamWriter w)
         {
             mem.WriteWithAssignment(w, expresion);
         }

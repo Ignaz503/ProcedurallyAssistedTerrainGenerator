@@ -12,7 +12,7 @@ namespace FuncGraph.CodeWriting
             lines = new List<Line>();
         }
 
-        public override void Write(StreamWriter w)
+        public override void Write(IndentedStreamWriter w)
         {
             for (int i = 0; i < lines.Count; i++)
             {

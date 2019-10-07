@@ -22,7 +22,7 @@ namespace FuncGraph.CodeWriting
             this.asInitializer = asInitializer;
         }
 
-        public override void Write(StreamWriter w)
+        public override void Write(IndentedStreamWriter w)
         {
             if (asInitializer)
             {

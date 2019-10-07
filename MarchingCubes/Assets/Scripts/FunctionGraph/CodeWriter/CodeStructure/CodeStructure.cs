@@ -5,6 +5,6 @@ namespace FuncGraph.CodeWriting
     public abstract class CodeStructure
     {
         //Maybe unneeded
-        public abstract void Write(StreamWriter w);
+        public abstract void Write(IndentedStreamWriter w);
     }
 }

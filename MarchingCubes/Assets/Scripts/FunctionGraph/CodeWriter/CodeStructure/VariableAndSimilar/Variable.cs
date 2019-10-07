@@ -14,14 +14,14 @@ namespace FuncGraph.CodeWriting
             this.name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
-        public abstract void WriteAsDefinition(StreamWriter writer);
+        public abstract void WriteAsDefinition(IndentedStreamWriter writer);
 
         public string GetAsReference()
         {
             return name + (name.EndsWith(" ") ? "" : " ");
         }
 
-        public void WriteAsReference(StreamWriter writer)
+        public void WriteAsReference(IndentedStreamWriter writer)
         {
             writer.Write(name + (name.EndsWith(" ") ? "" : " "));
         }

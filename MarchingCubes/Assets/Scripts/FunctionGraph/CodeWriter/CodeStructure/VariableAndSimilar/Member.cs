@@ -18,7 +18,7 @@ namespace FuncGraph.CodeWriting
             this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
         }
 
-        public override void WriteAsDefinition(StreamWriter writer)
+        public override void WriteAsDefinition(IndentedStreamWriter writer)
         {
             writer.WriteLine($"{accessor} {type} {name};");
         }
@@ -28,7 +28,7 @@ namespace FuncGraph.CodeWriting
             return $"{accessor} {type} {name}";
         }
 
-        public void WriteWithAssignment(StreamWriter w, RHSExpresion initializer)
+        public void WriteWithAssignment(IndentedStreamWriter w, RHSExpresion initializer)
         {
             w.WriteLine($"{name} = {initializer.GetAsEOL()}");
         }

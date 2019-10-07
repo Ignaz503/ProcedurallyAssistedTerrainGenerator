@@ -12,7 +12,7 @@ namespace FuncGraph.CodeWriting
             this.expresion = expresion ?? throw new ArgumentNullException(nameof(expresion));
         }
 
-        protected void WriteAssignment(StreamWriter w)
+        protected void WriteAssignment(IndentedStreamWriter w)
         {
             w.Write($"= {expresion.GetAsEOL()}");
         }

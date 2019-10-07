@@ -20,7 +20,7 @@ namespace FuncGraph.CodeWriting
             this.expresion = expresion ?? throw new ArgumentNullException(nameof(expresion));
         }
 
-        public override void Write(StreamWriter w)
+        public override void Write(IndentedStreamWriter w)
         {
             w.WriteLine(LineToWrite);
         }

@@ -296,7 +296,7 @@ namespace FuncGraph.CodeWriting
             return usingDirectives.Remove(toRem);
         }
 
-        public void Write(StreamWriter write)
+        public void Write(IndentedStreamWriter write)
         {
             writeUsingDirectives(write);
             writeHeader(write);
@@ -304,7 +304,7 @@ namespace FuncGraph.CodeWriting
             //DONE;
         }
 
-        private void writeUsingDirectives(StreamWriter writer)
+        private void writeUsingDirectives(IndentedStreamWriter writer)
         {
             for (int i = 0; i < usingDirectives.Count; i++)
             {
@@ -312,7 +312,7 @@ namespace FuncGraph.CodeWriting
             }
         }
 
-        void writeHeader(StreamWriter writer)
+        void writeHeader(IndentedStreamWriter writer)
         {
             writer.WriteLine(BuildHeader());
         }
@@ -349,7 +349,7 @@ namespace FuncGraph.CodeWriting
             return builder.ToString();
         }
 
-        void writeBody(StreamWriter writer)
+        void writeBody(IndentedStreamWriter writer)
         {
             writer.WriteLine("{");
 

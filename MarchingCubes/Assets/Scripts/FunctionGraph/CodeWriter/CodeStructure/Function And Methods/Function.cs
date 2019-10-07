@@ -53,13 +53,13 @@ namespace FuncGraph.CodeWriting
             codeStructures.Insert(idx, l);
         }
 
-        public virtual void Write(StreamWriter writer)
+        public virtual void Write(IndentedStreamWriter writer)
         {
             WriteFunctionHead(writer);
             WriteFunctionBody(writer);
         }
 
-        void WriteFunctionHead(StreamWriter writer)
+        void WriteFunctionHead(IndentedStreamWriter writer)
         {
             writer.Write($"{accessor} {returnType} {name}(");
             if (parameters.Count > 0)
@@ -74,7 +74,7 @@ namespace FuncGraph.CodeWriting
             writer.WriteLine(")");
         }
 
-        void WriteFunctionBody(StreamWriter writer)
+        void WriteFunctionBody(IndentedStreamWriter writer)
         {
             writer.WriteLine("{");
 

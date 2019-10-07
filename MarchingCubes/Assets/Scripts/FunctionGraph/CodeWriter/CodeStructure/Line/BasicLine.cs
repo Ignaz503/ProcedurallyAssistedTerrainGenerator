@@ -22,7 +22,7 @@ namespace FuncGraph.CodeWriting
 
         protected BasicLine(){ lineToWrite = ""; }
 
-        public override void Write(StreamWriter w)
+        public override void Write(IndentedStreamWriter w)
         {
             w.WriteLine(lineToWrite);
         }

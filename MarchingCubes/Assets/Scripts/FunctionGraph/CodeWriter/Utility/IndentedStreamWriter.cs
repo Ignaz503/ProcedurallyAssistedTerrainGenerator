@@ -51,5 +51,17 @@ namespace FuncGraph.CodeWriting
             }
         }
 
+        public void WriteLine(string line)
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
+
+        public void Write(string toWrite)
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
+
     }
 }

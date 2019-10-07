@@ -16,7 +16,7 @@ namespace FuncGraph.CodeWriting
         {
             using (var writer = new StreamWriter(path))
             {
-                CurrentClass.Write(writer);
+                CurrentClass.Write(new IndentedStreamWriter(writer));
             }
         }
     }

@@ -15,7 +15,7 @@ namespace FuncGraph.CodeWriting
 
         }
 
-        public override void Write(StreamWriter writer)
+        public override void Write(IndentedStreamWriter writer)
         {
             //TODO
         }

@@ -22,7 +22,7 @@ namespace FuncGraph.CodeWriting
             return base.GetHashCode();
         }
 
-        public override void WriteAsDefinition(StreamWriter writer)
+        public override void WriteAsDefinition(IndentedStreamWriter writer)
         {
             writer.Write($"{type} {name}");
         }

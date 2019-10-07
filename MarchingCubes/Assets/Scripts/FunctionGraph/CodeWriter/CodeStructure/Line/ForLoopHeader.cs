@@ -26,7 +26,7 @@ namespace FuncGraph.CodeWriting
             this.increment = increment ?? throw new ArgumentNullException(nameof(increment));
         }
 
-        public override void Write(StreamWriter w)
+        public override void Write(IndentedStreamWriter w)
         {
             w.Write(LineToWrite);
         }
