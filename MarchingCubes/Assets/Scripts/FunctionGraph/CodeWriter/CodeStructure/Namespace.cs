@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-
 namespace FuncGraph.CodeWriting
 {
     public class Namespace
@@ -61,10 +60,25 @@ namespace FuncGraph.CodeWriting
             classesInNameSpace.Add(c);
         }
 
-        public void Write(StreamWriter writer)
+        public void Write(string pathDirectory)
         {
             //TODO: Write every class in namepace
-            //add namsepace at start
+
+            for (int i = 0; i < classesInNameSpace.Count; i++)
+            {
+                //open streamwriter 
+                using (var writer = new StreamWriter(pathDirectory + $"/{classesInNameSpace[i].Name}"))
+                {
+                    //write namspace header and start body
+                    WriteHeader(writer);
+                    WriteBodyStart(writer);
+                    //write class
+                    classesInNameSpace[0].Write(writer);
+                    //end namespace body
+                    WriteBodyEnd(writer);
+                }
+            }
+            //done
         }
 
         protected virtual void WriteHeader(StreamWriter writer)
@@ -86,5 +100,35 @@ namespace FuncGraph.CodeWriting
         {
             classesInNameSpace.Remove(classToRem);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Namespace)
+            {
+                return (obj as Namespace).Name == Name;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 1645094557;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<Class>>.Default.GetHashCode(classesInNameSpace);
+            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Class>>.Default.GetHashCode(ClassesInNameSpace);
+            hashCode = hashCode * -1521134295 + HasClasses.GetHashCode();
+            return hashCode;
+        }
+
+        public static bool operator==(Namespace lhs, Namespace rhs)
+        {
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator!=(Namespace lhs, Namespace rhs)
+        {
+            return !lhs.Equals(rhs);
+        }
+
     }
 }

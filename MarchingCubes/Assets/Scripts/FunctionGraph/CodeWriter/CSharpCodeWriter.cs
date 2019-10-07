@@ -77,6 +77,7 @@ namespace FuncGraph.CodeWriting
             tempFunctionStorage = new Stack<Function>();
             tempCodeStructureStorage = new Stack<CodeStructure>();
             tempRHSExprStorage = new Stack<RHSExpresion>();
+            tempClassStorage = new Stack<Class>();
         }
 
         public void SwitchNameSpace(string name)

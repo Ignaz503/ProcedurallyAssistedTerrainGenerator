@@ -166,6 +166,8 @@ public partial class FunctionGraphEditor : EditorWindow
             //string folderPath = EditorUtility.SaveFolderPanel("Save Code To Folder", "", "");
             string path = EditorUtility.SaveFilePanelInProject("Compile Graph", graph.GraphName, "cs",
                 "Please enter a file name to save the compiled graph to");
+            //Debug.Log($"Folder Path: {folderPath}");
+            //Debug.Log(path);
 
             if (path.Length != 0)
             {

@@ -276,12 +276,40 @@ namespace FuncGraph.CodeWriting
             Namespace = newNamespace;
             Namespace.AddClass(this);
         }
-    
+
+        public void AddUsingDirective(UsingDirective newDir, bool checkDouble = true)
+        {
+            if (checkDouble)
+            {
+                if (!usingDirectives.Contains(newDir))
+                    usingDirectives.Add(newDir);
+
+            }
+            else
+            {
+                usingDirectives.Add(newDir);
+            }
+        }
+
+        public bool RemoveUsingDirective(UsingDirective toRem)
+        {
+            return usingDirectives.Remove(toRem);
+        }
+
         public void Write(StreamWriter write)
         {
+            writeUsingDirectives(write);
             writeHeader(write);
             writeBody(write);
             //DONE;
+        }
+
+        private void writeUsingDirectives(StreamWriter writer)
+        {
+            for (int i = 0; i < usingDirectives.Count; i++)
+            {
+                usingDirectives[i].Write(writer);
+            }
         }
 
         void writeHeader(StreamWriter writer)
