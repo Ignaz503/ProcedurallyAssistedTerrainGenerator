@@ -8,6 +8,9 @@ public class PerlinNoiseNode : DualChildNode
     {
     }
 
+    public override string RightChildLabel { get { return "Y"; } }
+    public override string LeftChildLabel { get { return "X"; } }
+
     public override string ShortDescription { get { return "PerlinNoise"; } }
 
     /// <summary>

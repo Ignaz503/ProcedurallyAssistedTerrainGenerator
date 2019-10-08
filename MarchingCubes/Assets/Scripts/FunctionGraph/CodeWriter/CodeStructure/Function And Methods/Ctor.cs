@@ -35,7 +35,6 @@ namespace FuncGraph.CodeWriting
 
         public override void Write(IndentedStreamWriter writer)
         {
-            //TODO
             WriteCtorHeader(writer);
             WriteFunctionBody(writer);
         }

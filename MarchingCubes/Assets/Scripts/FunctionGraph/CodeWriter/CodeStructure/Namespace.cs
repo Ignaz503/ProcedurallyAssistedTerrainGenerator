@@ -11,13 +11,10 @@ namespace FuncGraph.CodeWriting
         protected class NoNamespace : Namespace
         {
             public NoNamespace() : base("")
-            {
-            }
+            { }
 
             protected override void WriteBodyEnd(StreamWriter writer)
-            {
-
-            }
+            { }
             protected override void WriteBodyStart(StreamWriter writer)
             { }
             protected override void WriteHeader(StreamWriter writer)
@@ -62,7 +59,7 @@ namespace FuncGraph.CodeWriting
 
         public void Write(string pathDirectory)
         {
-            //TODO: Write every class in namepace
+            //Write every class in namepace
 
             for (int i = 0; i < classesInNameSpace.Count; i++)
             {

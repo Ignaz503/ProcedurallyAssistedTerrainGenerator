@@ -25,7 +25,6 @@ public class NodeLayoutEditor : Editor
 
         if (tar.InConnectionPointsInfo != null)
         {
-            
             for (int i = 0; i < tar.InConnectionPointCount; i++)
             {
                 tar.Draw(r, tar.InConnectionPointsInfo[i], i);

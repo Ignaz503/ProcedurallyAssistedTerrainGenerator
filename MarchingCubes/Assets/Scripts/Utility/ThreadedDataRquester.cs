@@ -111,7 +111,9 @@ public class ThreadedDataRequester : MonoBehaviour
     public void MakeUseableInEditor()
     {
         instance = this;
+        EditorApplication.update -= Update;
         EditorApplication.update += Update;
+        EditorApplication.quitting -= OnQuit;
         EditorApplication.quitting += OnQuit;
     }
 
@@ -121,7 +123,7 @@ public class ThreadedDataRequester : MonoBehaviour
     }
 
     public void EditorHello() {
-        Debug.Log("Created An Editor Instance ");
+        Debug.Log("Threaded Data Requester is now usable in editor mode");
     }
 
 #endif

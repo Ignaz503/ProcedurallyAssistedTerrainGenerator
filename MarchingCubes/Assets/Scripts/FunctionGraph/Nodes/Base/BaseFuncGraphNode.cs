@@ -20,7 +20,7 @@ public abstract class BaseFuncGraphNode : IFuncGraphNode
         }
     }
 
-    //TODO added function for drawing in editor and so on
+    //TODO(??? Past me come on a little mroe clearer would be nice) added function for drawing in editor and so on
     //same as eventHandling 
 
     public event Action<BaseFuncGraphNode> OnUncoupleFromParent;

@@ -4,6 +4,6 @@ namespace FuncGraph.CodeWriting
 {
     public  interface ICodeWriter
     {
-        void WriteToFile(string path);
+        void WriteToDirectory(string path);
     }
 }

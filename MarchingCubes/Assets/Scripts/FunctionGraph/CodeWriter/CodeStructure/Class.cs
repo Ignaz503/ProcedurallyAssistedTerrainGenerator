@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-//TODO WRAP STREAMWRITER with writer that tracks indentation and so on for  nicer fomratting
-
 namespace FuncGraph.CodeWriting
 {
     public class Class

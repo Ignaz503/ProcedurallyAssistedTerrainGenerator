@@ -43,7 +43,6 @@ public class FunctionGraphToCSharpCompiler
     {
         if (!appendum.EndsWith(" "))
             appendum += " ";
-        //TODO
         currentLine += appendum;
     }
     /// <summary>

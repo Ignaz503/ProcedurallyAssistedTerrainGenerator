@@ -73,6 +73,11 @@ namespace FuncGraph.CodeWriting
             tempCodeStructureStorage = new Stack<CodeStructure>();
             tempRHSExprStorage = new Stack<RHSExpresion>();
             tempClassStorage = new Stack<Class>();
+
+            //Add global namespace to namespaces
+            namespaces = new List<Namespace>();
+            namespaces.Add(Namespace.GlobalNamespace);
+
         }
 
         public Namespace CreateNameSpace(string name, bool setAsCurrent = false)
@@ -119,9 +124,14 @@ namespace FuncGraph.CodeWriting
 
         public void FinishCurrentClass()
         {
-            //TODO
+            //classes are added to namespace on creation global if not defined, can we changed at will
+            //all we need to do is to clear everything
 
-            //Add current class to namespace
+            currentClass = null;
+            currentFunction = null;
+            currentRhsExpression = "";
+            currentCodeStructure = null;
+
             //clear
         }
 
@@ -194,9 +204,13 @@ namespace FuncGraph.CodeWriting
             }
         }
 
-        public void WriteToFile(string path)
+        public void WriteToDirectory(string path)
         {
-            throw new System.NotImplementedException();
+            //for every namespace call write
+            for (int i = 0; i < namespaces.Count; i++)
+            {
+                namespaces[i].Write(path);
+            }
         }
 
         public void AddToCurrentRHS(RHSExpresion toAdd)

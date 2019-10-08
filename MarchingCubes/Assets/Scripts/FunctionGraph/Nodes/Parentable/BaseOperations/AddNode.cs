@@ -11,6 +11,9 @@ using FuncGraph.CodeWriting;
 /// </summary>
 public class AddNode : DualChildNode
 {
+    public override string RightChildLabel { get { return "B"; } }
+    public override string LeftChildLabel { get { return "A"; } }
+
     public override string ShortDescription { get { return "+"; } }
 
     public AddNode(FunctionGraph graph) : base(graph)

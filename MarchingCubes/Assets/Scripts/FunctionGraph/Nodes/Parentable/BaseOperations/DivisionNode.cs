@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class DivisionNode : DualChildNode
 {
+    public override string RightChildLabel { get { return "B"; } }
+    public override string LeftChildLabel { get { return "A"; } }
+
     public DivisionNode(FunctionGraph graph) : base(graph)
     {
     }

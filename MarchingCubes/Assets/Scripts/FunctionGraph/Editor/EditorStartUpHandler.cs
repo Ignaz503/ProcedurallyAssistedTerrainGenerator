@@ -12,5 +12,7 @@ public class EditorStartUpHandler
         //create surface gen instance and make useable in editor
         // as well as threaded data requester
         Debug.Log("Start up");
+        ThreadedDataRequester.Instance.EditorHello();
+
     }
 }

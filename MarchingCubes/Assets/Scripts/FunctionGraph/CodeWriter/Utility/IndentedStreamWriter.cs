@@ -21,7 +21,7 @@ namespace FuncGraph.CodeWriting
             indentString = "";
         }
 
-        public void IncreaseIndentLevel(int increase)
+        public void IncreaseIndentLevel(int increase = 1)
         {
             increase = Mathf.Abs(increase);
 
@@ -32,7 +32,7 @@ namespace FuncGraph.CodeWriting
             currentIndentLevel += increase; 
         }
 
-        public void DecreaseIndentLevel(int decrease)
+        public void DecreaseIndentLevel(int decrease = 1)
         {
             decrease = Mathf.Abs(decrease);
             if (currentIndentLevel - decrease <= 0)
@@ -53,13 +53,11 @@ namespace FuncGraph.CodeWriting
 
         public void WriteLine(string line)
         {
-            //TODO
             writer.WriteLine(indentString + line);
         }
 
         public void Write(string str)
         {
-            //TODO
             writer.Write(indentString + str);
         }
 

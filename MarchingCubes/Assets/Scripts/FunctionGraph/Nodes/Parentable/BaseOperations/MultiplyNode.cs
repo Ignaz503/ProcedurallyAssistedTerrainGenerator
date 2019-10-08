@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class MultiplyNode : DualChildNode
 {
+    public override string RightChildLabel { get { return "B"; } }
+    public override string LeftChildLabel { get { return "A"; } }
+
     public MultiplyNode(FunctionGraph graph) : base(graph)
     {
     }

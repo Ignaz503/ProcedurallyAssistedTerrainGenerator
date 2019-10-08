@@ -24,7 +24,6 @@ public struct ClickedNodesTracker
 
     private void TryCreateConnection()
     {
-        //TODO
         //if both not null try check if loop
         //if no loop parent out to to in info
         //reset both of them

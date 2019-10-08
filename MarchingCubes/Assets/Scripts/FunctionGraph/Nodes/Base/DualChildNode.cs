@@ -4,7 +4,9 @@ using UnityEngine;
 public abstract class DualChildNode : ParentableNode
 {
     public BaseFuncGraphNode RightChild { get; protected set; }
+    public abstract string RightChildLabel { get; }
     public BaseFuncGraphNode LeftChild { get; protected set; }
+    public abstract string LeftChildLabel { get;  }
 
     public override int PossibleChildrenCount { get { return 2; } }
 

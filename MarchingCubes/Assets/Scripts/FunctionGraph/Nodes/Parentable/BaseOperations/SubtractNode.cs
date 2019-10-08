@@ -7,6 +7,9 @@ public class SubtractNode : DualChildNode
 {
     public override string ShortDescription { get { return "-"; } }
 
+    public override string RightChildLabel { get { return "B"; } }
+    public override string LeftChildLabel { get { return "A"; } }
+    
     public SubtractNode(FunctionGraph graph) : base(graph)
     {}
 
