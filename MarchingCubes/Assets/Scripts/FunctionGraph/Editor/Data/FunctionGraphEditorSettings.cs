@@ -19,10 +19,13 @@ public class FunctionGraphEditorSettings : ScriptableObject, ISerializationCallb
     Dictionary<Type, FunctionGraphEditorNodeLayout> layoutMapping = null;
 
     [HideInInspector] [SerializeField] List<NodeTypeToNodeLayout> serializableMapping;
+    private bool wasRemappedFromSerializedData;
 
     private void Awake()
     {
-        CreateMapping();     
+        if(!wasRemappedFromSerializedData)
+            CreateMapping();
+        wasRemappedFromSerializedData = false;
     }
 
     [UnityEditor.Callbacks.DidReloadScripts]
@@ -201,6 +204,7 @@ public class FunctionGraphEditorSettings : ScriptableObject, ISerializationCallb
             layoutMapping.Add(entry.Type, entry.Layout);
             i++;
         }
+        wasRemappedFromSerializedData = true;
     }
 
     public FunctionGraphEditorNodeLayout GetLayout(BaseFuncGraphNode node)
@@ -225,6 +229,7 @@ public class FunctionGraphEditorSettings : ScriptableObject, ISerializationCallb
 
     private void CreateMapping()
     {
+        Debug.Log("Create Mapping");
         layoutMapping = new Dictionary<Type, FunctionGraphEditorNodeLayout>();
         //mapping = new List<NodeTypeToNodeLayout>();
         var nodeTypes = BaseFuncGraphNode.InstantiableNodeTypes;

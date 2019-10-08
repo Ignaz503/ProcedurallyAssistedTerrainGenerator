@@ -45,7 +45,7 @@ namespace FuncGraph.CodeWriting
                 //for every decrease remove from string
                 for (int i = 0; i < decrease; i++)
                 {
-                    //TODO
+                    indentString = indentString.Remove(indentString.Length - 1);
                 }
                 currentIndentLevel -= decrease;
             }
@@ -54,13 +54,13 @@ namespace FuncGraph.CodeWriting
         public void WriteLine(string line)
         {
             //TODO
-            throw new NotImplementedException();
+            writer.WriteLine(indentString + line);
         }
 
-        public void Write(string toWrite)
+        public void Write(string str)
         {
             //TODO
-            throw new NotImplementedException();
+            writer.Write(indentString + str);
         }
 
     }

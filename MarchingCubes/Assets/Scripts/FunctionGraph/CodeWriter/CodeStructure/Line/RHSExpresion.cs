@@ -1,20 +1,28 @@
 ﻿using System;
 using System.IO;
+using System.Text;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace FuncGraph.CodeWriting
 {
     public class RHSExpresion
     {
-        public string Expresion { get; protected set; }
+        public const string PlaceHolder = "§";
+
+        //TODO Seems stupid think of something better
+        StringBuilder expressionBuilder;
+
+        public string Expresion { get { return expressionBuilder.ToString(); } }
 
         public RHSExpresion(string expresion)
         {
-            this.Expresion = expresion ?? throw new ArgumentNullException(nameof(expresion));
+            expressionBuilder = new StringBuilder(expresion);
         }
 
         public void Append(string str)
         {
-            Expresion += (Expresion.EndsWith(" ") ? "" : " ") + str;
+            expressionBuilder.Append(str.StartsWith(" ") ? str : " " + str);
         }
 
         public void Append(RHSExpresion expr)
@@ -55,7 +63,22 @@ namespace FuncGraph.CodeWriting
         public static implicit operator RHSExpresion(string str)
         {
             return new RHSExpresion(str);
-        } 
+        }
 
+        public void Insert(string toInsert, int placeholderIndex = 0)
+        {
+            List<int> indices = new List<int>();
+            var str = expressionBuilder.ToString();
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] == '§')
+                    indices.Add(i);
+            }
+
+            if (placeholderIndex >= indices.Count)
+                throw new Exception("Trying to insert at non existing place");
+
+            expressionBuilder.Replace("§", toInsert, indices[placeholderIndex], 1);
+        }
     }
 }

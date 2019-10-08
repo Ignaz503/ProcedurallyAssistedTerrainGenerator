@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace FuncGraph.CodeWriting
 {
@@ -59,22 +60,28 @@ namespace FuncGraph.CodeWriting
             WriteFunctionBody(writer);
         }
 
-        void WriteFunctionHead(IndentedStreamWriter writer)
+        protected void WriteFunctionHead(IndentedStreamWriter writer)
         {
-            writer.Write($"{accessor} {returnType} {name}(");
-            if (parameters.Count > 0)
-            {
-                parameters[0].WriteAsDefinition(writer);
-                for (int i = 1; i < parameters.Count; i++)
-                {
-                    writer.Write(", ");
-                    parameters[i].WriteAsDefinition(writer);
-                }
-            }
-            writer.WriteLine(")");
+            writer.WriteLine(BuildFunctionHead());
         }
 
-        void WriteFunctionBody(IndentedStreamWriter writer)
+        protected virtual string BuildFunctionHead()
+        {
+            var builder = new StringBuilder($"{accessor} {returnType} {name}(");
+            if (parameters.Count > 0)
+            {
+                builder.Append(parameters[0].GetAsDefinition());
+                for (int i = 1; i < parameters.Count; i++)
+                {
+                    builder.Append(", ");
+                    builder.Append(parameters[i].GetAsDefinition());
+                }
+            }
+            builder.Append(")");
+            return builder.ToString();
+        }
+
+        protected void WriteFunctionBody(IndentedStreamWriter writer)
         {
             writer.WriteLine("{");
 

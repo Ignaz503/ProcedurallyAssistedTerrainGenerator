@@ -27,6 +27,10 @@ namespace FuncGraph.CodeWriting
             writer.Write($"{type} {name}");
         }
 
-        
+        public override string GetAsDefinition()
+        {
+            return $"{type} {name}";
+        }
+
     }
 }

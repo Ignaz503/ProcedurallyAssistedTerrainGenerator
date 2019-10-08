@@ -21,6 +21,11 @@ namespace FuncGraph.CodeWriting
             return name + (name.EndsWith(" ") ? "" : " ");
         }
 
+        public virtual string GetAsDefinition()
+        {
+            return $"{type} {name} ";
+        }
+
         public void WriteAsReference(IndentedStreamWriter writer)
         {
             writer.Write(name + (name.EndsWith(" ") ? "" : " "));

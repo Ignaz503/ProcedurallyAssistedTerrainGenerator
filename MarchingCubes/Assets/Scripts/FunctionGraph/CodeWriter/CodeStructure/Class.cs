@@ -53,7 +53,7 @@ namespace FuncGraph.CodeWriting
 
         public Ctor GetACtor()
         {
-            return new Ctor("public", Name);
+            return new Ctor(this,"public", Name);
         }
 
         public void AddCtor(Ctor ctor)
@@ -73,7 +73,7 @@ namespace FuncGraph.CodeWriting
 
         public bool HasFunctionWithPartialSignature(string returnType, List<Parameter> parameter)
         {
-            //TODO
+          
             for (int i = 0; i < functions.Count; i++)
             {
                 if (functions[i].PartialEquals(returnType, parameter))
@@ -86,7 +86,7 @@ namespace FuncGraph.CodeWriting
 
         public bool HasFunction(string returnType, string name, List<Parameter> parameter)
         {
-            //TODO
+
             for (int i = 0; i < functions.Count; i++)
             {
                 if (functions[i].Equals(returnType,name, parameter))
@@ -109,7 +109,6 @@ namespace FuncGraph.CodeWriting
 
         public bool HasCtor(List<Parameter> parameter)
         {
-            //TODO
             for (int i = 0; i < functions.Count; i++)
             {
                 if (functions[i].PartialEquals("", parameter))

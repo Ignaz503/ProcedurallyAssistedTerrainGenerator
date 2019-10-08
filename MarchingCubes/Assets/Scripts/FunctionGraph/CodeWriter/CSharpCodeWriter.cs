@@ -9,16 +9,11 @@ namespace FuncGraph.CodeWriting
     {
         List<Namespace> namespaces;
         Namespace currentNamespace;
-        public Namespace CurrentNameSpace {
+        public Namespace CurrentNamespace {
             get{ return currentNamespace; }
             set
             {
-                if (currentNamespace != null)
-                {
-                    Debug.LogError("Only One Active Namsepace at a time.Call TempStore and restore after the fact.");
-                    return;
-                }
-                currentNamespace = value;
+                currentNamespace = value ?? Namespace.GlobalNamespace;
             }
         }
 
@@ -80,14 +75,21 @@ namespace FuncGraph.CodeWriting
             tempClassStorage = new Stack<Class>();
         }
 
-        public void SwitchNameSpace(string name)
+        public Namespace CreateNameSpace(string name, bool setAsCurrent = false)
         {
-            //TODO
-        }
-
-        public void CreateNameSpace(string name)
-        {
-            //TODO
+            for (int i = 0; i < namespaces.Count; i++)
+            {
+                if (namespaces[i].Name == name)
+                {
+                    if (setAsCurrent)
+                        CurrentNamespace = namespaces[i];
+                    return namespaces[i];
+                }
+            }
+            namespaces.Add(new Namespace(name));
+            if (setAsCurrent)
+                CurrentNamespace = namespaces[namespaces.Count - 1];
+            return namespaces[namespaces.Count - 1];
         }
 
         public void StoreClassTemporarily()
@@ -118,7 +120,7 @@ namespace FuncGraph.CodeWriting
         public void FinishCurrentClass()
         {
             //TODO
-            //check if current namespace not null if so go to special namespace
+
             //Add current class to namespace
             //clear
         }

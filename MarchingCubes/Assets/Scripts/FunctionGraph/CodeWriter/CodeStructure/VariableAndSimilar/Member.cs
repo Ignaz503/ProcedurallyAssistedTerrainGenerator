@@ -23,9 +23,9 @@ namespace FuncGraph.CodeWriting
             writer.WriteLine($"{accessor} {type} {name};");
         }
 
-        public string GetAsDefinition()
+        public override string GetAsDefinition()
         {
-            return $"{accessor} {type} {name}";
+            return $"{accessor} {type} {name};";
         }
 
         public void WriteWithAssignment(IndentedStreamWriter w, RHSExpresion initializer)
