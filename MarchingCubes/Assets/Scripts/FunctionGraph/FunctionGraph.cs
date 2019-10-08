@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FuncGraph.CodeWriting;
 
 public class FunctionGraph 
 {
@@ -96,4 +97,36 @@ public class FunctionGraph
         writer.WriteLine("}");
         
     }
+
+    public void WriteToCSharp()
+    {
+        CSharpCodeWriter newCodeWriter = new CSharpCodeWriter();
+
+
+        newCodeWriter.CreateNameSpace($"Compiled._{GraphName}");
+        newCodeWriter.CurrentClass = new Class(GraphName, nameSpace:newCodeWriter.CurrentNamespace);
+        newCodeWriter.CurrentClass.AddInterface(typeof(IDensityFunc).Name);
+
+        newCodeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System"));
+        newCodeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System.Collections"));
+        newCodeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System.Collections.Generic"));
+        newCodeWriter.CurrentClass.AddUsingDirective(new UsingDirective("UnityEngine"));
+
+        var ctor = newCodeWriter.CurrentClass.CreateACtor();
+        newCodeWriter.CurrentClass.AddCtor(ctor);
+        //TODO make things that have public as to string, maybe base types as well, get way to easier get the density func interface function
+        newCodeWriter.CurrentFunction = new Function(
+                                                    "public",
+                                                    "float",
+                                                    "Evaluate",
+                                                    new List<Parameter>()
+                                                    {
+                                                        new Parameter(typeof(SamplePointVariables).Name,"x") ,
+                                                        new Parameter(typeof(SamplePointVariables).Name,"y") ,
+                                                        new Parameter(typeof(SamplePointVariables).Name,"z")
+                                                    });
+        newCodeWriter.CurrentCodeStructure = new ReturnLine();
+        
+    }
+
 }

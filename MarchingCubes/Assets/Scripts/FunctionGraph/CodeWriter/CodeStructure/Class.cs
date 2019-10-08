@@ -49,7 +49,7 @@ namespace FuncGraph.CodeWriting
             functions.Add(func);
         }
 
-        public Ctor GetACtor()
+        public Ctor CreateACtor()
         {
             return new Ctor(this,"public", Name);
         }

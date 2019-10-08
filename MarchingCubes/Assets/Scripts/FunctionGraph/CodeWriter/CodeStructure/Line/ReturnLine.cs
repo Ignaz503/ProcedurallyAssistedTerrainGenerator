@@ -20,6 +20,14 @@ namespace FuncGraph.CodeWriting
             this.expresion = expresion ?? throw new ArgumentNullException(nameof(expresion));
         }
 
+        public ReturnLine()
+        {}
+
+        public void SetRHSExpression(RHSExpresion exp)
+        {
+            expresion = exp;
+        }
+
         public override void Write(IndentedStreamWriter w)
         {
             w.WriteLine(LineToWrite);

@@ -16,6 +16,12 @@ namespace FuncGraph.CodeWriting
             lineToWrite = $"using {nameSpaceUsed.Name};";
         }
 
+        public UsingDirective(string namespcae)
+        {
+            this.NamespaceUsed = new Namespace(namespcae);
+            lineToWrite = $"using {NamespaceUsed.Name};";
+        }
+
         public override bool Equals(object obj)
         {
             var directive = obj as UsingDirective;

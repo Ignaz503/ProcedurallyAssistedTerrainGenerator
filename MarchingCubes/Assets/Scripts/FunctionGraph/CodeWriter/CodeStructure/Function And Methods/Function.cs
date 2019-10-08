@@ -104,6 +104,8 @@ namespace FuncGraph.CodeWriting
                 return false;
             if (parameters != null && this.parameters != null && parameters.Count != this.parameters.Count)
                 return false;
+            if (parameters == null && this.parameters == null)
+                return true;
             bool same = true;
             for (int i = 0; i < this.parameters.Count; i++)
             {
