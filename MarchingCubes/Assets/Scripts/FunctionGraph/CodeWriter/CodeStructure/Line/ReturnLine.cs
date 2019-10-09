@@ -5,7 +5,6 @@ namespace FuncGraph.CodeWriting
 {
     public class ReturnLine : Line
     {
-        RHSExpresion expresion;
 
         public override string LineToWrite
         {
@@ -15,22 +14,23 @@ namespace FuncGraph.CodeWriting
             }
         }
 
-        public ReturnLine(RHSExpresion expresion)
+        public ReturnLine(string expresion)
         {
-            this.expresion = expresion ?? throw new ArgumentNullException(nameof(expresion));
+            this.expresion = new Expresion(expresion);
         }
 
         public ReturnLine()
         {}
 
-        public void SetRHSExpression(RHSExpresion exp)
+        public void SetRHSExpression(string exp)
         {
-            expresion = exp;
+            expresion = new Expresion(exp);
         }
 
         public override void Write(IndentedStreamWriter w)
         {
             w.WriteLine(LineToWrite);
         }
+
     }
 }

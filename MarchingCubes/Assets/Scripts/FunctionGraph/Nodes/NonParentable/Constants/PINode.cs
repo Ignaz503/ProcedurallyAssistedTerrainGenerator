@@ -23,7 +23,7 @@ public class PINode : FixedConstantNode
 
     public override void WriteToCSharp(CSharpCodeWriter writer)
     {
-        writer.AddToCurrentRHS(" Mathf.PI");
+        writer.AddToCurrentLine(" Mathf.PI");
     }
 }
 

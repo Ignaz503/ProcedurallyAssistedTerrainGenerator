@@ -15,14 +15,15 @@ namespace FuncGraph.CodeWriting
             }
         }
 
-        public MemberAssignmentLine(Member mem, RHSExpresion expresion) : base(expresion)
+        public MemberAssignmentLine(Member mem, string expresion) : base(expresion)
         {
             this.mem = mem ?? throw new ArgumentNullException(nameof(mem));
         }
 
         public override void Write(IndentedStreamWriter w)
         {
-            mem.WriteWithAssignment(w, expresion);
+            w.Write($"{mem.Name}");
+            WriteAssignment(w);
         }
     }
 }

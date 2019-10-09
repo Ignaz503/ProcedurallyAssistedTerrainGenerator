@@ -24,10 +24,10 @@ public class RadToDegNode : SingularChildNode
 
     public override void WriteToCSharp(CSharpCodeWriter writer)
     {
-        writer.AddToCurrentRHS(" (");
+        writer.AddToCurrentLine(" (");
         Child.WriteToCSharp(writer);
-        writer.AddToCurrentRHS(" *  Mathf.Rad2Deg");
-        writer.AddToCurrentRHS(" )");
+        writer.AddToCurrentLine(" *  Mathf.Rad2Deg");
+        writer.AddToCurrentLine(" )");
     }
 }
 

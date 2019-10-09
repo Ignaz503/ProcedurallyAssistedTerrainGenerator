@@ -16,7 +16,7 @@ namespace FuncGraph.CodeWriting
             }
         }
 
-        public LocalAssignmentLine(Local local, RHSExpresion initializer, bool asInitializer = false) : base(initializer)
+        public LocalAssignmentLine(Local local, string initializer, bool asInitializer = false) : base(initializer)
         {
             this.local = local ?? throw new ArgumentNullException(nameof(local));
             this.asInitializer = asInitializer;
@@ -26,7 +26,9 @@ namespace FuncGraph.CodeWriting
         {
             if (asInitializer)
             {
-                local.WriteAsDefinitionWithInitializer(w,expresion);
+                string def = local.GetAsDefinition();
+                w.Write(def);
+                WriteAssignment(w);
             }
             else
             {
@@ -34,5 +36,6 @@ namespace FuncGraph.CodeWriting
                 WriteAssignment(w);
             }
         }
+
     }
 }

@@ -125,15 +125,15 @@ public class FunctionGraph
                                                         new Parameter(typeof(SamplePointVariables).Name,"y") ,
                                                         new Parameter(typeof(SamplePointVariables).Name,"z")
                                                     });
-        codeWriter.CurrentCodeStructure = new ReturnLine();
-        RootNode.WriteToCSharp(codeWriter);
+        //codeWriter.CurrentCodeStructure = new ReturnLine();
+        //RootNode.WriteToCSharp(codeWriter);
 
-        (codeWriter.CurrentCodeStructure as ReturnLine).SetRHSExpression(codeWriter.CurrentRHSExpression);
-        codeWriter.FinishCodeStructure();
-        codeWriter.FinishCurrentFunction();
-        codeWriter.FinishCurrentClass();
+        //(codeWriter.CurrentCodeStructure as ReturnLine).SetRHSExpression(codeWriter.CurrentRHSExpression);
+        //codeWriter.FinishCodeStructure();
+        //codeWriter.FinishCurrentFunction();
+        //codeWriter.FinishCurrentClass();
 
-        codeWriter.WriteToDirectory(directoryPath);
+        //codeWriter.WriteToDirectory(directoryPath);
 
     }
 

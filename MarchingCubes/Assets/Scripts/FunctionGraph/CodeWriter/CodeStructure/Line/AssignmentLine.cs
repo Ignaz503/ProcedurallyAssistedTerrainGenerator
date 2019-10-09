@@ -5,16 +5,15 @@ namespace FuncGraph.CodeWriting
 {
     public abstract class AssignmentLine : Line
     {
-        protected RHSExpresion expresion;
 
-        public AssignmentLine( RHSExpresion expresion)
+        public AssignmentLine( string expresion)
         {
-            this.expresion = expresion ?? throw new ArgumentNullException(nameof(expresion));
+            this.expresion = new Expresion(expresion);
         }
 
         protected void WriteAssignment(IndentedStreamWriter w)
         {
-            w.Write($"= {expresion.GetAsEOL()}");
+            w.Write($" = {expresion.GetAsEOL()}");
         }
     }
 }

@@ -34,15 +34,15 @@ public class SumNode : VariableMultiChildNode
 
     public override void WriteToCSharp(CSharpCodeWriter writer)
     {
-        writer.AddToCurrentRHS(" (");
+        writer.AddToCurrentLine(" (");
         children[0].WriteToCSharp(writer);
 
         for (int i = 1; i < children.Count; i++)
         {
-            writer.AddToCurrentRHS(" +");
+            writer.AddToCurrentLine(" +");
             children[i].WriteToCSharp(writer);
         }
-        writer.AddToCurrentRHS(" )");
+        writer.AddToCurrentLine(" )");
     }
 }
 

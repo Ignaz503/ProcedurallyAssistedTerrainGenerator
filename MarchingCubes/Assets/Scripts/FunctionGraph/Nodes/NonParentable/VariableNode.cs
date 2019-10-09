@@ -62,22 +62,22 @@ public class VariableNode : BaseFuncGraphNode
         switch (Var)
         {
             case FunctionGraph.VariableNames.X:
-                writer.AddToCurrentRHS(" x.ValueWorld");
+                writer.AddToCurrentLine(" x.ValueWorld");
                 break;
             case FunctionGraph.VariableNames.XLocal:
-                writer.AddToCurrentRHS(" x.ValueLocal");
+                writer.AddToCurrentLine(" x.ValueLocal");
                 break;
             case FunctionGraph.VariableNames.Y:
-                writer.AddToCurrentRHS(" y.ValueWorld");
+                writer.AddToCurrentLine(" y.ValueWorld");
                 break;
             case FunctionGraph.VariableNames.YLocal:
-                writer.AddToCurrentRHS(" y.ValueLocal");
+                writer.AddToCurrentLine(" y.ValueLocal");
                 break;
             case FunctionGraph.VariableNames.Z:
-                writer.AddToCurrentRHS(" z.ValueWorld");
+                writer.AddToCurrentLine(" z.ValueWorld");
                 break;
             case FunctionGraph.VariableNames.ZLocal:
-                writer.AddToCurrentRHS(" z.ValueLocal");
+                writer.AddToCurrentLine(" z.ValueLocal");
                 break;
         }
     }

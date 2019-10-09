@@ -4,7 +4,7 @@ namespace FuncGraph.CodeWriting
 {
     public class ForLoopStructure : MultiLineCodeStructure
     {
-        public ForLoopStructure(Line incrementerInitAssign, RHSExpresion condition, Line incrementer, List<Line> linesInBody) : base()
+        public ForLoopStructure(Line incrementerInitAssign, Line condition, Line incrementer, List<Line> linesInBody) : base()
         {
             
             lines.Add(new ForLoopHeader(incrementerInitAssign, condition, incrementer));
@@ -19,10 +19,8 @@ namespace FuncGraph.CodeWriting
             lines.Add(new BasicLine("}"));
         }
 
-        public ForLoopStructure(Line incrementerAssignment, RHSExpresion condition, Line incrementer, Line lineInBody):base()
+        public ForLoopStructure(Line incrementerAssignment, Line condition, Line incrementer, Line lineInBody):base()
         {
-
-
             lines.Add(new ForLoopHeader(incrementerAssignment, condition, incrementer));
             lines.Add(new BasicLine("{"));
             lines.Add(lineInBody);

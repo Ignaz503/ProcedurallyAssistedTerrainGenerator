@@ -33,10 +33,10 @@ public class SubtractNode : DualChildNode
 
     public override void WriteToCSharp(CSharpCodeWriter writer)
     {
-        writer.AddToCurrentRHS(" (");
+        writer.AddToCurrentLine(" (");
         LeftChild.WriteToCSharp(writer);
-        writer.AddToCurrentRHS(" -");
+        writer.AddToCurrentLine(" -");
         RightChild.WriteToCSharp(writer);
-        writer.AddToCurrentRHS(" )");
+        writer.AddToCurrentLine(" )");
     }
 }

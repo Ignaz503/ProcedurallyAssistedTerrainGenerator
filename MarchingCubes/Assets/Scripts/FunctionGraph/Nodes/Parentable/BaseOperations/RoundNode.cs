@@ -24,9 +24,9 @@ public class RoundNode : SingularChildNode
 
     public override void WriteToCSharp(CSharpCodeWriter writer)
     {
-        writer.AddToCurrentRHS(" Mathf.Round(");
+        writer.AddToCurrentLine(" Mathf.Round(");
         Child.WriteToCSharp(writer);
-        writer.AddToCurrentRHS(" )");
+        writer.AddToCurrentLine(" )");
     }
 }
 

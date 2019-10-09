@@ -28,11 +28,6 @@ namespace FuncGraph.CodeWriting
             return $"{accessor} {type} {name};";
         }
 
-        public void WriteWithAssignment(IndentedStreamWriter w, RHSExpresion initializer)
-        {
-            w.WriteLine($"{name} = {initializer.GetAsEOL()}");
-        }
-
         public bool PartialEquals(string name)
         {
             return name == this.name;

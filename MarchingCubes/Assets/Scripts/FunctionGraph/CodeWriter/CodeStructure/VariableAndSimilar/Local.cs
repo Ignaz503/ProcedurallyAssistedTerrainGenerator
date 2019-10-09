@@ -23,11 +23,6 @@ namespace FuncGraph.CodeWriting
             return $"{type} {name}";
         }
 
-        public void WriteAsDefinitionWithInitializer(IndentedStreamWriter writer, RHSExpresion initializer)
-        {
-            writer.WriteLine($"{type} {name} = {initializer.GetAsEOL()}");
-        }
-
         public bool PartialEquals(string name)
         {
             return this.name == name;

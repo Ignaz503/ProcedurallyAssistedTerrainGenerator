@@ -24,9 +24,9 @@ public class CeilNode : SingularChildNode
 
     public override void WriteToCSharp(CSharpCodeWriter writer)
     {
-        writer.AddToCurrentRHS(" Mathf.Ceil(");
+        writer.AddToCurrentLine(" Mathf.Ceil(");
         Child.WriteToCSharp(writer);
-        writer.AddToCurrentRHS(" )");
+        writer.AddToCurrentLine(" )");
     }
 }
 

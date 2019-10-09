@@ -33,11 +33,11 @@ public class PerlinNoiseNode : DualChildNode
 
     public override void WriteToCSharp(CSharpCodeWriter writer)
     {
-        writer.AddToCurrentRHS(" Mathf.PerlinNoise(");
+        writer.AddToCurrentLine(" Mathf.PerlinNoise(");
         LeftChild.WriteToCSharp(writer);
-        writer.AddToCurrentRHS(",");
+        writer.AddToCurrentLine(",");
         RightChild.WriteToCSharp(writer);
-        writer.AddToCurrentRHS(" )");
+        writer.AddToCurrentLine(" )");
     }
 }
 

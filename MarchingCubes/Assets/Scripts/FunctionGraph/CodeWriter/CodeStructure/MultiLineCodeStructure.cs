@@ -5,11 +5,11 @@ namespace FuncGraph.CodeWriting
 {
     public abstract class MultiLineCodeStructure : CodeStructure
     {
-        protected List<Line> lines;
+        protected List<CodeStructure> lines;
 
         public MultiLineCodeStructure()
         {
-            lines = new List<Line>();
+            lines = new List<CodeStructure>();
         }
 
         public override void Write(IndentedStreamWriter w)
@@ -25,5 +25,9 @@ namespace FuncGraph.CodeWriting
             lines.Add(l);
         }
 
+        public void AddLine(CodeStructure c)
+        {
+            lines.Add(c);
+        }
     }
 }

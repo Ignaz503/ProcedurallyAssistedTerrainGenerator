@@ -42,12 +42,12 @@ public class SimplexNoiseNode : FixedSizeMultiChildNode
 
     public override void WriteToCSharp(CSharpCodeWriter writer)
     {
-        writer.AddToCurrentRHS(" SimplexNoise.Evaulate(");
+        writer.AddToCurrentLine(" SimplexNoise.Evaulate(");
         childNodes[0].WriteToCSharp(writer);
-        writer.AddToCurrentRHS(",");
+        writer.AddToCurrentLine(",");
         childNodes[1].WriteToCSharp(writer);
-        writer.AddToCurrentRHS(",");
+        writer.AddToCurrentLine(",");
         childNodes[2].WriteToCSharp(writer);
-        writer.AddToCurrentRHS(" )");
+        writer.AddToCurrentLine(" )");
     }
 }

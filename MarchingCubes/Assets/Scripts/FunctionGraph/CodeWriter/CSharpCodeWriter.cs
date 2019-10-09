@@ -46,8 +46,8 @@ namespace FuncGraph.CodeWriting
             }
         }
 
-        RHSExpresion currentRhsExpression;
-        public RHSExpresion CurrentRHSExpression { get { return currentRhsExpression; } }
+        Line currentLine;
+        public Line CurrentRHSExpression { get { return currentLine; } }
         
         CodeStructure currentCodeStructure;
         public CodeStructure CurrentCodeStructure
@@ -64,7 +64,7 @@ namespace FuncGraph.CodeWriting
         }
 
         Stack<CodeStructure> tempCodeStructureStorage;
-        Stack<RHSExpresion> tempRHSExprStorage;
+        Stack<Line> tempLineStorage;
         Stack<Function> tempFunctionStorage;
         Stack<Class> tempClassStorage;
 
@@ -72,7 +72,7 @@ namespace FuncGraph.CodeWriting
         {
             tempFunctionStorage = new Stack<Function>();
             tempCodeStructureStorage = new Stack<CodeStructure>();
-            tempRHSExprStorage = new Stack<RHSExpresion>();
+            tempLineStorage = new Stack<Line>();
             tempClassStorage = new Stack<Class>();
 
             //Add global namespace to namespaces
@@ -101,7 +101,7 @@ namespace FuncGraph.CodeWriting
         public void StoreClassTemporarily()
         {
             tempCodeStructureStorage.Push(currentCodeStructure);
-            tempRHSExprStorage.Push(currentRhsExpression);
+            tempLineStorage.Push(currentLine);
             tempFunctionStorage.Push(currentFunction);
             tempClassStorage.Push(currentClass);
         }
@@ -110,7 +110,7 @@ namespace FuncGraph.CodeWriting
         {
             StoreClassTemporarily();
             currentCodeStructure = null;
-            currentRhsExpression = "";
+            currentLine  = null;
             currentFunction = null;
             currentClass = null;
         }
@@ -118,7 +118,7 @@ namespace FuncGraph.CodeWriting
         public void RestorePreviousClass()
         {
             currentCodeStructure = tempCodeStructureStorage.Pop();
-            currentRhsExpression = tempRHSExprStorage.Pop();
+            currentLine = tempLineStorage.Pop();
             currentFunction = tempFunctionStorage.Pop();
             currentClass = tempClassStorage.Pop();
         }
@@ -130,7 +130,7 @@ namespace FuncGraph.CodeWriting
 
             currentClass = null;
             currentFunction = null;
-            currentRhsExpression = "";
+            currentLine = null;
             currentCodeStructure = null;
 
             //clear
@@ -139,7 +139,7 @@ namespace FuncGraph.CodeWriting
         public void StoreFunctionTemporarily()
         {
             tempCodeStructureStorage.Push(currentCodeStructure);
-            tempRHSExprStorage.Push(currentRhsExpression);
+            tempLineStorage.Push(currentLine);
             tempFunctionStorage.Push(currentFunction);
         }
 
@@ -147,14 +147,14 @@ namespace FuncGraph.CodeWriting
         {
             StoreFunctionTemporarily();
             currentCodeStructure = null;
-            currentRhsExpression = "";
+            currentLine = null;
             currentFunction = null;
         }
 
         public void RestorePreviousFunction()
         {
             currentCodeStructure = tempCodeStructureStorage.Pop();
-            currentRhsExpression = tempRHSExprStorage.Pop();
+            currentLine = tempLineStorage.Pop();
             currentFunction = tempFunctionStorage.Pop();
         }
 
@@ -162,34 +162,34 @@ namespace FuncGraph.CodeWriting
         {
             CurrentClass.AddFunction(currentFunction);
             currentCodeStructure = null;
-            currentRhsExpression = "";
+            currentLine = null;
             currentFunction = null;
         }
 
         public void StoreCurrentCodeStructureTemporarily()
         {
             tempCodeStructureStorage.Push(currentCodeStructure);
-            tempRHSExprStorage.Push(currentRhsExpression);
+            tempLineStorage.Push(currentLine);
         }
 
         public void StoreCurrentCodeStructureTemporarilyAndClear()
         {
             StoreCurrentCodeStructureTemporarily();
-            currentRhsExpression = "";
+            currentLine = null;
             currentCodeStructure = null;
         }
 
         public void RestorePreviousCodeStructure()
         {
             currentCodeStructure = tempCodeStructureStorage.Pop();
-            currentRhsExpression = tempRHSExprStorage.Pop();
+            currentLine = tempLineStorage.Pop();
         }
 
         public void FinishCodeStructure()
         {
             currentFunction.AddCodeStructure(currentCodeStructure);
             currentCodeStructure = null;
-            currentRhsExpression = "";
+            currentLine = null;
         }
 
         public void AddLineForCurrentCodeStructure(Line l)
@@ -214,17 +214,10 @@ namespace FuncGraph.CodeWriting
             }
         }
 
-        public void AddToCurrentRHS(RHSExpresion toAdd)
+        public void AddToCurrentLine(string toAdd)
         {
-            currentRhsExpression.Append(toAdd);
-        }
-
-        public void AddToCurrentRHS(string toAdd)
-        {
-            currentRhsExpression.Append(toAdd);
-        }
-
-        
+            currentLine.Append(toAdd);
+        }    
 
     }
 

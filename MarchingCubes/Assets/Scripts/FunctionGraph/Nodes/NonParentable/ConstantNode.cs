@@ -33,6 +33,6 @@ public class ConstantNode : BaseFuncGraphNode
 
     public override void WriteToCSharp(CSharpCodeWriter writer)
     {
-        writer.AddToCurrentRHS(" " + Constant.ToString(new CultureInfo("en-US")) + "f");
+        writer.AddToCurrentLine(" " + Constant.ToString(new CultureInfo("en-US")) + "f");
     }
 }
