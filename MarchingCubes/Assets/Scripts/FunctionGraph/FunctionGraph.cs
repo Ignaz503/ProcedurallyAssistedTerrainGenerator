@@ -107,13 +107,15 @@ public class FunctionGraph
         codeWriter.CurrentClass = new Class(GraphName, nameSpace:codeWriter.CurrentNamespace);
         codeWriter.CurrentClass.AddInterface(typeof(IDensityFunc).Name);
 
-        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System"));
-        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System.Collections"));
-        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System.Collections.Generic"));
-        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective("UnityEngine"));
+        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective(nameof(System)));
+        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective(nameof(System) + "." + nameof(System.Collections)));
+        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective(nameof(System) + "." + nameof(System.Collections) + "." + nameof(System.Collections.Generic)));
+        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective(nameof(UnityEngine)));
+
 
         var ctor = codeWriter.CurrentClass.CreateACtor();
         codeWriter.CurrentClass.AddCtor(ctor);
+        codeWriter.CurrentCtor = ctor;
         //TODO make things that have public as to string, maybe base types as well, get way to easier get the density func interface function
         codeWriter.CurrentFunction = new Function(
                                                     "public",
@@ -125,15 +127,15 @@ public class FunctionGraph
                                                         new Parameter(typeof(SamplePointVariables).Name,"y") ,
                                                         new Parameter(typeof(SamplePointVariables).Name,"z")
                                                     });
-        //codeWriter.CurrentCodeStructure = new ReturnLine();
-        //RootNode.WriteToCSharp(codeWriter);
+        codeWriter.CurrentLine = new ReturnLine();
 
-        //(codeWriter.CurrentCodeStructure as ReturnLine).SetRHSExpression(codeWriter.CurrentRHSExpression);
-        //codeWriter.FinishCodeStructure();
-        //codeWriter.FinishCurrentFunction();
-        //codeWriter.FinishCurrentClass();
+        RootNode.WriteToCSharp(codeWriter);
 
-        //codeWriter.WriteToDirectory(directoryPath);
+        codeWriter.FinishCurrentFunction();
+
+        codeWriter.FinishCurrentConstructor();
+
+        codeWriter.WriteToDirectory(directoryPath);
 
     }
 
