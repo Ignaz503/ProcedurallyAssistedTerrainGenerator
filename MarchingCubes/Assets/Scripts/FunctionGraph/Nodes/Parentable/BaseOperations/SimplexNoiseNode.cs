@@ -6,7 +6,9 @@ using UnityEngine;
 
 public class SimplexNoiseNode : FixedSizeMultiChildNode
 {
-    public SimplexNoiseNode(FunctionGraph graph) : base(3, graph)
+    static string[] labels = new string[3] {"x","y","z"};
+
+    public SimplexNoiseNode(FunctionGraph graph) : base(3,labels, graph)
     {
         
     }

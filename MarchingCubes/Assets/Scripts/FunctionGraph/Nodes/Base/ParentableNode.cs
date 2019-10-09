@@ -17,6 +17,8 @@ public abstract class ParentableNode : BaseFuncGraphNode, IEnumerable<BaseFuncGr
 
     public abstract ChildInfo GetChildInfo(BaseFuncGraphNode n);
 
+    public abstract string GetChildLabelByIdx(int idx);
+
     public bool MoveNext()
     {
         throw new System.NotImplementedException();

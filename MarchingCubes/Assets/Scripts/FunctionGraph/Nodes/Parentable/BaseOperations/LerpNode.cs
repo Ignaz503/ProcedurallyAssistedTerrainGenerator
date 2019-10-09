@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class LerpNode : FixedSizeMultiChildNode
 {
+    static string[] labels = new string[3] { "a", "b", "t" };
+
     public override string ShortDescription { get { return "Lerp"; } }
 
-    public LerpNode(FunctionGraph graph) : base(3, graph)
+    public LerpNode(FunctionGraph graph) : base(3,labels,graph)
     {
     }
 

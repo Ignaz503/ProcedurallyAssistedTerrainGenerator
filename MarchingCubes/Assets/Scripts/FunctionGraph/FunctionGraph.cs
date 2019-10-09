@@ -98,24 +98,24 @@ public class FunctionGraph
         
     }
 
-    public void WriteToCSharp()
+    public void WriteToCSharp(string directoryPath)
     {
-        CSharpCodeWriter newCodeWriter = new CSharpCodeWriter();
+        CSharpCodeWriter codeWriter = new CSharpCodeWriter();
 
 
-        newCodeWriter.CreateNameSpace($"Compiled._{GraphName}");
-        newCodeWriter.CurrentClass = new Class(GraphName, nameSpace:newCodeWriter.CurrentNamespace);
-        newCodeWriter.CurrentClass.AddInterface(typeof(IDensityFunc).Name);
+        codeWriter.CreateNameSpace($"Compiled._{GraphName}");
+        codeWriter.CurrentClass = new Class(GraphName, nameSpace:codeWriter.CurrentNamespace);
+        codeWriter.CurrentClass.AddInterface(typeof(IDensityFunc).Name);
 
-        newCodeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System"));
-        newCodeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System.Collections"));
-        newCodeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System.Collections.Generic"));
-        newCodeWriter.CurrentClass.AddUsingDirective(new UsingDirective("UnityEngine"));
+        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System"));
+        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System.Collections"));
+        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective("System.Collections.Generic"));
+        codeWriter.CurrentClass.AddUsingDirective(new UsingDirective("UnityEngine"));
 
-        var ctor = newCodeWriter.CurrentClass.CreateACtor();
-        newCodeWriter.CurrentClass.AddCtor(ctor);
+        var ctor = codeWriter.CurrentClass.CreateACtor();
+        codeWriter.CurrentClass.AddCtor(ctor);
         //TODO make things that have public as to string, maybe base types as well, get way to easier get the density func interface function
-        newCodeWriter.CurrentFunction = new Function(
+        codeWriter.CurrentFunction = new Function(
                                                     "public",
                                                     "float",
                                                     "Evaluate",
@@ -125,8 +125,16 @@ public class FunctionGraph
                                                         new Parameter(typeof(SamplePointVariables).Name,"y") ,
                                                         new Parameter(typeof(SamplePointVariables).Name,"z")
                                                     });
-        newCodeWriter.CurrentCodeStructure = new ReturnLine();
-        
+        codeWriter.CurrentCodeStructure = new ReturnLine();
+        RootNode.WriteToCSharp(codeWriter);
+
+        (codeWriter.CurrentCodeStructure as ReturnLine).SetRHSExpression(codeWriter.CurrentRHSExpression);
+        codeWriter.FinishCodeStructure();
+        codeWriter.FinishCurrentFunction();
+        codeWriter.FinishCurrentClass();
+
+        codeWriter.WriteToDirectory(directoryPath);
+
     }
 
 }

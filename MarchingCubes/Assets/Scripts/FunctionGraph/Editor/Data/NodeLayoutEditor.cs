@@ -20,6 +20,7 @@ public class NodeLayoutEditor : Editor
         Rect r = EditorGUILayout.GetControlRect();
 
         r.size = new Vector2(tar.Width, tar.Height);
+        //r.size = new Vector2(150f, 150f);
 
         GUI.Box(r, "", tar.Style);
 
@@ -36,6 +37,11 @@ public class NodeLayoutEditor : Editor
             {
                 tar.Draw(r, tar.OutConnectionPointsInfo[i], i);
             }
+        }
+
+        for (int i = 0; i < tar.Height / 5f; i++)
+        {
+            EditorGUILayout.Space();
         }
 
     }

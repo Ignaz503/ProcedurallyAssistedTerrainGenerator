@@ -6,7 +6,7 @@ public class RoundNode : SingularChildNode
 {
     public override string ShortDescription { get { return "Round"; } }
 
-    public RoundNode(FunctionGraph graph) : base(graph)
+    public RoundNode(FunctionGraph graph) : base("f", graph)
     {
     }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FloorNode : SingularChildNode
 {
-    public FloorNode(FunctionGraph graph) : base(graph)
+    public FloorNode(FunctionGraph graph) : base("f",graph)
     {
     }
 

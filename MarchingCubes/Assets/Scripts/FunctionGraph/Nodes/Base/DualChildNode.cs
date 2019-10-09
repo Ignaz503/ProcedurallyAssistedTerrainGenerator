@@ -60,6 +60,19 @@ public abstract class DualChildNode : ParentableNode
             RemoveLeftChild();
     }
 
+    public override string GetChildLabelByIdx(int idx)
+    {
+        switch (idx % 2)
+        {
+            case 0:
+                return LeftChildLabel;
+            case 1:
+                return RightChildLabel;
+            default:
+                return "Not Valid Child IDX";
+        }
+    }
+
     public override int Validate()
     {
         if (RightChild == null)

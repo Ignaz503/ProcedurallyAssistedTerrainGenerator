@@ -4,8 +4,11 @@ public abstract class SingularChildNode : ParentableNode
 {
     public BaseFuncGraphNode Child { get; protected set; }
     public override int PossibleChildrenCount { get { return 1; } }
-    protected SingularChildNode(FunctionGraph graph) : base(graph)
-    {}
+    protected string childLabel;
+    protected SingularChildNode(string label, FunctionGraph graph) : base(graph)
+    {
+        childLabel = label;
+    }
 
     public override void AddChild(int idx, BaseFuncGraphNode n)
     {
@@ -15,6 +18,11 @@ public abstract class SingularChildNode : ParentableNode
         }
         Child = n;
         n.SetParent(this);
+    }
+
+    public override string GetChildLabelByIdx(int idx)
+    {
+        return childLabel;
     }
 
     public override void RemoveChild(BaseFuncGraphNode n)

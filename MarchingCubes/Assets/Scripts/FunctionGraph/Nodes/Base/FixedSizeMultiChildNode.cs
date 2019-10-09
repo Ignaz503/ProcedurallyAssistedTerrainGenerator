@@ -3,13 +3,26 @@
 public abstract class FixedSizeMultiChildNode : ParentableNode
 {
     protected BaseFuncGraphNode[] childNodes;
+    protected string[] childNodeLabels;
     public IEnumerable<BaseFuncGraphNode> ChildNodes { get { return childNodes; } }
     public int Size { get { return childNodes.Length; } }
     public override int PossibleChildrenCount { get { return Size; } }
 
-    protected FixedSizeMultiChildNode(int size, FunctionGraph graph) : base(graph)
+    protected FixedSizeMultiChildNode(int size,string[] labels, FunctionGraph graph) : base(graph)
     {
+        if (labels.Length != size)
+            throw new System.Exception("Labels need to be same size as possible children");
         childNodes = new BaseFuncGraphNode[size];
+        childNodeLabels = labels;
+    }
+
+    public override string GetChildLabelByIdx(int idx)
+    {
+        if (idx < Size)
+        {
+            return childNodeLabels[idx];
+        }
+        return "Invalid Child Idx";
     }
 
     public override int Validate()

@@ -3,7 +3,7 @@ using FuncGraph.CodeWriting;
 
 public class SumNode : VariableMultiChildNode
 {
-    public SumNode(FunctionGraph graph) : base(graph)
+    public SumNode(FunctionGraph graph) : base("f",graph)
     {
     }
 

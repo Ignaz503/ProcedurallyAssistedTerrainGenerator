@@ -3,12 +3,19 @@
 public abstract class VariableMultiChildNode : ParentableNode
 {
     protected List<BaseFuncGraphNode> children { get; set; }
+    protected string childLabel;
     public IEnumerable<BaseFuncGraphNode> Children { get { return children; } }
     public override int PossibleChildrenCount { get { return int.MaxValue; } }
 
-    protected VariableMultiChildNode(FunctionGraph graph) : base(graph)
+    protected VariableMultiChildNode(string label,FunctionGraph graph) : base(graph)
     {
         children = new List<BaseFuncGraphNode>();
+        childLabel = label;
+    }
+
+    public override string GetChildLabelByIdx(int idx)
+    {
+        return childLabel;
     }
 
     public void AddChild(BaseFuncGraphNode newChild)

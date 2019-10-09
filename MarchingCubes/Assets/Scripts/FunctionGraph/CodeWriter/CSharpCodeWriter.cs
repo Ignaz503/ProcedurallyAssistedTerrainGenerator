@@ -47,6 +47,7 @@ namespace FuncGraph.CodeWriting
         }
 
         RHSExpresion currentRhsExpression;
+        public RHSExpresion CurrentRHSExpression { get { return currentRhsExpression; } }
         
         CodeStructure currentCodeStructure;
         public CodeStructure CurrentCodeStructure
@@ -222,6 +223,8 @@ namespace FuncGraph.CodeWriting
         {
             currentRhsExpression.Append(toAdd);
         }
+
+        
 
     }
 

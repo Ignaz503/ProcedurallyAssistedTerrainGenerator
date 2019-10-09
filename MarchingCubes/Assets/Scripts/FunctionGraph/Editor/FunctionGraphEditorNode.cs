@@ -229,9 +229,25 @@ public class FunctionGraphEditorNode
     private void CreateConnectionPoints(float width, float height, FunctionGraphEditorNodeLayout layout, FunctionGraphEditorNodeLayout.ListType list, Action<ConnectionPoint, int> onClick)
     {
         int count = (list == 0) ? layout.InConnectionPointCount : layout.OutConnectionPointCount;
+
+        string label = "";
+        
         //loop over all set create type and set offset rect correctly
         for (int i = 0; i < count; i++)
         {
+            if (list == FunctionGraphEditorNodeLayout.ListType.In)
+            {
+                if (GraphNode is ParentableNode)
+                {
+                    label = (GraphNode as ParentableNode).GetChildLabelByIdx(i);
+                }
+                else
+                {
+                    label = "";
+                }
+            }
+
+
             FunctionGraphEditorNodeLayout.ConnectionPointInfo info = layout[list, i];
 
             //figure out width and height
@@ -249,7 +265,7 @@ public class FunctionGraphEditorNode
                     this,
                     new Rect(offset, size),
                     info.Style,
-                    onClick
+                    onClick,label
                     ));
 
         }

@@ -6,7 +6,7 @@ public class AbsNode : SingularChildNode
 {
     public override string ShortDescription { get { return "Abs"; } }
 
-    public AbsNode(FunctionGraph graph) : base(graph)
+    public AbsNode(FunctionGraph graph) : base("f", graph)
     {
     }
 

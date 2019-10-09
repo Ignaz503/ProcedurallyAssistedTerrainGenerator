@@ -5,7 +5,7 @@ public class NegativeNode : SingularChildNode
 {
     public override string ShortDescription { get { return "Negate"; } }
 
-    public NegativeNode(FunctionGraph graph) : base(graph)
+    public NegativeNode(FunctionGraph graph) : base("f",graph)
     {    }
 
     public override float Evaluate()

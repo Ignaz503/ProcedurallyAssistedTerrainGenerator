@@ -6,7 +6,7 @@ public class RadToDegNode : SingularChildNode
 {
     public override string ShortDescription { get { return "RadToDag"; } }
 
-    public RadToDegNode(FunctionGraph graph) : base(graph)
+    public RadToDegNode(FunctionGraph graph) : base("f",graph)
     {}
 
     public override float Evaluate()
