@@ -86,7 +86,7 @@ MonoBehaviour:
     UVy: 1
     Width: 0.75
     Height: 0.25
-    ConPointStyle: {fileID: 11400000, guid: b6107bae2115e9145b3424c1c75f9480, type: 2}
+    ConPointStyle: {fileID: 11400000, guid: a08a882d029ad0a44bceae693f1776b3, type: 2}
     type: 1
   OutConnectionPointsInfo:
   - UVx: 0.5
