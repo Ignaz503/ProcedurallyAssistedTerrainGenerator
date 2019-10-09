@@ -29,12 +29,8 @@ public class MultiplyNode : DualChildNode
         writer.Write(") ");
     }
 
-    public override void WriteToCSharp(CSharpCodeWriter writer)
-    {
-        writer.AddToCurrentLine(" (");
-        LeftChild.WriteToCSharp(writer);
-        writer.AddToCurrentLine(" *");
-        RightChild.WriteToCSharp(writer);
-        writer.AddToCurrentLine(" )");
-    }
+    //public override void WriteToCSharp(CSharpCodeWriter writer)
+    //{
+    //    throw new System.NotImplementedException();
+    //}
 }

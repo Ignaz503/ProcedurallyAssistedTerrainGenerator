@@ -12,7 +12,7 @@ namespace FuncGraph.CodeWriting
             FunctionGraphNameSpace = functionGraphNameSpace ?? throw new ArgumentNullException(nameof(functionGraphNameSpace));
         }
 
-        public new void WriteToFile(string path)
+        public  void WriteToFile(string path)
         {
             using (var writer = new StreamWriter(path))
             {

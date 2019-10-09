@@ -38,14 +38,8 @@ public class LerpNode : FixedSizeMultiChildNode
         writer.Write(") ");
     }
 
-    public override void WriteToCSharp(CSharpCodeWriter writer)
-    {
-        writer.AddToCurrentLine(" Mathf.Lerp(");
-        childNodes[0].WriteToCSharp(writer);
-        writer.AddToCurrentLine(",");
-        childNodes[1].WriteToCSharp(writer);
-        writer.AddToCurrentLine(",");
-        childNodes[2].WriteToCSharp(writer);
-        writer.AddToCurrentLine(" )");
-    }
+    //public override void WriteToCSharp(CSharpCodeWriter writer)
+    //{
+    //    throw new System.NotImplementedException();
+    //}
 }

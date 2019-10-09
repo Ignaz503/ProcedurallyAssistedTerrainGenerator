@@ -1,9 +1,20 @@
-Labels for in in funtion graph editor
+
 start up function
-wrapp stream writer for formatting and other things
-NameSapaces
-Interface writing
+	Surface Gen is not a monobehaviour
+	
 
 Rework the default mapping for nodes
+	- fixed issue of saving and loading for mapping
+	- fixed node layout display on the actual layout style asset
+	- added lables to the drawn node
 
+heightmap generating insteas of cubemarch	
 UV mapping 
+compute shaders
+water erosion
+	for heightmap
+	maybe expand volumetric for cube march? eg add to sample points and so on a lot more difficult
+	
+texture painting
+blender exec for detail work or tools that allow you to do that in unity
+	might fix the UV mapping problem as well -> let blender do it^^

@@ -106,5 +106,5 @@ public abstract class BaseFuncGraphNode : IFuncGraphNode
 
     public abstract void Write(StreamWriter writer);
 
-    public abstract void WriteToCSharp(CSharpCodeWriter writer);
+    //public abstract void WriteToCSharp(CSharpCodeWriter writer);
 }

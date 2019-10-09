@@ -2,7 +2,7 @@
 using UnityEngine;
 
 //TODO:
-// Cascading of clear functions, as well as save and restore functions
+// maybe don't distinguish between ctor and function that hard
 namespace FuncGraph.CodeWriting
 {
     public class CSharpCodeWriter : ICodeWriter
@@ -46,41 +46,46 @@ namespace FuncGraph.CodeWriting
             }
         }
 
-        Line currentLine;
-        public Line CurrentRHSExpression { get { return currentLine; } }
-        
-        CodeStructure currentCodeStructure;
-        public CodeStructure CurrentCodeStructure
+        Ctor currentCtor;
+        public Ctor CurrentCtor
         {
-            get { return currentCodeStructure; }
+            get { return currentCtor; }
             set
             {
-                if (currentCodeStructure != null)
-                {
-                    throw new System.Exception("Code Structure not null. Did you forget to temporarily store the previous structure? Or maybe you forgot to finish it up.");
-                }
-                currentCodeStructure = value;
+                if (currentCtor != null)
+                    throw new System.Exception("Only one ctor workable at the time, temp store current and retry");
+                currentCtor = value;
             }
         }
 
-        Stack<CodeStructure> tempCodeStructureStorage;
-        Stack<Line> tempLineStorage;
-        Stack<Function> tempFunctionStorage;
-        Stack<Class> tempClassStorage;
+        Line currentLine;
+        public Line CurrentLine
+        {
+            get { return currentLine; }
+            set
+            {
+                if (currentLine != null)
+                    throw new System.Exception("only one line at a time, temp store before switching");
+                currentLine = value;
+            }
+        }
+
+        Stack<Ctor> constructorTemporaryStorageStack;
+        Stack<Function> functionTemporaryStorageStack;
+        Stack<Line> lineTemporaryStorageStack;
+
 
         public CSharpCodeWriter()
         {
-            tempFunctionStorage = new Stack<Function>();
-            tempCodeStructureStorage = new Stack<CodeStructure>();
-            tempLineStorage = new Stack<Line>();
-            tempClassStorage = new Stack<Class>();
+            constructorTemporaryStorageStack = new Stack<Ctor>();
+            functionTemporaryStorageStack = new Stack<Function>();
+            lineTemporaryStorageStack = new Stack<Line>();
 
             //Add global namespace to namespaces
             namespaces = new List<Namespace>();
             namespaces.Add(Namespace.GlobalNamespace);
 
         }
-
         public Namespace CreateNameSpace(string name, bool setAsCurrent = false)
         {
             for (int i = 0; i < namespaces.Count; i++)
@@ -98,113 +103,6 @@ namespace FuncGraph.CodeWriting
             return namespaces[namespaces.Count - 1];
         }
 
-        public void StoreClassTemporarily()
-        {
-            tempCodeStructureStorage.Push(currentCodeStructure);
-            tempLineStorage.Push(currentLine);
-            tempFunctionStorage.Push(currentFunction);
-            tempClassStorage.Push(currentClass);
-        }
-
-        public void StoreClassTemporarilyAndClear()
-        {
-            StoreClassTemporarily();
-            currentCodeStructure = null;
-            currentLine  = null;
-            currentFunction = null;
-            currentClass = null;
-        }
-
-        public void RestorePreviousClass()
-        {
-            currentCodeStructure = tempCodeStructureStorage.Pop();
-            currentLine = tempLineStorage.Pop();
-            currentFunction = tempFunctionStorage.Pop();
-            currentClass = tempClassStorage.Pop();
-        }
-
-        public void FinishCurrentClass()
-        {
-            //classes are added to namespace on creation global if not defined, can we changed at will
-            //all we need to do is to clear everything
-
-            currentClass = null;
-            currentFunction = null;
-            currentLine = null;
-            currentCodeStructure = null;
-
-            //clear
-        }
-
-        public void StoreFunctionTemporarily()
-        {
-            tempCodeStructureStorage.Push(currentCodeStructure);
-            tempLineStorage.Push(currentLine);
-            tempFunctionStorage.Push(currentFunction);
-        }
-
-        public void StoreFunctionTemporarilyAndClear()
-        {
-            StoreFunctionTemporarily();
-            currentCodeStructure = null;
-            currentLine = null;
-            currentFunction = null;
-        }
-
-        public void RestorePreviousFunction()
-        {
-            currentCodeStructure = tempCodeStructureStorage.Pop();
-            currentLine = tempLineStorage.Pop();
-            currentFunction = tempFunctionStorage.Pop();
-        }
-
-        public void FinishCurrentFunction()
-        {
-            CurrentClass.AddFunction(currentFunction);
-            currentCodeStructure = null;
-            currentLine = null;
-            currentFunction = null;
-        }
-
-        public void StoreCurrentCodeStructureTemporarily()
-        {
-            tempCodeStructureStorage.Push(currentCodeStructure);
-            tempLineStorage.Push(currentLine);
-        }
-
-        public void StoreCurrentCodeStructureTemporarilyAndClear()
-        {
-            StoreCurrentCodeStructureTemporarily();
-            currentLine = null;
-            currentCodeStructure = null;
-        }
-
-        public void RestorePreviousCodeStructure()
-        {
-            currentCodeStructure = tempCodeStructureStorage.Pop();
-            currentLine = tempLineStorage.Pop();
-        }
-
-        public void FinishCodeStructure()
-        {
-            currentFunction.AddCodeStructure(currentCodeStructure);
-            currentCodeStructure = null;
-            currentLine = null;
-        }
-
-        public void AddLineForCurrentCodeStructure(Line l)
-        {
-            if (currentCodeStructure != null && currentCodeStructure is MultiLineCodeStructure)
-            {
-                (currentCodeStructure as MultiLineCodeStructure).AddLine(l);
-            }
-            else
-            {
-                //just add the line to the function
-                currentFunction.AddCodeStructure(l);
-            }
-        }
-
         public void WriteToDirectory(string path)
         {
             //for every namespace call write
@@ -214,10 +112,96 @@ namespace FuncGraph.CodeWriting
             }
         }
 
-        public void AddToCurrentLine(string toAdd)
+        public void StoreCurrentLineTemporarily()
         {
-            currentLine.Append(toAdd);
-        }    
+            lineTemporaryStorageStack.Push(currentLine);
+        }
+
+        public void ClearCurrentLine()
+        {
+            currentLine = null;
+        }
+
+        public void StoreAndClearCurrentLine()
+        {
+            StoreCurrentLineTemporarily();
+            ClearCurrentLine();
+        }
+
+        public void RestorePreviousLine()
+        {
+            currentLine = lineTemporaryStorageStack.Pop();
+        }
+
+        public void FinishCurrentLine(bool isCtorLine=false)
+        {
+            if (isCtorLine)
+            {
+                currentCtor.AddCodeStructure(currentLine);
+            }
+            else
+            {
+                currentFunction.AddCodeStructure(currentLine);
+            }
+            //clear
+            ClearCurrentLine();
+        }
+
+        public void StoreCurrentFunctionTemporarily(bool cascade = true)
+        {
+            functionTemporaryStorageStack.Push(currentFunction);
+            if (cascade)
+                StoreCurrentLineTemporarily();
+        }
+
+        public void ClearCurrentFunction(bool cascade = true)
+        {
+            currentFunction = null;
+            if (cascade)
+                ClearCurrentLine();
+        }
+
+        public void StoreAndClearCurrentFunction(bool cascade = true)
+        {
+            StoreCurrentFunctionTemporarily(cascade);
+            ClearCurrentFunction(cascade);
+        }
+
+        public void FinishCurrentFunction(bool cascade = true)
+        {
+            if (cascade)
+                FinishCurrentLine();
+            CurrentClass.AddFunction(currentFunction);
+            ClearCurrentFunction(cascade);
+        }
+
+        public void StoreConstructorTemporarily(bool cascade = true)
+        {
+            constructorTemporaryStorageStack.Push(currentCtor);
+            if (cascade)
+                StoreCurrentLineTemporarily();
+        }
+
+        public void ClearCurrentConstructor(bool cascade = true)
+        {
+            currentCtor = null;
+            if (cascade)
+                ClearCurrentLine();
+        }
+
+        public void StoreAndClearCurrentCtor(bool cascade = true)
+        {
+            StoreConstructorTemporarily(cascade);
+            ClearCurrentConstructor(cascade);
+        }
+
+        public void FinishCurrentConstructor(bool cascade = true)
+        {
+            if (cascade)
+                FinishCurrentLine(isCtorLine: true);
+            CurrentClass.AddCtor(currentCtor);
+            ClearCurrentConstructor(cascade);
+        }
 
     }
 

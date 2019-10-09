@@ -21,11 +21,9 @@ public class NegativeNode : SingularChildNode
 
     }
 
-    public override void WriteToCSharp(CSharpCodeWriter writer)
-    {
-        writer.AddToCurrentLine(" ( -");
-        Child.WriteToCSharp(writer);
-        writer.AddToCurrentLine(" )");
-    }
+    //public override void WriteToCSharp(CSharpCodeWriter writer)
+    //{
+    //    throw System.NotImplementedException();
+    //}
 }
 

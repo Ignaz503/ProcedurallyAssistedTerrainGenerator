@@ -32,17 +32,9 @@ public class SumNode : VariableMultiChildNode
         writer.Write(") ");
     }
 
-    public override void WriteToCSharp(CSharpCodeWriter writer)
-    {
-        writer.AddToCurrentLine(" (");
-        children[0].WriteToCSharp(writer);
-
-        for (int i = 1; i < children.Count; i++)
-        {
-            writer.AddToCurrentLine(" +");
-            children[i].WriteToCSharp(writer);
-        }
-        writer.AddToCurrentLine(" )");
-    }
+    //public override void WriteToCSharp(CSharpCodeWriter writer)
+    //{
+    //    throw new System.NotImplementedException();
+    //}
 }
 

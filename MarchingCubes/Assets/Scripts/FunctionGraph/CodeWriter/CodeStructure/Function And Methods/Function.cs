@@ -93,7 +93,6 @@ namespace FuncGraph.CodeWriting
             writer.WriteLine("}");
         }
 
-
         public bool PartialEquals(string returnType, List<Parameter> parameters)
         {
             if (returnType != this.returnType)
