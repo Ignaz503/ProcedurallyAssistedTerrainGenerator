@@ -9,7 +9,8 @@ using UnityEngine.SceneManagement;
     using UnityEditor.SceneManagement;
 #endif
 
-public class ThreadedDataRequester : MonoBehaviour
+
+public class ThreadedDataRequester
 {
 
     static ThreadedDataRequester instance;
@@ -22,11 +23,6 @@ public class ThreadedDataRequester : MonoBehaviour
             return instance;
         }
 
-    }
-
-    private void Awake()
-    {
-        instance = FindObjectOfType<ThreadedDataRequester>();
     }
 
     Queue<ThreadInfo> dataQueue = new Queue<ThreadInfo>();
@@ -80,29 +76,21 @@ public class ThreadedDataRequester : MonoBehaviour
         }
     }
 
+    private ThreadedDataRequester()
+    {}
+
     static ThreadedDataRequester CreateInstance() {
 
-        var inst = FindObjectOfType<ThreadedDataRequester>();
-        if ( inst != null)
-        {
-            //after recompile?
-            #if UNITY_EDITOR
-                inst.MakeUseableInEditor();
-            #endif
-            return inst;
-        }
+        if (instance != null)
+            return instance;
 
-        GameObject obj = new GameObject();
-        obj.name = "Threaded Data Requester";
-
-        var requester = obj.AddComponent<ThreadedDataRequester>();
-
-#if UNITY_EDITOR
-        obj.tag = "EditorOnly";
-        requester.MakeUseableInEditor();
-#endif
-
-        return requester ;
+        var inst =  new ThreadedDataRequester();
+        //after recompile?
+        #if UNITY_EDITOR
+            inst.MakeUseableInEditor();
+        #endif
+        return inst;
+ 
     }
 
 #if UNITY_EDITOR

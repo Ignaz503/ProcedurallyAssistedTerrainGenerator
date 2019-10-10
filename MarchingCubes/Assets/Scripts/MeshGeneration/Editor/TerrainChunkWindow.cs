@@ -66,20 +66,8 @@ public class TerrainChunkWindow : EditorWindow
 
     void FindOrCreateSurfaceGenerator()
     {
-        var generator = FindObjectOfType<SurfaceGenerator>();
-
-        if (generator == null)
-        {
-            //need to create surface generator
-            Debug.Log("Need to create surface generator, will be an editor only gameobject in your current scene");
-            GameObject gen = new GameObject();
-            gen.name = "Surface Generator";
-            gen.tag = "EditorOnly";
-            gen.transform.position = Vector3.zero;
-            generator = gen.AddComponent<SurfaceGenerator>();
-
-        }
-        this.generator = generator;
+        this.generator = SurfaceGenerator.Instance;
+        generator.OnChunkGenreated -= OnChunkGenerated;
         generator.OnChunkGenreated += OnChunkGenerated;
         terrainRoot = generator.Terrain;
         if (!generator.IsUseableInEditor)

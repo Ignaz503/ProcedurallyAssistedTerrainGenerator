@@ -5,15 +5,22 @@ using System.Reflection;
 using UnityEngine;
 using UnityEditor;
 
-public class SurfaceGenerator : MonoBehaviour
+public class SurfaceGenerator
 {
+    protected static SurfaceGenerator instance;
+    public static SurfaceGenerator Instance
+    {
+        get
+        {
+            if (instance == null)
+                CreateInstance();
+            return instance;
+        }
+    }
+
+
+
     public event Action<Chunk> OnChunkGenreated;
-    [SerializeField][Range(1,100)] int resolution = 10;
-    //[SerializeField][Range(0.1f,10f)] float sphereRadius =2f;
-    [SerializeField] Vector3 center = Vector3.zero;
-    [SerializeField] Chunk testChunk = null;
-    [SerializeField] MeshFilter mesh = null;
-    [SerializeField] bool sphere = false;
 
     Transform terrain;
     public Transform Terrain
@@ -34,34 +41,19 @@ public class SurfaceGenerator : MonoBehaviour
 
     public bool IsUseableInEditor { get; protected set; }
 
+    private static void CreateInstance()
+    {
+        instance = new SurfaceGenerator();
+        instance.Awake();
+        instance.MakeUseableInEditor();
+    }
+
     private void Awake()
     {
         if (Terrain == null)
         {
             CreateTerrainParent();
         }
-    }
-
-    public void Generate()
-    {
-        if(mesh != null)
-        {
-            RequestMesh();
-        }
-        else
-        {
-            Debug.Log("Need meshfilter to assign generated mesh");
-        }
-    }
-
-    void RequestMesh()
-    {
-        IDensityFunc func;
-        if (sphere)
-            func = new SphereDensityFunc(2f, center);
-        else
-            func = new SimpleSurface();
-        ThreadedDataRequester.Instance.RequestData(()=> { return testChunk.CubeMarch(resolution, func); }, OnDataRecieved);
     }
 
     public void RequestMesh(List<ChunkToGenerate> chunksToGen, Type idensityFunc, int resolution, bool flatShaded)
@@ -88,36 +80,9 @@ public class SurfaceGenerator : MonoBehaviour
         }
     }
 
-    void OnDataRecieved(object obj)
-    {
-        MeshData data = (MeshData)obj;
-
-
-        for (int a = 0; a < data.triangles.Length; a++)
-        {
-            if (data.triangles[a] >= data.vertices.Length)
-            {
-                Debug.Log($"{a}: referencing out of bounds vert: {data.triangles[a]} ");
-            }
-        }
-
-        data.ToMesh(mesh.sharedMesh);
-        OnChunkGenreated?.Invoke(testChunk);
-    }
-
     public void OnDataRecieved(MeshData data, Chunk chunk)
     {
         meshQueue.Enqueue(new MeshDataForChunk(chunk, data));
-    }
-
-    [UnityEditor.Callbacks.DidReloadScripts]
-    public static void OnRecomplie()
-    {
-        var surGen = FindObjectOfType<SurfaceGenerator>();
-        if(surGen !=  null)
-        {
-            surGen.MakeUseableInEditor();
-        }
     }
 
     void OnUpdate()
@@ -188,14 +153,6 @@ public class SurfaceGenerator : MonoBehaviour
         else
         {
             Terrain = root.transform;
-        }
-    }
-
-    private void OnDrawGizmos()
-    {
-        if(testChunk != null)
-        {
-            testChunk.Visualize();
         }
     }
 
