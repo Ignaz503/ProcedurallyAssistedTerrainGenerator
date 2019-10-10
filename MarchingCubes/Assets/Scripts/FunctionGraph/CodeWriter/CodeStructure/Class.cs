@@ -46,6 +46,7 @@ namespace FuncGraph.CodeWriting
 
         public void AddFunction(Function func)
         {
+            
             functions.Add(func);
         }
 
@@ -296,6 +297,7 @@ namespace FuncGraph.CodeWriting
         public void Write(IndentedStreamWriter write)
         {
             writeUsingDirectives(write);
+            new EmptyLine().Write(write);
             writeHeader(write);
             writeBody(write);
             //DONE;
@@ -350,6 +352,7 @@ namespace FuncGraph.CodeWriting
         {
             writer.WriteLine("{");
 
+            writer.IncreaseIndentLevel();
             //Members
             for (int i = 0; i < members.Count; i++)
             {
@@ -364,7 +367,7 @@ namespace FuncGraph.CodeWriting
             }
 
             //TODO More formatting
-
+            writer.DecreaseIndentLevel();
 
             writer.WriteLine("}");
         }

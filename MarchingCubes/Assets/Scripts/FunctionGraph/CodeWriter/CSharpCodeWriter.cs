@@ -105,6 +105,7 @@ namespace FuncGraph.CodeWriting
 
         public void WriteToDirectory(string path)
         {
+            
             //for every namespace call write
             for (int i = 0; i < namespaces.Count; i++)
             {

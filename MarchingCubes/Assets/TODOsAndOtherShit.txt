@@ -8,6 +8,9 @@ Rework the default mapping for nodes
 	- fixed node layout display on the actual layout style asset
 	- added lables to the drawn node
 
+	
+SANETIZE GRAPH NAME	
+	
 heightmap generating insteas of cubemarch	
 UV mapping 
 compute shaders

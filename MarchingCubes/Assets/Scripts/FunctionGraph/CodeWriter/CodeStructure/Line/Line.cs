@@ -68,6 +68,11 @@ namespace FuncGraph.CodeWriting
 
         protected Expresion expresion;
 
+        public Line()
+        {
+            expresion = new Expresion("");
+        }
+
         public abstract string LineToWrite { get; }
 
         public void Append(string str)

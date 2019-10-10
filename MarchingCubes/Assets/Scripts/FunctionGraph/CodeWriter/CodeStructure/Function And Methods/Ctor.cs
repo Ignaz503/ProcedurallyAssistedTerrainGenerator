@@ -41,7 +41,7 @@ namespace FuncGraph.CodeWriting
 
         void WriteCtorHeader(IndentedStreamWriter writer)
         {
-            writer.Write(BuildFunctionHead());
+            writer.WriteLine(BuildFunctionHead());
         }
 
         protected override string BuildFunctionHead()

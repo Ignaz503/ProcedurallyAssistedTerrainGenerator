@@ -103,7 +103,7 @@ public class FunctionGraph
         CSharpCodeWriter codeWriter = new CSharpCodeWriter();
 
 
-        codeWriter.CreateNameSpace($"Compiled._{GraphName}");
+        codeWriter.CreateNameSpace($"FuncGraphCompiled._{GraphName}",true);
         codeWriter.CurrentClass = new Class(GraphName, nameSpace:codeWriter.CurrentNamespace);
         codeWriter.CurrentClass.AddInterface(typeof(IDensityFunc).Name);
 
@@ -114,7 +114,6 @@ public class FunctionGraph
 
 
         var ctor = codeWriter.CurrentClass.CreateACtor();
-        codeWriter.CurrentClass.AddCtor(ctor);
         codeWriter.CurrentCtor = ctor;
         //TODO make things that have public as to string, maybe base types as well, get way to easier get the density func interface function
         codeWriter.CurrentFunction = new Function(
@@ -133,7 +132,7 @@ public class FunctionGraph
 
         codeWriter.FinishCurrentFunction();
 
-        codeWriter.FinishCurrentConstructor();
+        codeWriter.FinishCurrentConstructor(false);
 
         codeWriter.WriteToDirectory(directoryPath);
 

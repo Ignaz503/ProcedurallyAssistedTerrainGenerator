@@ -13,11 +13,11 @@ namespace FuncGraph.CodeWriting
             public NoNamespace() : base("")
             { }
 
-            protected override void WriteBodyEnd(StreamWriter writer)
+            protected override void WriteBodyEnd(IndentedStreamWriter writer)
             { }
-            protected override void WriteBodyStart(StreamWriter writer)
+            protected override void WriteBodyStart(IndentedStreamWriter writer)
             { }
-            protected override void WriteHeader(StreamWriter writer)
+            protected override void WriteHeader(IndentedStreamWriter writer)
             { }
         }
 
@@ -60,17 +60,19 @@ namespace FuncGraph.CodeWriting
         public void Write(string pathDirectory)
         {
             //Write every class in namepace
-
             for (int i = 0; i < classesInNameSpace.Count; i++)
             {
                 //open streamwriter 
-                using (var writer = new StreamWriter(pathDirectory + $"/{classesInNameSpace[i].Name}"))
+                using (var sw = new StreamWriter(pathDirectory + $"/{classesInNameSpace[i].Name}.cs"))
                 {
+                    var writer = new IndentedStreamWriter(sw);
                     //write namspace header and start body
                     WriteHeader(writer);
                     WriteBodyStart(writer);
                     //write class
-                    classesInNameSpace[0].Write(new IndentedStreamWriter(writer));
+                    writer.IncreaseIndentLevel();
+                    classesInNameSpace[0].Write(writer);
+                    writer.DecreaseIndentLevel();
                     //end namespace body
                     WriteBodyEnd(writer);
                 }
@@ -78,17 +80,17 @@ namespace FuncGraph.CodeWriting
             //done
         }
 
-        protected virtual void WriteHeader(StreamWriter writer)
+        protected virtual void WriteHeader(IndentedStreamWriter writer)
         {
             writer.WriteLine($"namespace {Name}");
         }
 
-        protected virtual void WriteBodyStart(StreamWriter writer)
+        protected virtual void WriteBodyStart(IndentedStreamWriter writer)
         {
             writer.WriteLine("{");
         }
 
-        protected virtual void WriteBodyEnd(StreamWriter writer)
+        protected virtual void WriteBodyEnd(IndentedStreamWriter writer)
         {
             writer.WriteLine("}");
         }
@@ -115,16 +117,6 @@ namespace FuncGraph.CodeWriting
             hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Class>>.Default.GetHashCode(ClassesInNameSpace);
             hashCode = hashCode * -1521134295 + HasClasses.GetHashCode();
             return hashCode;
-        }
-
-        public static bool operator==(Namespace lhs, Namespace rhs)
-        {
-            return lhs.Equals(rhs);
-        }
-
-        public static bool operator!=(Namespace lhs, Namespace rhs)
-        {
-            return !lhs.Equals(rhs);
         }
 
     }

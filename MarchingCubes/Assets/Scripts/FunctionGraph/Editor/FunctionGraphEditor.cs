@@ -191,6 +191,36 @@ public partial class FunctionGraphEditor : EditorWindow
 
         }
 
+        if (GUILayout.Button("New Compile To C#", GUILayout.ExpandWidth(false)))
+        {
+            ValidateGraph();
+            if (!isValidGraph)
+                return;
+
+            string folderPath = EditorUtility.SaveFolderPanel("Save Code To Folder", "", "");
+            //string path = EditorUtility.SaveFilePanelInProject("Compile Graph", graph.GraphName, "cs",
+            //    "Please enter a file name to save the compiled graph to");
+            //Debug.Log($"Folder Path: {folderPath}");
+            //Debug.Log(path);
+
+            if (folderPath.Length != 0)
+            {
+                graph.WriteToCSharp(folderPath);
+                Close();
+            }
+
+            //Temp save current graph
+            string tempPath = MakeRelativePath(Application.dataPath + "/TempGraphStorage.asset");
+            Save(tempPath);
+
+            Debug.Log("Window Will Be Reopened after compilation, just wait paitently");
+
+            //close window
+            Close();
+
+            AssetDatabase.Refresh();
+        }
+
         if (GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
         {
             string path = EditorUtility.SaveFilePanelInProject("Save Graph", graph.GraphName, "asset",
@@ -201,7 +231,6 @@ public partial class FunctionGraphEditor : EditorWindow
                 Save(path);
             }
         }
-
 
         EditorGUILayout.EndHorizontal();
     }

@@ -27,6 +27,7 @@ namespace FuncGraph.CodeWriting
         public Function(string accessor, string returnType, string name, List<Parameter> parameters) : this(accessor, returnType, name)
         {
             this.parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
+
         }
 
         public void AddParameter(Parameter param)
@@ -85,12 +86,15 @@ namespace FuncGraph.CodeWriting
         {
             writer.WriteLine("{");
 
+            //TODO maybe write loclas as initialized list
+            writer.IncreaseIndentLevel();
+
             for (int i = 0; i < codeStructures.Count; i++)
             {
                 codeStructures[i].Write(writer);
             }
-
-            writer.WriteLine("}");
+            writer.DecreaseIndentLevel();
+            writer.WriteLine("}\n");
         }
 
         public bool PartialEquals(string returnType, List<Parameter> parameters)
