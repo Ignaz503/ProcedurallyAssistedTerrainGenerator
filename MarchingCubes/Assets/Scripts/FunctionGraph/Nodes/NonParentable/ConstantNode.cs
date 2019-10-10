@@ -31,8 +31,8 @@ public class ConstantNode : BaseFuncGraphNode
         writer.Write(" ");
     }
 
-    //public override void WriteToCSharp(CSharpCodeWriter writer)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.CurrentLine.Append(Constant.ToString(new CultureInfo("en-US")) + "f ");
+    }
 }

@@ -31,8 +31,12 @@ public class SubtractNode : DualChildNode
         writer.Write(") ");
     }
 
-    //public override void WriteToCSharp(CSharpCodeWriter writer)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.CurrentLine.Append("( ");
+        LeftChild.WriteToCSharp(writer);
+        writer.CurrentLine.Append("- ");
+        RightChild.WriteToCSharp(writer);
+        writer.CurrentLine.Append(") ");
+    }
 }

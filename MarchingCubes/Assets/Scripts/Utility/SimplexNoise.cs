@@ -1,4 +1,5 @@
 ﻿using NoiseTest;
+using System;
 
 public static class SimplexNoise
 {
@@ -12,7 +13,7 @@ public static class SimplexNoise
     public static void EnsureInitialization()
     {
         if (simplexNoise == null)
-            SeedNoise("");
+            SeedNoise(DateTime.Now.Ticks.ToString());
     }
 
     public static float Evaulate(float x, float y)

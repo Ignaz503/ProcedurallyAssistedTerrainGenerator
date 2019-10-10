@@ -31,9 +31,13 @@ public class PerlinNoiseNode : DualChildNode
         writer.Write(") ");
     }
 
-    //public override void WriteToCSharp(CSharpCodeWriter writer)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.CurrentLine.Append(nameof(Mathf) + "." + nameof(Mathf.PerlinNoise) + "( ");
+        LeftChild.WriteToCSharp(writer);
+        writer.CurrentLine.Append(", ");
+        RightChild.WriteToCSharp(writer);
+        writer.CurrentLine.Append(") ");
+    }
 }
 

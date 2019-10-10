@@ -17,14 +17,14 @@ public class CeilNode : SingularChildNode
 
     public override void Write(StreamWriter writer)
     {
-        writer.Write("Mathf.Ceil( ");
-        Child.Write(writer);
-        writer.Write(") ");
+
     }
 
-    //public override void WriteToCSharp(CSharpCodeWriter writer)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.CurrentLine.Append(nameof(Mathf) + "." + nameof(Mathf.Ceil) + "(");
+        Child.WriteToCSharp(writer);
+        writer.CurrentLine.Append(") ");
+    }
 }
 

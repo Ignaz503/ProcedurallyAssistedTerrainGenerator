@@ -22,9 +22,11 @@ public class RoundNode : SingularChildNode
         writer.Write(") ");
     }
 
-    //public override void WriteToCSharp(CSharpCodeWriter writer)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.CurrentLine.Append("Mathf.Round( ");
+        Child.WriteToCSharp(writer);
+        writer.CurrentLine.Append(") ");
+    }
 }
 

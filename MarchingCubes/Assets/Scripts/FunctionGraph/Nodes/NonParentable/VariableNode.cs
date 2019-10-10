@@ -57,8 +57,29 @@ public class VariableNode : BaseFuncGraphNode
         writer.Write(" ");
     }
 
-    //public override void WriteToCSharp(CSharpCodeWriter writer)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        switch (Var)
+        {
+            case FunctionGraph.VariableNames.X:
+                writer.CurrentLine.Append("x.ValueWorld");
+                break;
+            case FunctionGraph.VariableNames.XLocal:
+                writer.CurrentLine.Append("x.ValueLocal");
+                break;
+            case FunctionGraph.VariableNames.Y:
+                writer.CurrentLine.Append("y.ValueWorld");
+                break;
+            case FunctionGraph.VariableNames.YLocal:
+                writer.CurrentLine.Append("y.ValueLocal");
+                break;
+            case FunctionGraph.VariableNames.Z:
+                writer.CurrentLine.Append("z.ValueWorld");
+                break;
+            case FunctionGraph.VariableNames.ZLocal:
+                writer.CurrentLine.Append("z.ValueLocal");
+                break;
+        }
+        writer.CurrentLine.Append(" ");
+    }
 }

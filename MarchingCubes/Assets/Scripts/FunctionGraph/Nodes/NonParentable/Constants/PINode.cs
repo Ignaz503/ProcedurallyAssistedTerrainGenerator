@@ -21,9 +21,9 @@ public class PINode : FixedConstantNode
         writer.Write("Mathf.PI ");
     }
 
-    //public override void WriteToCSharp(CSharpCodeWriter writer)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.CurrentLine.Append(nameof(Mathf) + "." + nameof(Mathf.PI));
+    }
 }
 

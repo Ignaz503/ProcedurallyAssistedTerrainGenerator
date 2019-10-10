@@ -22,9 +22,11 @@ public class FloorNode : SingularChildNode
         writer.Write(") ");
     }
 
-    //public override void WriteToCSharp(CSharpCodeWriter writer)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.CurrentLine.Append(nameof(Mathf)+"."+nameof(Mathf.Floor)+"( ");
+        Child.WriteToCSharp(writer);
+        writer.CurrentLine.Append(") ");
+    }
 }
 

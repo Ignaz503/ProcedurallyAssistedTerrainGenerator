@@ -22,9 +22,11 @@ public class RadToDegNode : SingularChildNode
         writer.Write(") ");
     }
 
-    //public override void WriteToCSharp(CSharpCodeWriter writer)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.CurrentLine.Append("( ");
+        Child.WriteToCSharp(writer);
+        writer.CurrentLine.Append("* " + nameof(Mathf) + "." + nameof(Mathf.Rad2Deg));
+    }
 }
 

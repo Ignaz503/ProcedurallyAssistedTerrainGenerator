@@ -19,13 +19,15 @@ public class DegToRadNode : SingularChildNode
     {
         writer.Write("( ");
         Child.Write(writer);
-        writer.Write("*  Mathf.Deg2Rad ");
+        writer.Write("* "+ nameof(Mathf) + "." +nameof(Mathf.Deg2Rad));
         writer.Write(") ");
     }
 
-    //public override void WriteToCSharp(CSharpCodeWriter writer)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.CurrentLine.Append("( ");
+        Child.WriteToCSharp(writer);
+        writer.CurrentLine.Append("* " + nameof(Mathf) + "." + nameof(Mathf.Deg2Rad));
+    }
 }
 

@@ -24,7 +24,7 @@ public class AbsNode : SingularChildNode
 
     public override void WriteToCSharp(CSharpCodeWriter writer)
     {
-        writer.CurrentLine.Append("Mathf.Abs( ");
+        writer.CurrentLine.Append(nameof(Mathf) + "." + nameof(Mathf.Abs)+"(");
         Child.WriteToCSharp(writer);
         writer.CurrentLine.Append(")");
     }

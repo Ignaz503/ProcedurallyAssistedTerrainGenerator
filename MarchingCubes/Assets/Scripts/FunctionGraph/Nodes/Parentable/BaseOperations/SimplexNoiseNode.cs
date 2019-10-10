@@ -40,8 +40,14 @@ public class SimplexNoiseNode : FixedSizeMultiChildNode
         writer.Write(") ");
     }
 
-    //public override void WriteToCSharp(CSharpCodeWriter writer)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    public override void WriteToCSharp(CSharpCodeWriter writer)
+    {
+        writer.CurrentLine.Append(nameof(SimplexNoise) + "." + nameof(SimplexNoise.Evaulate) + "( ");
+        childNodes[0].WriteToCSharp(writer);
+        writer.CurrentLine.Append(", ");
+        childNodes[1].WriteToCSharp(writer);
+        writer.CurrentLine.Append(", ");
+        childNodes[2].WriteToCSharp(writer);
+        writer.CurrentLine.Append(") ");
+    }
 }
