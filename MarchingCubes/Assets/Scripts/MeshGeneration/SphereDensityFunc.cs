@@ -5,6 +5,12 @@ public class SphereDensityFunc : IDensityFunc
     float rad;
     Vector3 center;
 
+    public SphereDensityFunc()
+    {
+        rad = 5f;
+        center = Vector3.zero;
+    }
+
     public SphereDensityFunc(float rad, Vector3 center)
     {
         this.rad = rad;
