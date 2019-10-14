@@ -21,3 +21,22 @@ water erosion
 texture painting
 blender exec for detail work or tools that allow you to do that in unity
 	might fix the UV mapping problem as well -> let blender do it^^
+
+TODO Blender:
+	Write Python script that is loaded on startup -> opens a TCP client
+	write to server okay to recieve data
+	On Msg recieved get all files in folder with fbx ending
+	open files in scene
+	-> button done editing -> send to server msg DONE
+	-> close connection
+
+	c# unity part
+	-> export FBX(done)
+	open TCP server
+	execute/ start process blender
+	on msg revieved OKAY  send workspace path
+	do noting until done
+	on done revieved
+	close server
+	-> reload fbx files as new meshes onto old terrain 
+

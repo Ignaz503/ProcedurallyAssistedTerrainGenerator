@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+using UnityEditor.Formats.Fbx.Exporter;
 
 
 public class TerrainChunkWindow : EditorWindow
@@ -15,7 +15,6 @@ public class TerrainChunkWindow : EditorWindow
         OneForAll,
         PerChunk
     }
-
 
     [MenuItem("ProcAssistTerrainGen/Cube March Terrain Editor")]
     private static void OpenWindow()
@@ -46,6 +45,11 @@ public class TerrainChunkWindow : EditorWindow
     int alreadyDone;
     int update = 0;
 
+    string relativeWorkspace = ""; 
+    bool hasWorkspace { get { return relativeWorkspace != ""; } }
+
+    string pathToBlender = "";
+
     public void Initialize()
     {
         chunkResolution = settings.MinChunkResolution;
@@ -62,6 +66,17 @@ public class TerrainChunkWindow : EditorWindow
         chunksToManage.AddChunk(Vector3.zero);
         TagHelper.AddTag("TerrainRoot");
         FindOrCreateSurfaceGenerator();
+
+        //select workspacce
+        if (!hasWorkspace)
+        {
+            if (settings.Workspace == "")
+            {
+                SelectWorkspace();
+            }
+            else
+                relativeWorkspace = settings.Workspace;
+        }
     }
 
     void FindOrCreateSurfaceGenerator()
@@ -119,12 +134,15 @@ public class TerrainChunkWindow : EditorWindow
         {
             if (EditorUtility.DisplayDialog("Start Editing Chunks", "This is going to open a new scene and close all currently open ones (saving them beforehand). Make sure there are no unwanted changes that would get saved in any open scene.", "Proceed"))
             {
-                var sv =  GetWindow<ChunkSceneView>(typeof(TerrainChunkWindow));
+
+                var sv = GetWindow<ChunkSceneView>(typeof(TerrainChunkWindow));
+
                 sv.Initialize(this);
 
                 sv.SetChunksToManage(chunksToManage);
                 sv.Focus();
                 sv.Show();
+
                 //Docker.Dock(this, sv, Docker.DockPosition.Bottom);
             }
             
@@ -270,8 +288,50 @@ public class TerrainChunkWindow : EditorWindow
                 Generate();
             }
         }
+
+        if (GUILayout.Button("Edit Terrain Mesh"))
+        {
+            //Export
+            for (int i = 0; i < terrainRoot.childCount; i++)
+            {
+                var chunk = terrainRoot.GetChild(i);
+                string filePath = Application.dataPath + relativeWorkspace + $"/Chunk{i}.fbx";
+                ModelExporter.ExportObject(filePath, chunk.gameObject);
+            }
+
+        }
+
+        if (GUILayout.Button("Start Blender"))
+        {
+            if (pathToBlender == null || pathToBlender == "")
+            {
+                string p = EditorUtility.OpenFilePanel("Location Of Blender", "", "exe");
+                if (p.Length != 0)
+                    pathToBlender = p;
+                else
+                    return;
+            }
+            var bU = new BlenderUnityCommunicator("", 9999,pathToBlender);
+            bU.StartBlender();
+        }
+
+        GUILayout.Label(relativeWorkspace);
+        if (GUILayout.Button("Set WorkSpace"))
+        {
+            SelectWorkspace();
+        }
+
         if (generating)
             DisplayGeneratingProgress();
+    }
+
+    void SelectWorkspace()
+    {
+        string path = EditorUtility.SaveFolderPanel("Select Workspace", "", "");
+        if (path.Length != 0)
+        {
+            relativeWorkspace = path.Remove(0, Application.dataPath.Length);
+        }
     }
 
     void DisplayGeneratingProgress()

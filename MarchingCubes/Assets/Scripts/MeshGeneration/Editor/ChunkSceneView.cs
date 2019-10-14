@@ -14,8 +14,11 @@ public class ChunkSceneView : SceneView
     TerrainChunkWindow callingWindow;
     GameObject chunkObject;
 
+
     public void Initialize(TerrainChunkWindow callingWindow)
     {
+        
+
 
         prevOpenScenePahs = new List<string>();
 

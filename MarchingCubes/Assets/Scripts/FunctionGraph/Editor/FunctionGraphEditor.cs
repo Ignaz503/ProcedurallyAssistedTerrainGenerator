@@ -519,7 +519,7 @@ public partial class FunctionGraphEditor : EditorWindow
     /// <summary>
     /// FUKCING RETARDED WAY TO MAKE RELATIVE PATH FROM ABSOLUTE
     /// </summary>
-    private static string MakeRelativePath(string path)
+    public static string MakeRelativePath(string path)
     {
         return path.Replace(Application.dataPath.Substring(0,Application.dataPath.LastIndexOf('/') + 1), "");
     }
