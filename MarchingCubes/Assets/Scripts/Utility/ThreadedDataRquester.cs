@@ -56,10 +56,13 @@ public class ThreadedDataRequester
     {
         if (dataQueue.Count > 0)
         {
+            ThreadInfo info;
             for (int i = 0; i < dataQueue.Count; i++)
             {
-                ThreadInfo threadInfo = dataQueue.Dequeue();
-                threadInfo.callback(threadInfo.parameter);
+                lock (dataQueue) {
+                    info = dataQueue.Dequeue();
+                }
+                info.callback(info.parameter);
             }
         }
     }

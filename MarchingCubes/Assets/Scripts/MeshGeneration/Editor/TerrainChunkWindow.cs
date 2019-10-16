@@ -311,8 +311,8 @@ public class TerrainChunkWindow : EditorWindow
                 else
                     return;
             }
-            var bU = new BlenderUnityCommunicator("", 9999,pathToBlender);
-            bU.StartBlender();
+            //var bU = new BlenderUnityCommunicator("", 9999,pathToBlender);
+            //bU.StartBlender();
         }
 
         GUILayout.Label(relativeWorkspace);
