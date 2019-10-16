@@ -45,7 +45,7 @@ public class TerrainChunkWindow : EditorWindow
     int alreadyDone;
     int update = 0;
 
-    string relativeWorkspace = ""; 
+    [SerializeField]string relativeWorkspace = ""; 
     bool hasWorkspace { get { return relativeWorkspace != ""; } }
 
     string pathToBlender = "";

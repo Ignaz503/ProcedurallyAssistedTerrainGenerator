@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: TerrainGenSettings
   m_EditorClassIdentifier: 
   MinChunkResolution: 5
-  MaxChunkResolution: 50
+  MaxChunkResolution: 51
+  Workspace: /Scripts/MeshGeneration

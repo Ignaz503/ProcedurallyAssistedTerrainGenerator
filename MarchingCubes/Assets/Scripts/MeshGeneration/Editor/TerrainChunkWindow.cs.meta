@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - m_PersistentViewDataDictionary: {instanceID: 0}
+  - m_ViewDataDictionary: {instanceID: 0}
   - settings: {fileID: 11400000, guid: 02781f00e33b4dc48854cd6af6a4bba7, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
