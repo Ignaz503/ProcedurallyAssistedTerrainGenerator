@@ -8,4 +8,5 @@ public class TerrainGenBaseSettings : ScriptableObject
     public int MinChunkResolution;
     public int MaxChunkResolution;
     [SerializeField]public string Workspace;
+    [SerializeField] public string PathToBlender;
 }

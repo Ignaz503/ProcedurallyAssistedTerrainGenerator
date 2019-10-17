@@ -15,3 +15,4 @@ MonoBehaviour:
   MinChunkResolution: 5
   MaxChunkResolution: 51
   Workspace: /Scripts/MeshGeneration
+  PathToBlender: C:/Program Files/Blender Foundation/Blender/blender.exe

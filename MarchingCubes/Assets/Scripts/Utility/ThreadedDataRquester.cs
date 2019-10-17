@@ -86,7 +86,6 @@ public class ThreadedDataRequester
 
         if (instance != null)
             return instance;
-
         var inst =  new ThreadedDataRequester();
         //after recompile?
         #if UNITY_EDITOR
@@ -106,6 +105,7 @@ public class ThreadedDataRequester
         EditorApplication.update += Update;
         EditorApplication.quitting -= OnQuit;
         EditorApplication.quitting += OnQuit;
+        
     }
 
     private void OnQuit()

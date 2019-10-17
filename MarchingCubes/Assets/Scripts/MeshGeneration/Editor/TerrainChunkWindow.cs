@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Formats.Fbx.Exporter;
+using BlenderUnityCommunication;
 
 
 public class TerrainChunkWindow : EditorWindow
@@ -48,7 +49,8 @@ public class TerrainChunkWindow : EditorWindow
     [SerializeField]string relativeWorkspace = ""; 
     bool hasWorkspace { get { return relativeWorkspace != ""; } }
 
-    string pathToBlender = "";
+    [SerializeField]string pathToBlender = "";
+    bool hasPathToBlender { get { return pathToBlender != ""; } }
 
     public void Initialize()
     {
@@ -77,6 +79,15 @@ public class TerrainChunkWindow : EditorWindow
             else
                 relativeWorkspace = settings.Workspace;
         }
+
+        if (!hasPathToBlender)
+        {
+            if (settings.PathToBlender != "")
+            {
+                pathToBlender = settings.PathToBlender;
+            }
+        }
+
     }
 
     void FindOrCreateSurfaceGenerator()
@@ -311,8 +322,13 @@ public class TerrainChunkWindow : EditorWindow
                 else
                     return;
             }
-            //var bU = new BlenderUnityCommunicator("", 9999,pathToBlender);
-            //bU.StartBlender();
+            BlenderUnityCommunicator.Instance.PathToBlender = pathToBlender;
+            BlenderUnityCommunicator.Instance.StartBlender();
+        }
+
+        if (GUILayout.Button("Close previously opend Blender instance"))
+        {
+            BlenderUnityCommunicator.Instance.CloseBlender();
         }
 
         GUILayout.Label(relativeWorkspace);

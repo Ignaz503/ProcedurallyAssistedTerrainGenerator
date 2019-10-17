@@ -8,6 +8,7 @@ public class TerrainGenBaseSettingsEditor : Editor
 {
     public override void OnInspectorGUI()
     {
+        var settings = target as TerrainGenBaseSettings;
         base.OnInspectorGUI();
         if (GUILayout.Button("Change Default Workspace"))
         {
@@ -16,9 +17,23 @@ public class TerrainGenBaseSettingsEditor : Editor
             if (path.Length != 0)
             {
                 string p = path.Remove(0, Application.dataPath.Length);
-                (target as TerrainGenBaseSettings).Workspace = p;
+                settings.Workspace = p;
+                EditorUtility.SetDirty(settings);
+                AssetDatabase.SaveAssets();
             }
         }
+
+        if (GUILayout.Button("Set Blender Path"))
+        {
+            string path = EditorUtility.OpenFilePanel("Find Blender Executable", "", "exe");
+            if (path.Length != 0)
+            {
+                settings.PathToBlender = path;
+                EditorUtility.SetDirty(settings);
+                AssetDatabase.SaveAssets();
+            }
+        }
+
         if (GUILayout.Button("Save"))
         {
             AssetDatabase.ForceReserializeAssets(new string[] { AssetDatabase.GetAssetPath(target) });

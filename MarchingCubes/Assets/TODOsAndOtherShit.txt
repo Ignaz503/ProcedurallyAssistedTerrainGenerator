@@ -40,3 +40,71 @@ TODO Blender:
 	close server
 	-> reload fbx files as new meshes onto old terrain 
 
+Above was a good start, however issues occure wihtt recompile and having to stop the server thread and so on... rouge TCP threads
+new solution that will be implemented after i get the python script to work
+
+The Process ID storing might be unnecessary -> just try to connect to that port -> if success server running if fail no server running 
+
+TCP Command Relay server
+	own process (started by unity) to close it at the same time as untiy store process ID in some asset(not lost during recompile)
+	Has tcp server
+		2 client connection types: blender client
+								   unity client
+		every client gets ID.
+
+		Initial Handshake:
+				1. msg 1: Hi here is client type pls give me ID
+				2. Thx for ID: pls gibe me ID of other client type that i can communicate with
+	     further msgs: pls relay this data to the client of {ID previously recieved}
+		    -> send error client non existance when other client disconnects
+
+		Further Message: Pls inform me in case of other type connected
+			-> send to client: Hey bitch you got company
+
+		Unity Closed MSG:
+			inform all bleneder connections that the party is over and close their connections
+			stop server
+			close process
+
+		Client Client msgs:
+			Initial Hi can i send data/ yes i want your data
+			-> send path to FBX files pls open these
+			-> okay, pls send info like chunk size, chunk count
+			-> pls send info location of chunk in your world so that i don't have to put all of them at the origin
+			-> hey i'm done you can reload
+			
+Unity Side:
+		first:
+			on start communication, or in settings
+				ask the user to give the path to the blender executable
+				ask user if it is okay to copy .py file into his blender start up
+				-> if yes go to version startup folder -> copy file into folder (overwrite no/ ask user)
+		second:
+			check if server already running?
+				if yes skip next part and go to third
+			next part because  i don't want to have the exe on my git or in assetpack
+			check if TCP relay exe exists
+				-> if no open cmd line and compile file to exe and execute
+				-> if yes execute this file#
+			after execute store process id in asset(on recopile you create new instance of the BlenderUnityCommuicator and you would lose the proces
+			meaning you have to close it manually after the fact)
+		third:
+			execute blender
+			start client connection to relay server
+			ask for blender client
+			-> if error ask for notification of blender client connect
+			start communication with client
+
+		On Unity Recompile: //??? maybe not needed (i don' think it is see sentence above TCP Command Relay Server )
+			Get the relay server process by ID -> if no porcess don't worry
+		On Unity Close:
+			if TCP server running -> send unity closed msg
+
+Blender Side:
+	On start try connect to tcp relay server -> if fail don't worry( maybe normal blender start and not with unity)
+	-> on fail no fancy ui additions or anything
+	done button etc
+	on blender close -> send goodby to server(with id of unity client you worked with if existend)
+	-> maybe server informs other client( eg client error handling if never got done from blender )
+		
+		
