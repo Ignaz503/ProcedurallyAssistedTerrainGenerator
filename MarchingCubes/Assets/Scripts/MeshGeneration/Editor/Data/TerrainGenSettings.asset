@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: TerrainGenSettings
   m_EditorClassIdentifier: 
   MinChunkResolution: 5
-  MaxChunkResolution: 51
+  MaxChunkResolution: 50
   Workspace: /Scripts/MeshGeneration
   PathToBlender: C:/Program Files/Blender Foundation/Blender/blender.exe
