@@ -71,7 +71,7 @@ namespace BlenderUnityCommunication
         static  TCPMessage DeserializeLengthHeadedMsg(string jString)
         {
             var tempJString = jString.Remove(0, jString.IndexOf('{'));
-            UnityEngine.Debug.Log(tempJString);
+            //UnityEngine.Debug.Log(tempJString);
             return JsonConvert.DeserializeObject<TCPMessage>(tempJString);
         }
     }

@@ -1,6 +1,8 @@
 import socket
 import threading
 import struct
+import enum
+import json
 #import bpy
 
 #TODO add host as $$ and port $$ or ?? change them in file
@@ -8,12 +10,16 @@ import struct
 HOST = '127.0.0.1'
 PORT = 9999
 
+recievedMsgQueue = [] 
+recivedLock = threading.Lock()
+
+sendMsgQueue = []
+sendLock = threading.Lock()
+
 #class TCPClient(bpy.types.Addon):
 class TCPClient():
     threads = []
     canceled = False
-
-    recievedMSGQueue = []
 
     socket = None
     dataJson = ""
@@ -58,7 +64,8 @@ class TCPClient():
             self.endThread(self)
             return
         while((not self.canceled) and self.hasConnection):
-            #TODO
+            #TODO check if send msg 
+            # //check if recieve msg
             msg = self.recvMsg(self,self.socket)
             self.handleMsg(self,msg)
         #end
@@ -66,7 +73,14 @@ class TCPClient():
         
 
     def handleMsg(self,msg):
-        #TODO
+        #TODO make to TCP msg
+        tcpMsg = TCPMessage.Deserialize(msg)
+        # push into revievedMsgqueue
+        recivedLock.acquire()
+        try:
+            recievedMsgQueue.append(tcpMsg)
+        finally:
+            recivedLock.release()
         return
 
     def endThread(self):
@@ -85,10 +99,62 @@ class TCPClient():
         for t in cls.threads:
             t.join()
 
+class TCPMessageType(enum.IntEnum):
+    DataRequest = 0
+    DirectoryInfo = 1
+    Data = 2
+    Done = 3
+    ConnectionProbe = 4
+    Error = 5
+    Test = 6
 
-#ef register():
+class TCPMessage:
+    Type = TCPMessageType.Error
+    Info = ""
+    PayLoad = ""
+
+    def __init__(self,type,info,load):
+        self.Type = TCPMessageType(type)
+        self.Info = info
+        self.PayLoad = load
+
+    def Print(self):
+        print(self.Type)
+        print(self.Info)
+        print(self.PayLoad)
+
+    @staticmethod
+    def Deserialize(jsonString):
+        return json.load(jsonString,object_hook=TCPMessage.Create)
+
+    @staticmethod
+    def Create(jsonDict):
+        return TCPMessageType(jsonDict['Type'],jsonDict['Info'],jsonDict['PayLoad'])
+
+    def Serialize(self):
+        return json.dumps(self)
+
+def msgRecievedCheck():
+    recivedLock.acquire()
+    msg = None
+    try:
+        msg = recievedMsgQueue.pop(0)
+    finally:
+        recivedLock.release()
+        if not msg is None:
+            handleMsg(msg)
+    return .5
+
+def handleMsg(tcpMsg):
+    #TODO handle revieved msg
+    return
+
+#def register():
+#    bpy.app.timers.register(msgCheck)
 #    bpy.utils.register_class(TCPClient)
 
 #def unregister():
 #    bpy.utils.unregister_class(TCPClient)
+
+
 
