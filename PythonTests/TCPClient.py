@@ -57,6 +57,19 @@ class TCPClient():
             self.hasConnection = False
             return
 
+    def TrySendMsg(self,sock):
+        msg = None
+        sendLock.acquire()
+        try:
+            msg = sendMsgQueue.pop(0)
+        except:
+            msg = None
+        finally:
+            sendLock.release()
+        if not msg is None:
+            self.sendMsg(self.socket,msg.Serialize())
+        return
+
     @classmethod
     def client(self,context):
         self.connectToServer(self)
@@ -64,21 +77,25 @@ class TCPClient():
             self.endThread(self)
             return
         while((not self.canceled) and self.hasConnection):
-            #TODO check if send msg 
+            #try send msg
+            self.TrySendMsg(self,self.socket)
             # //check if recieve msg
             msg = self.recvMsg(self,self.socket)
-            self.handleMsg(self,msg)
+            if not msg is None:
+                self.handleMsg(self,msg)
         #end
         self.endThread(self)
         
 
     def handleMsg(self,msg):
-        #TODO make to TCP msg
+        #make to TCP msg
         tcpMsg = TCPMessage.Deserialize(msg)
         # push into revievedMsgqueue
         recivedLock.acquire()
         try:
             recievedMsgQueue.append(tcpMsg)
+        except:
+            pass
         finally:
             recivedLock.release()
         return
@@ -143,6 +160,8 @@ def msgRecievedCheck():
     msg = None
     try:
         msg = recievedMsgQueue.pop(0)
+    except:
+        msg = None
     finally:
         recivedLock.release()
         if not msg is None:
@@ -151,6 +170,21 @@ def msgRecievedCheck():
 
 def handleMsg(tcpMsg):
     #TODO handle revieved msg
+    return
+
+def EnqueueMsgToSend(tcpMessage):
+    sendLock.acquire()
+    try:
+        sendMsgQueue.append(tcpMessage)
+    except:
+        pass
+    finally:
+        sendLock.release()
+    return
+
+def SendTestMsg():
+    msg = TCPMessage(TCPMessageType.Test.value,"Test","test payload")
+    EnqueueMsgToSend(msg)
     return
 
 #def register():
