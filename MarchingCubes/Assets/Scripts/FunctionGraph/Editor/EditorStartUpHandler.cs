@@ -18,7 +18,8 @@ public class EditorStartUpHandler
 
 
         //var msg = new TCPMessage() { Type = TCPMessage.MsgType.Test, Info = "info", PayLoad = "payload" };
-        //string j = msg.Stringify(true);
+        ////string j = msg.Stringify(true);
+        //string j = msg.Stringify();
         //Debug.Log(j);
 
         //var obj = TCPMessage.Deserialize(j, true);

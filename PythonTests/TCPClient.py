@@ -119,20 +119,24 @@ class TCPMessage:
         self.PayLoad = load
 
     def Print(self):
-        print(self.Type)
+        print(self.Type.name)
         print(self.Info)
         print(self.PayLoad)
 
     @staticmethod
     def Deserialize(jsonString):
-        return json.load(jsonString,object_hook=TCPMessage.Create)
+        return json.loads(jsonString,object_hook=TCPMessage.Create)
 
     @staticmethod
-    def Create(jsonDict):
-        return TCPMessageType(jsonDict['Type'],jsonDict['Info'],jsonDict['PayLoad'])
+    def Create(jD):
+        return TCPMessage(jD['Type'],jD['Info'],jD['PayLoad'])
 
     def Serialize(self):
-        return json.dumps(self)
+        obj = {}
+        obj['Type'] = self.Type.value
+        obj['Info'] = self.Info
+        obj['PayLoad'] = self.PayLoad
+        return json.dumps(obj)
 
 def msgRecievedCheck():
     recivedLock.acquire()

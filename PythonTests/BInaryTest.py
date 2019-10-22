@@ -1,6 +1,6 @@
 import struct
 
-a = "hello this is my dick"
+a = "hello this is my [redacted]"
 b = bytearray()
 
 b.extend(map(ord,a))
