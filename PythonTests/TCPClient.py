@@ -25,20 +25,24 @@ class TCPClient():
     dataJson = ""
     hasConnection = False
 
-    def sendMsg(self,sock,msg):
+    def sendMsg(self,sock:socket.socket,msg):
         #add msg leng up front
         msg = struct.pack('<I',len(msg))+msg
         sock.sendall(msg)
 
-    def recvMsg(self,sock):
+    def recvMsg(self,sock: socket.socket) -> str:
         #get msg leng form first 4 byte
         totalMsgLength = self.recvAll(sock,4)
         if not totalMsgLength:
             return None
         msgLen = struct.unpack('<I',totalMsgLength)[0]
-        return self.recvAll(sock,msgLen).decode('utf8')
+        rec = self.recvAll(sock,msgLen)
+        if not rec is None:
+            return rec.decode('utf8')
+        else:
+            return None
 
-    def recvAll(self,sock,n):
+    def recvAll(self,sock: socket.socket,n: int) -> bytearray:
         data = bytearray()
         while len(data) < n:
             pkg = sock.recv(n - len(data))
@@ -57,7 +61,7 @@ class TCPClient():
             self.hasConnection = False
             return
 
-    def TrySendMsg(self,sock):
+    def TrySendMsg(self):
         msg = None
         sendLock.acquire()
         try:
@@ -71,14 +75,14 @@ class TCPClient():
         return
 
     @classmethod
-    def client(self,context):
+    def clientLoop(self,context):
         self.connectToServer(self)
         if(not self.hasConnection):
             self.endThread(self)
             return
         while((not self.canceled) and self.hasConnection):
             #try send msg
-            self.TrySendMsg(self,self.socket)
+            self.TrySendMsg(self)
             # //check if recieve msg
             msg = self.recvMsg(self,self.socket)
             if not msg is None:
@@ -87,7 +91,7 @@ class TCPClient():
         self.endThread(self)
         
 
-    def handleMsg(self,msg):
+    def handleMsg(self,msg: str):
         #make to TCP msg
         tcpMsg = TCPMessage.Deserialize(msg)
         # push into revievedMsgqueue
@@ -105,7 +109,7 @@ class TCPClient():
 
     @classmethod        
     def execute(self,context):
-        self.threads =[threading.Thread(name="Client",target=self.client)for i in range(1)]
+        self.threads =[threading.Thread(name="Client",target=self.clientLoop)for i in range(1)]
         for t in self.threads:
             t.start()
         return {'RUNNING_MODAL'}
@@ -130,7 +134,7 @@ class TCPMessage:
     Info = ""
     PayLoad = ""
 
-    def __init__(self,type,info,load):
+    def __init__(self,type: int,info: str,load: str):
         self.Type = TCPMessageType(type)
         self.Info = info
         self.PayLoad = load
@@ -141,21 +145,21 @@ class TCPMessage:
         print(self.PayLoad)
 
     @staticmethod
-    def Deserialize(jsonString):
+    def Deserialize(jsonString: str) -> TCPMessage:
         return json.loads(jsonString,object_hook=TCPMessage.Create)
 
     @staticmethod
-    def Create(jD):
+    def Create(jD: dict) -> TCPMessage:
         return TCPMessage(jD['Type'],jD['Info'],jD['PayLoad'])
 
-    def Serialize(self):
+    def Serialize(self) -> str:
         obj = {}
         obj['Type'] = self.Type.value
         obj['Info'] = self.Info
         obj['PayLoad'] = self.PayLoad
         return json.dumps(obj)
 
-def msgRecievedCheck():
+def msgRecievedCheck() -> float:
     recivedLock.acquire()
     msg = None
     try:
@@ -168,11 +172,12 @@ def msgRecievedCheck():
             handleMsg(msg)
     return .5
 
-def handleMsg(tcpMsg):
+def handleMsg(tcpMsg: TCPMessage):
     #TODO handle revieved msg
+    print(tcpMsg.Info)
     return
 
-def EnqueueMsgToSend(tcpMessage):
+def EnqueueMsgToSend(tcpMessage: TCPMessage):
     sendLock.acquire()
     try:
         sendMsgQueue.append(tcpMessage)
