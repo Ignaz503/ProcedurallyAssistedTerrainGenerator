@@ -14,7 +14,7 @@ public class AssetTracker : UnityEditor.AssetModificationProcessor
     {
         Debug.Log($"Will destroy asset with name {name} and options {options}");
 
-        AssetDeleteResult delRes = AssetDeleteResult.DidDelete;
+        AssetDeleteResult delRes = AssetDeleteResult.DidNotDelete;
 
         return delRes;
     }
@@ -22,7 +22,7 @@ public class AssetTracker : UnityEditor.AssetModificationProcessor
     private static AssetMoveResult OnWillMoveAsset(string sourcePath, string destinationPath)
     {
         Debug.Log("Source path: " + sourcePath + ". Destination path: " + destinationPath + ".");
-        AssetMoveResult assetMoveResult = AssetMoveResult.DidMove;
+        AssetMoveResult assetMoveResult = AssetMoveResult.DidNotMove;
 
         // Perform operations on the asset and set the value of 'assetMoveResult' accordingly.
        

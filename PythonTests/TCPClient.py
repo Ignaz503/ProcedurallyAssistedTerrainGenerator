@@ -25,7 +25,7 @@ class TCPClient():
     dataJson = ""
     hasConnection = False
 
-    def sendMsg(self,sock:socket.socket,msg):
+    def sendMsg(self,sock:socket.socket,msg) -> None:
         #add msg leng up front
         msg = struct.pack('<I',len(msg))+msg
         sock.sendall(msg)
@@ -51,7 +51,7 @@ class TCPClient():
             data.extend(pkg)
         return data
 
-    def connectToServer(self):
+    def connectToServer(self) -> None:
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         try:
             self.socket.connect((HOST,PORT))
@@ -61,7 +61,7 @@ class TCPClient():
             self.hasConnection = False
             return
 
-    def TrySendMsg(self):
+    def TrySendMsg(self) -> None:
         msg = None
         sendLock.acquire()
         try:
@@ -75,7 +75,7 @@ class TCPClient():
         return
 
     @classmethod
-    def clientLoop(self,context):
+    def clientLoop(self,context) -> None:
         self.connectToServer(self)
         if(not self.hasConnection):
             self.endThread(self)
@@ -89,9 +89,10 @@ class TCPClient():
                 self.handleMsg(self,msg)
         #end
         self.endThread(self)
+        return
         
 
-    def handleMsg(self,msg: str):
+    def handleMsg(self,msg: str) -> None:
         #make to TCP msg
         tcpMsg = TCPMessage.Deserialize(msg)
         # push into revievedMsgqueue
@@ -104,7 +105,7 @@ class TCPClient():
             recivedLock.release()
         return
 
-    def endThread(self):
+    def endThread(self) -> None:
         self.threads.remove(threading.current_thread)
 
     @classmethod        
@@ -115,10 +116,11 @@ class TCPClient():
         return {'RUNNING_MODAL'}
 
     @classmethod
-    def unregister(cls):
+    def unregister(cls) -> None:
         cls.canceled = True
         for t in cls.threads:
             t.join()
+        print('EXIT')
 
 class TCPMessageType(enum.IntEnum):
     DataRequest = 0
@@ -139,7 +141,7 @@ class TCPMessage:
         self.Info = info
         self.PayLoad = load
 
-    def Print(self):
+    def Print(self) -> None:
         print(self.Type.name)
         print(self.Info)
         print(self.PayLoad)
@@ -172,12 +174,12 @@ def msgRecievedCheck() -> float:
             handleMsg(msg)
     return .5
 
-def handleMsg(tcpMsg: TCPMessage):
+def handleMsg(tcpMsg: TCPMessage) -> None:
     #TODO handle revieved msg
     print(tcpMsg.Info)
     return
 
-def EnqueueMsgToSend(tcpMessage: TCPMessage):
+def EnqueueMsgToSend(tcpMessage: TCPMessage) -> None:
     sendLock.acquire()
     try:
         sendMsgQueue.append(tcpMessage)
@@ -187,7 +189,7 @@ def EnqueueMsgToSend(tcpMessage: TCPMessage):
         sendLock.release()
     return
 
-def SendTestMsg():
+def SendTestMsg() -> None:
     msg = TCPMessage(TCPMessageType.Test.value,"Test","test payload")
     EnqueueMsgToSend(msg)
     return
@@ -198,6 +200,26 @@ def SendTestMsg():
 
 #def unregister():
 #    bpy.utils.unregister_class(TCPClient)
+
+
+def mainTesting():
+    client = TCPClient()
+
+    client.execute(None)
+
+    #TODO fuck shit up horribly
+    print('Press Any Key To Exit')
+
+    input()
+
+    client.unregister()
+
+    print('We are Done, thx for your patience')
+
+
+
+
+#mainTesting()
 
 
 
