@@ -1,11 +1,11 @@
 # ProcedurallyAssistedTerrainGenerator
-A procedutal assitant terrain generator for unity
+A procedurally assisted terrain generator for unity.
 
-Build Surface Functions with a graphical node based interface. 
-Use all unity Mathf functions, create constants, use the local sample point of the chunk
-or the sample point in world coordinates. 
+Build surface functions with a graphical node based function editor.
+Use *all*(not all atm) unity Mathf functions, create consstants, use local or world based coordinates of the marching cubes sample point.
+
 No programming needed.
-Use those to generate your terrain chunks with the marching cubes algorithm.
+Use those functions created to generate your terrain with the marching cubes algorithm.
 
 Change the shape and amount of chunks you generate.
 All in editor, and multithreaded.
