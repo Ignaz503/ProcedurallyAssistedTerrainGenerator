@@ -15,3 +15,5 @@ Write TCP Command Relay server for unity blender communication.
 Write blender plugin that connects to Command Relay Server.
 Write Unity script that manages starting and stoping of server in editor, as well as a script that communicates with server.
 Send chunk meshes between unity and blender for easy mesh manipulation with a tool dedicated to that.
+asdaskjdasd
+asdaskjdasd
